@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var __enabled:Boolean;
+			
+			override public function set enabled(i_enabled:Boolean):void{
+				if(i_enabled == true){
+					this.buttonMode = true;
+				}else{
+					this.buttonMode = false;
+				}				
+				
+				__enabled = i_enabled;
+			}
+			
+			override public function get enabled():Boolean{
+				
+				return __enabled;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+</mx:Button>

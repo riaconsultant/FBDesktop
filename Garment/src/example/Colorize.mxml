@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#ffffff">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ColorPickerEvent;
+			
+			public function colorize(value:Number) :void
+			{
+				// Create a new ColorTransform instance.
+				var colorTrans:ColorTransform = new ColorTransform();
+				// Set the color value to be used by the ColorTransform instance.
+				colorTrans.color = value;
+				// Apply the transform to image.
+				starImage.transform.colorTransform = colorTrans;
+			}
+			
+			[Bindable] private var myColor:String = new String();
+	        private function TextOnColorChange(event:ColorPickerEvent):void
+	        {
+	        	myColor = String(event.color);
+	        } 
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Image id="starImage" source="@Embed('girls.png')" x="10" y="60"/>
+	
+	<mx:Button x="10" y="10" label="Color 1" click="colorize(0xcccccc)"/>
+	<mx:Button x="83" y="10" label="Color 2" click="colorize(0xff0000)"/>
+	<mx:ColorPicker x="177" y="10" id="colorPicker" colorField="value" editable="false" selectedColor="0x000000" change="colorize(Number(colorPicker.selectedColor));"/>
+	
+</mx:Application>

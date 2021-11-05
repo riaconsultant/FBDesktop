@@ -1,0 +1,3234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute"
+	width="98%"
+	height="571"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+ 	creationComplete="initapps()"
+ 	verticalAlign="middle"
+ 	horizontalAlign="center"
+ 	backgroundGradientColors="[#ffffff, #ffffff]"
+ 	xmlns:controls="com.adobesamples.controls.*" 
+	xmlns:resize="flex.utils.ui.resize.*" 
+	xmlns:oh="com.roguedevelopment.objecthandles.*" 
+	xmlns:be="com.redrock.be.*" 
+	xmlns:canvasPaint="canvasPaint.*"
+ 	xmlns:flash.filters="flash.filters.*" 
+    xmlns:degrafa="com.degrafa.*"
+    xmlns:paint="com.degrafa.paint.*"
+    xmlns:geometry="com.degrafa.geometry.*"
+    xmlns:shapes="com.roguedevelopment.flowchart.shapes.*" 
+	xmlns:flowchart="com.roguedevelopment.flowchart.*"
+	xmlns:degrafa1="http://www.degrafa.com/2007"
+    xmlns:grid="com.degrafa.geometry.repeaters.*"
+    xmlns:example="com.roguedevelopment_new.objecthandles_new.example.*"
+    xmlns:fileupload="com.flashdev.file.*"
+ 	xmlns:ns1="compnent.*"
+ 	xmlns:fabulousFlex="fabulousFlex.*"
+    applicationComplete="registerGlobalKeyHandler()"
+	click="if( event.target == generic )
+	{ 
+		if(selectedObject !=null)
+		{ 
+			selectedObject.deselect(); 
+			
+		}else if (selectedObjectShp !=null)
+		{ 
+			selectedObjectShp.deselect();
+		}
+	}else if(event.target == genericBanner || event.target == genericBannerBack )
+	{
+		if(selectedObject !=null)
+		{ 
+			selectedObject.deselect();
+			 
+		}else if (selectedObjectShp !=null)
+		{
+			 selectedObjectShp.deselect();
+		}
+	}else if(event.target == genericTshirt || event.target == genericTshirtBack || event.target == genericTshirtLeft || event.target == genericTshirtRight)
+	{
+		if(selectedObject !=null)
+		{ 
+			selectedObject.deselect();
+			 
+		}else if (selectedObjectShp !=null)
+		{
+			 selectedObjectShp.deselect();
+		}
+	}">
+ 	 
+ 	 <mx:Style>
+	    .myStyle {
+	        swatchWidth:25;
+	        swatchHeight:25;
+	        textFieldWidth:95;
+	    } 
+	    @font-face {
+		    src: local("Arial");
+		    fontFamily: ArialEmbedded;
+		    fontWeight: normal;
+		}
+		 
+		TextPath {
+		    font-family: ArialEmbedded;
+		    font-size: 20;
+		}
+		/*button
+		{
+			 borderStyle:"none";
+			skin: ClassReference(null);
+	
+		} */
+		Application
+		{
+			 /* background-image: Embed("images/grid.jpg");
+			background-repeat: repeat;
+			borderSkin: ClassReference("com.degrafa.skins.CSSSkin");  */
+		}
+		
+		.invalid{
+		   color:#990000;
+		}
+	</mx:Style>
+ 	 
+	<mx:Script>
+		<![CDATA[
+		
+			// pixle calculate to this site =http://www.translatorscafe.com/cafe/units-converter/typography/calculator/pixel-(X)-to-centimeter-[cm]/
+		
+		
+			import mx.preloaders.Preloader;
+			import mx.utils.StringUtil;
+			import com.degrafa.utilities.swf.SWFFontReader;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.graphics.BitmapFill;
+			import mx.collections.IViewCursor;
+			import mx.utils.ArrayUtil;
+			import com.roguedevelopment.flowchart.shapes.RoundRect4;
+			import com.degrafa.geometry.Polygon;
+			import com.degrafa.Graphic;
+			import com.degrafa.GeometryGroup;
+			import com.degrafa.geometry.Geometry;
+			import mx.rpc.events.FaultEvent;
+			import mx.collections.ArrayCollection;
+			import com.roguedevelopment.flowchart.shapes.ellipticalarc;
+			import com.roguedevelopment.flowchart.shapes.ployline;
+			import com.roguedevelopment.flowchart.shapes.StarShape;
+			import com.roguedevelopment.objecthandles.ObjectHandlesCanvas;
+			import com.roguedevelopment_new.objecthandles_new.example.MoveableTextArea;
+			import com.roguedevelopment_new.objecthandles_new.example.TextDataModel;
+			import mx.utils.ObjectProxy;
+			import mx.messaging.management.ObjectInstance;
+			import mx.utils.ObjectUtil;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.rpc.remoting.RemoteObject;
+		
+			import com.roguedevelopment_new.objecthandles_new.HandleRoles;
+			import com.roguedevelopment_new.objecthandles_new.HandleDescription;
+			import com.roguedevelopment_new.objecthandles_new.constraints.MovementConstraint;
+			import com.roguedevelopment_new.objecthandles_new.constraints.SizeConstraint;
+			import com.roguedevelopment_new.objecthandles_new.Handle;
+			import com.roguedevelopment_new.objecthandles_new.ObjectHandlesNew;
+			import mx.effects.Tween;
+			import mx.effects.Move;
+			import com.roguedevelopment_new.objecthandles_new.example.SimpleSpriteShape;
+			import com.roguedevelopment_new.objecthandles_new.example.SimpleDataModel;
+			import com.roguedevelopment_new.objecthandles_new.example.SimpleFlexShape;
+			
+			protected var objectHandlesnew:ObjectHandlesNew;
+			
+			[Bindable] protected var dataModel:TextDataModel;
+			[Bindable] protected var dataModel2:TextDataModel;
+		
+			import com.roguedevelopment.flowchart.shapes.Cross;
+			import com.roguedevelopment.flowchart.shapes.TriangleOne;
+			import com.roguedevelopment.flowchart.shapes.vline;
+			import com.roguedevelopment.flowchart.shapes.hline;
+			import com.roguedevelopment.flowchart.shapes.RoundRect2;
+			import com.roguedevelopment.flowchart.shapes.RoundRect1;
+			import com.roguedevelopment.flowchart.shapes.CircleShape;
+			import com.roguedevelopment.flowchart.shapes.SquareShape;
+			import com.roguedevelopment.flowchart.ObjectSource;
+		
+			import mx.rpc.events.ResultEvent;
+			//start my code 14-07-2009//
+			
+			import mx.events.*;
+			import mx.containers.*;
+			import mx.core.*;
+			import flash.events.Event;
+	        import mx.events.DropdownEvent;
+	        import com.roguedevelopment.objecthandles.ObjectHandles;
+	      
+	        import mx.effects.*;
+			import mx.events.SliderEvent;
+			import mx.controls.*;
+			
+			//import com.roguedevelopment.objecthandles.ShapesFactory;
+	     
+       
+	       	import mx.events.SliderEvent;
+	     	import com.redrock.be.TextPath;
+	       
+	        import mx.controls.Image;
+			import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+			import com.roguedevelopment.objecthandles.ObjectHandlesMouseCursors;
+			
+			protected var resize_handle:Class;
+			protected var rotate_handle:Class;
+		
+		
+			//start popup box
+	     	//import mx.controls.Label;
+	        import mx.events.CloseEvent;
+	        import mx.containers.TitleWindow;
+	        import mx.managers.PopUpManager;
+			
+			private var fade:Effect = new Fade();
+			private var iris:Effect = new Iris();
+			private var blur:Blur = new Blur();
+			private var bool:Boolean = true;
+			private var titleWindow:TitleWindow;
+			
+			[Bindable]
+	        public var selectedItem:Object;
+			// for text size//	
+			
+			[Bindable]
+			private var curSize:int = 10;
+			private var curFont:String = "";
+			private var selectedObject:ObjectHandles = null;
+			private var selectedObjectShp:ObjectHandles = null;
+			private var selectedShape:ObjectSource = null;
+			private var cnvsParent:Canvas = new Canvas();
+			
+			[Bindable]
+			private var textCurSize:int = 10;
+		
+			[Bindable] 
+			private var myUrlpaht:String = ExternalInterface.call('eval', 'window.location.host');
+			
+			[Bindable] 
+			private var myUrl:String="http://"+myUrlpaht+"/signimal/";
+			//private var myUrl:String="http://www.octalsoftware.com/signimal/";
+			
+			[Embed(source='images/tools/circle.png')]
+			private var circle:Class;
+			[Embed(source='images/tools/rectangle.png')]
+			private var rectangle:Class;
+			[Embed(source='images/tools/icon-04.png')]
+			private var roundrectcon4:Class;
+			[Embed(source='images/tools/line.png')]
+			private var line:Class;
+			[Embed(source='images/tools/icon-07.png')]
+			private var hline:Class;
+			[Embed(source='images/tools/icon-08.png')]
+			private var vline:Class;
+			[Embed(source='images/tools/icon-04.png')]
+			private var roundrect:Class;
+			[Embed(source='images/tools/icon-05.png')]
+			private var roundrectcon:Class;
+			[Embed(source='images/tools/icon-010.png')]
+			private var polyline:Class;
+			[Embed(source='images/tools/wedge.png')]
+			private var wedge:Class;
+			
+			[Embed(source='images/tools/ellipticalarc.png')]
+			private var ellipticalarcnew:Class;
+			
+			[Embed(source='images/tools/ellipticalarc1.png')]
+			private var ellipticalarc1:Class;
+			
+			[Embed(source='images/tools/ellipticalarc2.png')]
+			private var ellipticalarc2:Class;
+			
+			[Embed(source='images/tools/icon-13.png')]
+			private var ellipse:Class;
+			
+			[Embed(source='images/tools/plus.png')]
+			private var cross:Class;
+			
+			
+			
+	       	
+	     	[Bindable]
+	     	private var dp:Array = [{icon:circle, label:"circle"}, 
+	     	{icon:rectangle, label:"rectangle"},
+	     	{icon:roundrectcon4, label:"roundrectcon4"},
+	     	{icon:vline, label:"vline"},
+	     	{icon:hline, label:"hline"},
+	     	{icon:roundrect, label:"roundrect"},
+	     	{icon:roundrectcon, label:"roundrectcon"},
+	     	{icon:polyline, label:"polyline"},
+	     	{icon:wedge, label:"wedge"},
+	     	{icon:ellipticalarcnew, label:"ellipticalarcnew"},
+	     	{icon:ellipticalarc1, label:"ellipticalarc1"},
+	     	{icon:ellipticalarc2, label:"ellipticalarc2"},
+	     	
+	     	{icon:ellipse, label:"ellipse"},
+	     	{icon:cross, label:"cross"},
+	     	];
+     	
+	     	[Bindable]
+	     	public var cards: Array = [ {label:"arial", data:1}, 
+	            {label:"arial black", data:2}, {label:"verdana", data:3} ];
+        
+	        /*
+	        * Strat font chagne styel 
+	        */
+        
+	        private function onCmbFontChange(event:ListEvent):void
+	        {
+	          	if(selectedObject != null)
+		        {
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("fontFamily", combobox.selectedLabel);
+	        		}
+		        }
+	        }
+			
+			/*
+	        * End font chagne styel 
+	        * Start text align
+	        */
+	        public function setTextAlign(event:MouseEvent):void 
+		    {
+		       	var align:String = event.currentTarget.id;
+		       	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("textAlign",align);
+	        		}
+	        	}
+		    }
+		      
+	     	/*
+	        * End text align 
+	        * Statr bold italic under line 
+	        */
+     	
+	     	private function checkbold ():void
+			{
+				if(boldtext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("fontWeight","normal");
+		        		}
+		        	}
+				}
+				if(boldtext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt1 != null)
+		        		{
+		        			txt1.setStyle("fontWeight","bold");
+		        		}
+		        	}
+				}
+			}
+			private function checkitalic ():void
+			{
+				if(italictext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("fontStyle","normal");
+		        		}
+		        	}
+				}
+				if(italictext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt1 != null)
+		        		{
+		        			txt1.setStyle("fontStyle","italic");
+		        		}
+		        	}
+				}
+			}
+			private function checkunderline ():void
+			{
+				if(underlinetext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("textDecoration","underline");
+		        		}
+		        	}
+				}
+				if(underlinetext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt1 != null)
+		        		{
+		        			txt1.setStyle("textDecoration","underline");
+		        		}
+		        	}
+				}
+			}
+     	
+	     	/*
+	        * End bold italic under line 
+	        * Start Font color Change  
+	        */
+	     	
+	     	
+		 	private function intToHex(color:int = 0):String {
+	            var mask:String = "000000";
+	            var str:String = mask + color.toString(16).toUpperCase();
+	            return "#" + str.substr(str.length - 6);
+	        }
+        
+       		
+            [Bindable] private var textareaColor:String =  new String();
+            private function OnColorChange(event:ColorPickerEvent):void
+	        {
+	        	
+	        	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle('color', event.color);
+	        			
+	        		}
+	        		
+	        	}
+	        	
+	        }
+	        
+            private function OnShadowcolor():void
+            { 
+            	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			
+	        			if(bordercheckBox.selected==false)
+	        			{
+	        				txt.setStyle("borderStyle", 'none');
+	        			}else{
+	        				txt.setStyle("borderStyle", 'Solid');
+	        				txt.setStyle("borderColor", borderColorPicker.selectedColor);
+	        			}	
+		    			txt.setStyle("dropShadowColor",shadowColorPicker.selectedColor);
+		    			txt.setStyle("dropShadowEnabled",shadowcheckBox.selected);
+		    			txt.setStyle("shadowDistance",shadowSlider.value);
+		    			txt.setStyle("shadowDirection",shadowcomboBox.selectedItem.label);
+	        		}
+	        	}	
+            }
+            
+            
+			/*
+	        * End Font color Change 
+	        * Start remove object  
+	        */
+			
+			private function removeObject():void
+			{
+				//viewPanel.removeChild(oh);
+				
+			}
+		
+			/*
+	        * End remove object  
+	        * Start create & select Daynamic Object
+	        */ 
+			
+			private function val(ho2id:String):String
+			{
+				return ho2id;
+			}
+			public var myObjHand:ObjectHandles;
+			private function OnObjectHandlesSelected(event:ObjectHandleEvent):void
+	   		{
+	   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+	   			
+	   			myObjHand=oh1;
+	   			if(oh1 != null)
+	   			{
+					selectedObject = oh1;
+					selectedObjectShp=null;
+					
+	   			}
+	   		}
+   			
+   			
+   			
+   			
+			private function hit(event:MouseEvent):void
+			{
+				
+				var randomNum:Number = Math.floor(Math.random() * (999 - 1 + 1)) + 1;
+				var dd:String = event.currentTarget.id;
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh1.allowRotate=false;
+				oh1.x=158; 
+				oh1.y=94;
+				oh1.height=47; 
+				oh1.width=168;
+				val(oh1.id)
+				
+				
+				
+				//var txt:MoveableTextArea = new MoveableTextArea();
+				
+				var txt:TextArea = new TextArea();
+				//txt.text = "Click here and type your text2.";
+				txt.htmlText="Click here and type your text2"
+				txt.horizontalScrollPolicy = "off";
+				txt.verticalScrollPolicy = "off";
+				txt.percentWidth=100;
+				txt.percentHeight=100;
+				txt.setStyle("backgroundAlpha","0") 
+				txt.setStyle("fontSize","14");  
+				txt.setStyle("color","#000000");
+				txt.setStyle("fontFamily","Verdana");
+				txt.setStyle("fontWeight","bold");
+				txt.setStyle("textAlign","center");
+				txt.setStyle("length","0");
+				txt.setStyle("borderStyle","none");
+				txt.condenseWhite=true;
+				txt.addEventListener(MouseEvent.CLICK ,	clickDis);
+				
+				
+				//txt.height = txt.textHeight - 1;
+
+				if(dd=="test")
+				{
+					oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=false;
+					oh1.mouseChildren=true;
+					txt.selectable=true;
+					txt.editable=true;
+					oh1.addChild(txt);
+					
+					
+					
+					
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(oh1);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(oh1);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(oh1);
+					 	}
+					   
+					   
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+						if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(oh1);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(oh1);
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(oh1);
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(oh1);
+					 	}	
+					}     
+						
+				} 
+			}
+	   		private function clickDis(event:MouseEvent):void
+	   		{
+	   			if(selectedObject != null)
+	        	{
+	        		selectedObject.allowHMove=false;
+					selectedObject.allowHResize=false;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=false;
+					selectedObject.allowVResize=false;
+					selectedObject.mouseChildren=true;
+					//selectedObject.visible=true;
+				 }
+				 
+				 	dropShadow.visible=true;
+	        	
+	   		}
+	   		
+	   		//removeSelection
+	   		private function removeSelection(event:MouseEvent):void
+	   		{
+	   			var remove:String = event.currentTarget.id;
+	   			if(remove=="removeselection")
+	   			{
+		   			if(selectedObject != null)
+		        	{
+		        		selectedObject.deselect();
+		        		selectedObject.allowHMove=false;
+						selectedObject.allowHResize=false;
+						selectedObject.allowRotate=false;
+						selectedObject.allowVMove=false;
+						selectedObject.allowVResize=false;
+						selectedObject.mouseChildren=true;
+						var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        			if(txt != null)
+	        			{
+	        			  txt.editable=true;
+	        			  txt.setStyle("borderStyle","none");
+	        			 
+	        			}
+			    	}
+	   			}
+	   		 }
+   		
+   		
+	   		private function hits(event:MouseEvent):void
+			{
+				var dd:String = event.currentTarget.id;
+				
+				if(selectedObject != null)
+        		{
+        			selectedObject.select();
+					selectedObject.allowHMove=true;
+					selectedObject.allowHResize=true;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=true;
+					selectedObject.allowVResize=true;
+					selectedObject.mouseChildren=false;
+					selectedObject.buttonMode=false;
+					selectedObject._allowKeyboardManipulation=true;
+					
+					var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        			if(txt != null)
+        			{
+        			  txt.editable=false;
+        			  
+        			}
+        			
+        		}else 
+        		{
+        			if(selectedObjectShp !=null)
+        				selectedObjectShp.select();
+        		}
+	   		 }
+	   		 private function ontxtMouseDoubleClick(event:MouseEvent):void
+	   		 {
+	   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+	   		 }
+   		
+	   		/*
+	        * End create & select Daynamic Object  
+	        * Start zoom in or zoom out
+	        */ 
+   			 private function changeZoom(event:SliderEvent) : void
+			 {
+				
+				
+				if(myViewStack.selectedChild==texteditor)
+				{
+						if(selectedObject!=null)
+						{
+							selectedObject.scaleY = event.target.values[0]*2/100;
+							selectedObject.scaleX = event.target.values[0]*2/100;
+						}
+						if(selectedObjectShp!=null)
+						{
+							selectedObjectShp.scaleY = event.target.values[0]*2/100;
+							selectedObjectShp.scaleX = event.target.values[0]*2/100;
+						}
+						
+						if(cnvsParent!=null)
+						{
+							cnvsParent.scaleY = event.target.values[0]*2/100;
+							cnvsParent.scaleX = event.target.values[0]*2/100;
+						} 
+						
+				}else if(myViewStack.selectedChild==banner)
+				{
+					bannerpreviewImg.scaleY = event.target.values[0]*2/100;
+					bannerpreviewImg.scaleX = event.target.values[0]*2/100;
+					
+					if(selectedObject!=null)
+					{
+						selectedObject.scaleY = event.target.values[0]*2/100;
+						selectedObject.scaleX = event.target.values[0]*2/100;
+					}
+					if(selectedObjectShp!=null)
+					{
+						selectedObjectShp.scaleY = event.target.values[0]*2/100;
+						selectedObjectShp.scaleX = event.target.values[0]*2/100;
+					}
+					
+					if(cnvsParent!=null)
+					{
+						cnvsParent.scaleY = event.target.values[0]*2/100;
+						cnvsParent.scaleX = event.target.values[0]*2/100;
+					} 
+					    
+				}else if(myViewStack.selectedChild==Tshirt)
+				{
+					previewImg.scaleY = event.target.values[0]*2/100;
+					previewImg.scaleX = event.target.values[0]*2/100;
+					
+					if(selectedObject!=null)
+					{
+						selectedObject.scaleY = event.target.values[0]*2/100;
+						selectedObject.scaleX = event.target.values[0]*2/100;
+					}
+					if(selectedObjectShp!=null)
+					{
+						selectedObjectShp.scaleY = event.target.values[0]*2/100;
+						selectedObjectShp.scaleX = event.target.values[0]*2/100;
+					}
+					
+					if(cnvsParent!=null)
+					{
+						cnvsParent.scaleY = event.target.values[0]*2/100;
+						cnvsParent.scaleX = event.target.values[0]*2/100;
+					} 
+					
+				}    
+				
+			 }
+		 
+			 private function adjustDefaultZoom() : void
+			 {
+				
+				if(selectedObject!=null)
+				{
+					selectedObject.scaleX = slider.values[0]/100*2;
+					selectedObject.scaleY = slider.values[0]/100*2;
+				} 
+				
+
+			 }
+			 private function myDataTipFunc(val:String):String {
+			   return  String(val)+ "%";
+			 }
+			/*
+	        * End zoom in or zoom out  
+	        * Start Path Text 
+	        */  
+	        
+	        [Bindable] private var myColor:String = new String();
+	        private function TextOnColorChange(event:ColorPickerEvent):void
+	        {
+	        	myColor = String(event.color);
+	        }   
+	           
+	         public function textOnSizeChange():void
+	         {
+	         	textCurSize = Number(textSize.value);
+	         	
+	         }
+	        public function drawText():void 
+	     	{
+	     	
+		     	
+		     	 var cnvsObject:ObjectHandles = new ObjectHandles();
+		     	 cnvsObject.width=364;
+		     	 cnvsObject.height=273;
+		     	 
+		     	 var radius:Number = 125;
+		         var spacing:Number = 9.3;
+		     	 var centerText:Point = new Point(200,150);   
+		     	
+		     	 cnvsParent = new Canvas();
+		     	 cnvsParent.percentHeight=100;
+		   		 cnvsParent.percentWidth=100;
+		     	
+		     	 var angleLeading:Number = 5;
+				 var angularOffset:Number = 180;
+		     	 
+		     	 var myText:String = String(myActTextRound.text);
+	     	 	
+		          for (var char:uint=0;char<myText.length;char++) 
+		          {
+					 var tempCnvs:Canvas = new Canvas();
+					 tempCnvs.id="generic" 
+					 tempCnvs.label="Generic1"; 
+					 tempCnvs.verticalScrollPolicy="off"; 
+					 tempCnvs.horizontalScrollPolicy="off"; 
+					 tempCnvs.percentHeight=100;
+					 tempCnvs.percentWidth=100; 
+					 tempCnvs.setStyle("color", myColor);
+					 tempCnvs.setStyle('fontSize', textCurSize);
+					 tempCnvs.x=0; 
+					 tempCnvs.y=0;	
+					 var tempText:TextPath = new TextPath();
+					 
+					 tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + centerText.x;
+					 tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + centerText.y;
+					 
+					 
+					 var dx:Number = centerText.x-tempText.x;
+					 var dy:Number = centerText.y-tempText.y;
+					 var angle:Number = Math.atan2(dy, dx);
+					 
+					 tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+					 tempText.text = myText.charAt(char);
+					 tempCnvs.addChild(tempText);
+		   			 cnvsParent.addChild(tempCnvs);
+		          }
+       			//cnvsObject.addChild(cnvsParent);
+	      		
+	      			if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(cnvsParent);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(cnvsParent);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(cnvsParent);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(cnvsParent);
+					 	}
+					    
+					} else if(myViewStack.selectedChild==Tshirt)
+					{
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(cnvsParent);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(cnvsParent);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		//genericTshirtLeft.addChild(oh1);
+					 		genericTshirtLeft.addChild(cnvsParent);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		//genericTshirtRight.addChild(oh1);
+					 		genericTshirtRight.addChild(cnvsParent);
+					 	}	
+					    
+					    
+					} 
+	      		
+	      		
+	        }
+        
+		    private function degrees2radians(deg:Number):Number {
+		    	 return (2 * Math.PI * deg) / 360; 
+		    }
+	        private function radians2degrees(rad:Number):Number {            
+	          return rad * 180 / Math.PI; 
+	     	}
+	     	private function changeCir(event:SliderEvent) : void
+			{
+				
+				var s:Number =Math.round(slider.value);
+			    var r:Number =Math.round(mySlider.value);
+			   
+			    var radius:Number = r;
+	       	    var spacing:Number = s;
+	       	    var angleLeading:Number = 5;
+			    var angularOffset:Number = 180;
+			
+				var centerText:Point = new Point(200,150);   
+				var char:uint=0
+				
+				var tempCnvs:Canvas = cnvsParent;
+				tempCnvs.setStyle("color", myColor);
+				tempCnvs.setStyle('fontSize', textCurSize);
+				var arr:Array = tempCnvs.getChildren();
+				var myText:String = String(myActTextRound.text);
+				
+				for each(var cv:Canvas in arr) 
+				{
+					var tempText:TextPath = cv.getChildAt(0) as TextPath;
+					
+					if(tempText != null)
+					{
+		               	tempText.x = radius * Math.cos(degrees2radians(char*event.target.values[0]+angularOffset)) + centerText.x;
+		               	tempText.y = radius * Math.sin(degrees2radians(char*event.target.values[0]+angularOffset)) + centerText.y;
+		               	var dx:Number = centerText.x-tempText.x;
+						var dy:Number = centerText.y-tempText.y;
+						var angle:Number = Math.atan2(dy, dx);
+						tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+		               	tempText.text = myText.charAt(char);
+		    		}
+	    	       	char++;
+	             }
+			 } 
+	         private function orientation():void
+	         {
+	     		var ss:Number =Math.round(sliders.value);
+			    var rr:Number =Math.round(mySlider.value);
+			    var radius:Number = -rr;
+		        var spacing:Number = ss;
+		        var angleLeading:Number = 5;
+			    var angularOffset:Number = 180;
+				var centerText:Point = new Point(200,150);   
+				var char:uint=0
+				var myText:String = myActTextRound.text
+				var tempCnvs:Canvas = cnvsParent;
+				tempCnvs.setStyle("color", myColor);
+				tempCnvs.setStyle('fontSize', textCurSize);
+				var arr:Array = tempCnvs.getChildren();
+				
+				for each(var cv:Canvas in arr) 
+				{
+					var tempText:TextPath = cv.getChildAt(0) as TextPath;
+					if(tempText != null)
+					{ 
+			   			tempText.x = radius * Math.cos(degrees2radians(char*ss+angularOffset)) + centerText.x;
+	               		tempText.y = radius * Math.sin(degrees2radians(char*ss+angularOffset)) + centerText.y;
+	               		var dx:Number = centerText.x-tempText.x;
+						var dy:Number = centerText.y-tempText.y;
+						var angle:Number = Math.atan2(dy, dx);
+						tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+	               		tempText.text = myText.charAt(char);
+	    			}
+	               char++;
+	          	 }
+	
+	         }
+	         private function orientationNew():void
+		     {
+		     		var myText:String = String(myActTextRound.text);
+		     		var ss:Number =Math.round(sliders.value);
+				    var rr:Number =Math.round(mySlider.value);
+				    var angleLeading:Number = 5;
+			    	var angularOffset:Number = 180;
+				    var radius:Number = rr;
+			        var spacing:Number = ss;
+					var centerText:Point = new Point(200,150);   
+					var char:uint=0
+					var tempCnvs:Canvas = new Canvas();
+			        tempCnvs.setStyle("color", myColor);
+			        tempCnvs.setStyle('fontSize', textCurSize);
+			        tempCnvs.label="Generic1"; 
+			        tempCnvs.verticalScrollPolicy="off"; 
+			        tempCnvs.horizontalScrollPolicy="off"; 
+			        tempCnvs.width=364;
+			        tempCnvs.height=273; 
+			        tempCnvs.x=0; 
+			        tempCnvs.y=0; 
+					
+					var tempCnvs1:Canvas = cnvsParent;
+					var arr:Array = tempCnvs1.getChildren();
+				
+					for each(var cv:Canvas in arr) 
+					{
+						var tempText:TextPath = cv.getChildAt(0) as TextPath;
+						if(tempText != null)
+						{ 
+							tempText.x = radius * Math.cos(degrees2radians(char*ss+angularOffset)) + centerText.x;
+		              		tempText.y = radius * Math.sin(degrees2radians(char*ss+angularOffset)) + centerText.y;
+		              		var dx:Number = centerText.x-tempText.x;
+							var dy:Number = centerText.y-tempText.y;
+							var angle:Number = Math.atan2(dy, dx);
+							tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+	               			tempText.text = myText.charAt(char);
+		              		char++;
+		       			}
+		   			}		
+		   	 }
+	      	 private function moveRight():void
+			 {
+			 	var tempCnvs:Canvas = cnvsParent;
+			 	tempCnvs.x+=5; 
+			 }
+		     private function moveLeft():void
+		     {
+		     	    var tempCnvs:Canvas = cnvsParent;
+		     	    tempCnvs.x-=5; 
+		     }
+	     	 private function moveUp():void
+	     	 {
+	     		var tempCnvs:Canvas = cnvsParent; 
+	        	tempCnvs.y-=5; 
+	        	//generic1.y-=5;
+	         } 
+	    	 private function moveDown():void
+	    	 {
+	    		var tempCnvs:Canvas = cnvsParent;
+	            tempCnvs.y+=5; 
+	     	 }     		  		    
+           	
+           	//===Strat Image Upload====//
+        	import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			
+			private const _strDomain:String = new String(myUrl+"signimal_flex_php/");
+			private const _strUploadScript:String = new String(_strDomain + "upload.php");
+			
+			
+			import flash.display.*;
+ 			import flash.net.URLRequest;
+	
+	  		
+	  		[Bindable]  
+            private var _data:ArrayCollection;
+			public function initapps():void
+	    	{
+	    		Security.allowDomain(_strDomain);
+	    		
+    			//galleryData.send();
+	    		//Alert.show(myUrl);
+	    	}
+      		
+      		import com.degrafa.core.IGraphicsStroke;
+			import com.roguedevelopment.objecthandles.SelectionManager;
+			import com.roguedevelopment.flowchart.shapes.BaseShape;
+			import com.degrafa.core.IGraphicsFill;
+			
+			// Sets the passed in fill as the selected shape's background.						
+			protected function setBackground( fill:IGraphicsFill ) : void
+			{
+				var shape:BaseShape = SelectionManager.instance.currentlySelected as BaseShape;
+				
+				if (shape != null)
+				{
+					shape.background = fill;
+				}	
+			}
+			
+			// Sets the passed in stroke as the selected shape's stroke
+			protected function setStroke( stroke:IGraphicsStroke ) : void
+			{
+				var shape:BaseShape = SelectionManager.instance.currentlySelected as BaseShape;
+				if( ! shape ) { return; }
+				shape.stroke = stroke;
+			}
+			
+			private function OnObjectHandlesSelectedShp(event:ObjectHandleEvent):void
+	   		{
+	   			var obj:ObjectHandles = event.currentTarget as ObjectHandles;
+	   			if(obj != null)
+	   			{
+	   				selectedObjectShp = obj;
+	   				selectedObject=null;
+	   				
+	   			}
+	   		} 
+			
+			
+			public function drawShape(id:String):void
+		    {
+		    	var shape:String=id;
+	        	var myObjShp:ObjectHandlesCanvas = new ObjectHandlesCanvas();
+	        	
+	        	if(shape=="circle")
+	        	{
+	        		var sourceCircleShape:ObjectSource = new ObjectSource(  
+	        			new ClassFactory( com.roguedevelopment.flowchart.shapes.CircleShape),
+	        			myObjShp,
+	        			new Point(50,50)
+	        		 );
+	        		
+	        		
+	        		if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceCircleShape.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceCircleShape.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceCircleShape.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceCircleShape.curObj);
+					 	}
+					    
+					    
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceCircleShape.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceCircleShape.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceCircleShape.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceCircleShape.curObj);
+					 	}	
+					    
+					}  
+	        		
+	        		sourceCircleShape.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	        		
+					
+				}
+				else if(shape=="rectangle")
+				{
+	    			var sourceSquareShape:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.SquareShape),
+					myObjShp,
+					new Point(50,50) );
+					
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceSquareShape.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceSquareShape.curObj);
+					    if(mySubViewStack.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceSquareShape.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceSquareShape.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceSquareShape.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceSquareShape.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceSquareShape.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceSquareShape.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceSquareShape.curObj);
+					 	}	
+					    
+					} 
+					
+					sourceSquareShape.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+					
+					
+	    		}else if(shape=="roundrectcon4")
+				{
+					var sourceRoundRectShape4:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.RoundRect4),
+					myObjShp,
+					new Point(50,50) );
+					
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceRoundRectShape4.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceRoundRectShape4.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceRoundRectShape4.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceRoundRectShape4.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceRoundRectShape4.curObj);
+					     if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceRoundRectShape4.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceRoundRectShape4.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceRoundRectShape4.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceRoundRectShape4.curObj);
+					 	}
+					}  
+					
+					sourceRoundRectShape4.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+					
+					
+	    		}else if (shape=="vline"){
+	    		
+	    			var sourceRoundRect4:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.vline),
+					myObjShp,
+					new Point(50,50) );
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceRoundRect4.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceRoundRect4.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceRoundRect4.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceRoundRect4.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceRoundRect4.curObj);
+					     if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceRoundRect4.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceRoundRect4.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceRoundRect4.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceRoundRect4.curObj);
+					 	}
+					}
+					
+					sourceRoundRect4.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+	    		}else if (shape=="hline"){
+	    		
+	    			var sourceRoundRect3:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.hline),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceRoundRect3.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceRoundRect3.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceRoundRect3.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceRoundRect3.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceRoundRect3.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceRoundRect3.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceRoundRect3.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceRoundRect3.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceRoundRect3.curObj);
+					 	}
+					}
+					
+					sourceRoundRect3.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="roundrect"){
+	    		
+	    			var sourceRoundRect2:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.RoundRect2),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceRoundRect2.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceRoundRect2.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceRoundRect2.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceRoundRect2.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceRoundRect2.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceRoundRect2.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceRoundRect2.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceRoundRect2.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceRoundRect2.curObj);
+					 	}
+					}
+					sourceRoundRect2.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+	    		
+	    		}else if (shape=="roundrectcon"){
+	    		
+	    		var sourceRoundRect1:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.RoundRect1),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceRoundRect1.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceRoundRect1.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceRoundRect1.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceRoundRect1.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceRoundRect1.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceRoundRect1.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceRoundRect1.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceRoundRect1.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceRoundRect1.curObj);
+					 	}
+					}
+					sourceRoundRect1.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="polyline"){
+	    		
+	    		var sourcePolyLine:ObjectSource = new ObjectSource(
+					new ClassFactory(com.roguedevelopment.flowchart.shapes.ployline),
+					myObjShp,
+					new Point(50,50) );
+				
+					
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourcePolyLine.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourcePolyLine.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourcePolyLine.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourcePolyLine.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourcePolyLine.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourcePolyLine.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourcePolyLine.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourcePolyLine.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourcePolyLine.curObj);
+					 	}
+					}
+					
+					sourcePolyLine.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+	    		
+	    		}else if (shape=="wedge"){
+	    		
+	    			var sourcEellipticalArc:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.ellipticalarc),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourcEellipticalArc.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourcEellipticalArc.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourcEellipticalArc.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourcEellipticalArc.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourcEellipticalArc.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourcEellipticalArc.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourcEellipticalArc.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourcEellipticalArc.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourcEellipticalArc.curObj);
+					 	}
+					}
+					
+					sourcEellipticalArc.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="ellipticalarcnew"){
+	    		
+	    			var sourcEellipticalArcnew:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.ellipticalarcnew),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourcEellipticalArcnew.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourcEellipticalArcnew.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourcEellipticalArcnew.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourcEellipticalArcnew.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourcEellipticalArcnew.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourcEellipticalArcnew.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourcEellipticalArcnew.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourcEellipticalArcnew.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourcEellipticalArcnew.curObj);
+					 	}
+					}
+					sourcEellipticalArcnew.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="ellipticalarc1"){
+	    		
+	    			var sourcEellipticalArc1:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.ellipticalarcnew1),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourcEellipticalArc1.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourcEellipticalArc1.curObj);
+					     if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourcEellipticalArc1.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourcEellipticalArc1.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourcEellipticalArc1.curObj);
+					     if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourcEellipticalArc1.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourcEellipticalArc1.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourcEellipticalArc1.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourcEellipticalArc1.curObj);
+					 	}
+					}
+					sourcEellipticalArc1.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="ellipticalarc2"){
+	    		
+	    			var sourcEellipticalArc2:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.ellipticalarcnew2),
+					myObjShp,
+					new Point(50,50) );
+				
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourcEellipticalArc2.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourcEellipticalArc2.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourcEellipticalArc2.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourcEellipticalArc2.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourcEellipticalArc2.curObj);
+					     if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourcEellipticalArc2.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourcEellipticalArc2.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourcEellipticalArc2.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourcEellipticalArc2.curObj);
+					 	}
+					}
+					sourcEellipticalArc2.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+	    		
+	    		}else if (shape=="ellipse"){
+	    		
+	    			var sourceEllipse:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.ellipse),
+					myObjShp,
+					new Point(50,50) );
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceEllipse.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceEllipse.curObj);
+					     if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceEllipse.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceEllipse.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceEllipse.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceEllipse.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceEllipse.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceEllipse.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceEllipse.curObj);
+					 	}
+					}
+					
+					sourceEllipse.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+				}else if (shape=="cross"){
+	    		
+	    			var sourceCross:ObjectSource = new ObjectSource(
+					new ClassFactory( com.roguedevelopment.flowchart.shapes.Cross),
+					myObjShp,
+					new Point(50,50) );
+					//generic.addChild(myObjShp);
+					if(myViewStack.selectedChild==texteditor)
+					{
+						generic.addChild(sourceCross.curObj);
+						
+					}else if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceCross.curObj);
+					     if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.addChild(sourceCross.curObj);
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.addChild(sourceCross.curObj);
+					 	}
+					    
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    //genericTshirt.addChild(sourceCross.curObj);
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.addChild(sourceCross.curObj);
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.addChild(sourceCross.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.addChild(sourceCross.curObj);
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.addChild(sourceCross.curObj);
+					 	}
+					}
+					
+					sourceCross.curObj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED, OnObjectHandlesSelectedShp);
+					
+	    		
+	    		}
+				 
+	    		
+		    }
+        
+	        /*
+	        * End draw shap 
+	        * Start 
+	        */	
+	        private function objectHandlesrezise(event:ResizeEvent):void
+	        {
+	        	var objhandles:ObjectHandles = event.currentTarget as ObjectHandles;
+	        	if(objhandles != null)
+	        	{
+	        		var img:UIComponent = objhandles.getChildAt(0) as UIComponent;
+	        		img.height = objhandles.height;
+	        		img.width = objhandles.width;
+	        	}
+	        }
+        
+	        /*
+	        * 
+	        * Start  font size
+	        */	
+		
+			 private function initApp():void 
+			 {
+		 	
+		 		// this code for upload file Start //
+		 		// this code for upload file End //
+		 		
+		 		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        	if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle('fontSize', curSize);
+	        		}
+	        	}
+ 	 	 	}
+	  	     public function showStyles():void {
+		        //mx.controls.Alert.show("Font size is " + box1.getStyle("fontSize") + ".");
+		     }
+	     
+		     public function setNewStyles():void 
+		     {
+	        	curSize = Number (ip2.value);
+	        	var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        	if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle('fontSize', curSize);
+	        		}
+	        	}
+	         }
+	         
+	        
+	         
+	     	 /*
+	        * 
+	        * End  font size
+	        */	
+        	 import mx.core.IUIComponent;
+         	 import mx.graphics.ImageSnapshot;
+        
+			 private function takeSnapshot():void 
+			 {
+          	
+               	var bitmapData:BitmapData = new BitmapData(generic.width, generic.height);
+			   	
+			   	var arr:Array = new Array (generic,texteditor,Tshirt, banner,genericBanner,genericBannerBack,genericTshirt,genericTshirtBack,genericTshirtLeft,genericTshirtRight);
+			   	bitmapData.draw(generic);
+			   
+			   	
+			   	var png:PNGEncoder = new PNGEncoder();
+			  	var byteArray:ByteArray = png.encode(bitmapData);
+			  	var urlRequest:URLRequest = new URLRequest();
+				
+				//urlRequest.url = "http://www.octalsoftware.com/signimal/signimal_flex_php/filesave.php"
+				urlRequest.url = myUrl + "signimal_flex_php/filesave.php";
+				
+				urlRequest.data = byteArray;
+				urlRequest.method = URLRequestMethod.POST;
+				urlRequest.contentType = 'image/png';
+				var urlLoader:URLLoader = new URLLoader();
+				urlLoader.load(urlRequest);
+			 }   
+	         private function arc(event:MouseEvent):void
+	         {
+	        	var pUp:String = event.currentTarget.id;
+	        	if(pUp=="email")
+	        	{
+	        	    	emails.visible=true;
+	        	    	takeSnapshot();
+	        	
+	        	}else if(pUp=="arcTextm"){
+	        		
+	        		window.visible=true;
+	        	
+	        	}else if(pUp=="uploadVectorImg"){
+	        	
+	        		upload.visible=true;
+	        	
+	        	}else if (pUp=="draws"){
+	        	
+	        		drawsp.visible=true;
+	        	
+	        	}else if(pUp=="testareaShadow")
+	        	{
+	        		dropShadow.visible=true;
+	        	}
+	
+	         }
+	         
+	         
+	        public function registerGlobalKeyHandler() :void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			}
+			
+			public function handleKeyDown(event:KeyboardEvent) :void
+			{
+				//deleteKey.text = "Key was pressed:" + event.keyCode;
+				if(event.keyCode==46)
+				{
+					if(selectedObject != null)
+		        	{
+		 				selectedObject.removeAllChildren();
+		 				
+		 			}else if(selectedObjectShp != null)
+			        {
+			        	selectedObjectShp.removeAllChildren();
+			        	
+			 		}
+			 		
+			 		if(cnvsParent.parent!= null)
+			 		{
+		        		cnvsParent.parent.removeChild(cnvsParent);	
+			 		}
+				}
+				
+			}
+
+	         
+	         
+	         private function Delete():void
+	         {
+	        	
+	        	if(selectedObject != null)
+		        {
+		 			selectedObject.removeAllChildren();
+		 			
+		 		}else if(selectedObjectShp != null)
+		        {
+		        	selectedObjectShp.removeAllChildren();
+		        	
+		 		}
+		 		
+		        
+		        if(cnvsParent.parent!= null)
+		        	cnvsParent.parent.removeChild(cnvsParent);	
+	         }
+	         private function removePopup():void
+	         {
+	        	window.visible=false;
+	        	emails.visible=false;
+	        	upload.visible=false;
+	        	drawsp.visible=false;
+	        	dropShadow.visible=false;
+	        	        	
+	         }	
+        	
+        	import com.roguedevelopment.objecthandles.SelectionManager;
+			
+        	//===End Image Upload====//
+        	private function copy(event:MouseEvent):void
+        	{
+        	
+	        	var ids:String= event.currentTarget.id;
+	        	myl.text=ids;
+	        	if(myl.text=="Cut")
+	        	{
+	        		 if(selectedObject !=null)
+	        		 {
+	 			 	 	selectedObject.visible=false;
+	 			 	 	
+	        		 }else if(selectedObjectShp != null)
+	        		 {
+	        		 	selectedObjectShp.visible=false;
+	        		 	
+	        		 }else{
+	        		 	Alert.show("Please object select first.");
+	        		 }
+	        	}else if(myl.text=="Copy"){
+	        		if(selectedObject!=null)
+	        		 {
+	 			 	 	selectedObject.visible=true;
+	 			 	 	
+	        		 }else{
+	        		 	Alert.show("Please object select first.");
+	        		 }
+	        	}
+        	} 
+        	
+        	import com.*;
+       
+	        private function paste():void
+			{
+			 	var myText:String=myl.text;
+				if(myText=="Cut")
+				{
+					if(selectedObject !=null)
+					{
+						selectedObject.visible=true;
+						
+					}else{
+						
+						selectedObjectShp.visible=true;
+					}	
+						
+				}else if(myText=="Copy")
+				{
+					Alert.show("paste your selected object");
+					//var cln:Cloneing = new Cloneing(); 
+					//var oneMore:Object= new Object();
+					//oneMore = cln.doClone(selectedObject);
+					
+				}else if(myText=="")
+				{
+					Alert.show("Please copy or cut object and then click on paste.");
+				}
+			 }
+			//banner strart//
+			// Strat for gallery//	
+			
+			[Bindable] 
+			private var leftSide:String;
+			private var rightSide:String;
+			private var topSide:String;
+			private var bottomSide:String;
+			private var mainPhoto:String;
+			
+			
+			import mx.preloaders.Preloader;
+			import mx.controls.Image;
+			import mx.events.ItemClickEvent;
+			import fabulousFlex.PreloadingImage;
+			import fabulousFlex.SquaresSpinnerPreloadingWindow;
+			import fabulousFlex.ProgressPreloadingWindow;
+			import fabulousFlex.SquaresPreloadingWindow;
+			import fabulousFlex.WheelPreloadingWindow;
+			
+        	private function getImage(id:String, front:String, back:String, left:String, right:String ):void
+			{
+				//previewImg.source = id;
+				
+				//leftSide=left;
+				//rightSide=right;
+				//topSide=front;
+				//bottomSide=back;
+				
+				//Left.source=left;
+				//Right.source=right;
+				//Top.source=front;
+				//Bottom.source=back;
+				
+				
+				previewImg.preloaderTitleWindow = WheelPreloadingWindow;
+				previewImg.source=id;
+				
+				Top.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Top.source=front;
+				
+				Bottom.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Bottom.source=back;
+				
+				Left.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Left.source=left;
+				
+				Right.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Right.source=right;
+					
+			}
+			
+			
+			private function bannerGetImage(id:String, front:String, back:String):void
+			{
+			
+				bannerpreviewImg.preloaderTitleWindow = WheelPreloadingWindow;
+				bannerpreviewImg.source=id;
+			    
+			    Front.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Front.source=front;
+				
+				Back.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+				Back.source=back;
+			    //bannerpreviewImg.source = id; 
+				//topSide=front;
+				//bottomSide=back;
+				//Front.source=front;
+				//Back.source=back;
+			
+			}
+			
+			private function mySide(id:String, side:String):void
+			{
+				
+				if(side=="top")
+				{
+					previewImg.source = id;
+				
+				}else if(side=="bottom"){
+					
+					previewImg.source = id;
+					
+				}else if(side=="left"){
+				
+					previewImg.source = id;
+				
+				}else if(side=="right"){
+					
+					previewImg.source = id;
+				}
+				
+			}
+			private function mySideBanner(id:String, side:String):void
+			{
+				if(side=="front")
+				{
+					bannerpreviewImg.source = id;
+				}else if(side=="back")
+				{
+					bannerpreviewImg.source = id;
+				}
+			}
+			
+			private function getImages(id:String):void
+			{
+				
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.width=50;
+				oh1.height=50;
+				oh1.allowRotate=true;
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				var image:Image = new Image();
+				
+				
+				if(myViewStack.selectedChild==Tshirt)
+				{
+					
+					image.source = id;
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+					
+				 	if(mySubViewStack.selectedChild==genericTshirt)
+					{
+				    	genericTshirt.addChild(oh1);
+				    	
+				 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+				 	{
+				 		genericTshirtBack.addChild(oh1);
+				 		
+				 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+				 	
+				 		genericTshirtLeft.addChild(oh1);
+				 		
+				 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+				 	
+				 		genericTshirtRight.addChild(oh1);
+				 	}
+					
+					
+					
+				}else if(myViewStack.selectedChild==banner)
+				{
+				    
+				    image.source = id;
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+					
+					if(mySubViewStackBanner.selectedChild==genericBanner)
+					{
+				    	genericBanner.addChild(oh1);
+				    	
+				 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+				 	{
+				 		genericBannerBack.addChild(oh1);
+				 	}
+					   
+				}
+				
+				
+			}
+			
+			
+			
+			
+			private function getImageAssets(event:Event):void
+			{
+				//previewImg.load(event.currentTarget.getRepeaterItem());
+				
+				
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.width=50;
+				oh1.height=50;
+				oh1.allowRotate=true;
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				var image:Image = new Image();
+				
+				
+				if(myViewStack.selectedChild==Tshirt)
+				{
+					image.source = event.currentTarget.getRepeaterItem().img;
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+					
+					if(mySubViewStack.selectedChild==genericTshirt)
+					{
+				    	genericTshirt.addChild(oh1);
+				    	
+				 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+				 	{
+				 		genericTshirtBack.addChild(oh1);
+				 		
+				 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+				 	
+				 		genericTshirtLeft.addChild(oh1);
+				 		
+				 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+				 	
+				 		genericTshirtRight.addChild(oh1);
+				 	}
+					
+					
+					
+				}else if(myViewStack.selectedChild==banner)
+				{
+				    image.source = event.currentTarget.getRepeaterItem();
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+					if(mySubViewStackBanner.selectedChild==genericBanner)
+					{
+				    	genericBanner.addChild(oh1);
+				    	
+				 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+				 	{
+				 		genericBannerBack.addChild(oh1);
+				 	}
+					
+				}
+				
+			}
+			
+			
+			
+			// end for gallery//
+		
+			//banner end//
+		 	// mail function start.//
+			import mx.events.ValidationResultEvent;
+			import mx.controls.Alert;
+		
+			private function sendMail():void
+			{
+				
+				var _senderName:String = senderName.text;
+		        var _senderEmail:String = senderEmail.text;
+		        var _emailMessage:String = emailMessage.text;
+		        var _emailSubject:String = emailSubject.text;
+		       
+				var evValidMail:ValidationResultEvent = mailValidator.validate();
+				var evValidName:ValidationResultEvent = nameValidator.validate();
+				var evValidMessage : ValidationResultEvent = mailValidator.validate();
+				
+				if (evValidMail.type == ValidationResultEvent.VALID 
+				&& evValidName.type == ValidationResultEvent.VALID
+				&& evValidMessage.type == ValidationResultEvent.VALID)
+				{
+					myRemote.sendMail(_senderName, _senderEmail, _emailSubject, _emailMessage); 
+				}
+				else{
+					resultLabel.text="There are Form errors";
+					resultLabel.setStyle("styleName", "invalid");
+				}
+			}
+		
+			private function emailResult():void
+			{
+	            Alert.show("Thank you for your submission ");
+	            clearForm();
+	            emails.visible=false;
+	     	}
+			private function clearForm():void
+			{
+				resultLabel.text="";
+				emailSubject.text="";
+				emailMessage.text="";
+			}
+        	//End mail function  End.//
+			
+			
+			private function myXmlList():void
+			{
+				//myRemote.myXml();
+			}
+			
+			private function sendMailListener(event:ResultEvent):void
+			{
+				//Alert.show(ObjectUtil.toString(event.result));
+				Alert.show("Thank you for your submission ");
+	            clearForm();
+	            emails.visible=false;
+			}
+			private function testListener(event:ResultEvent):void
+			{
+				Alert.show(ObjectUtil.toString(event.result));
+				
+			}
+			
+			private function myXmlListener(event:ResultEvent):void
+            {
+            	Alert.show(ObjectUtil.toString(event.result));
+            }
+            private function faultListener(event:FaultEvent):void {
+                Alert.show(event.fault.message, "Error");
+            }
+            
+            
+            public function newfile():void
+            {
+            	   if(myViewStack.selectedChild==banner)
+					{
+					    //genericBanner.addChild(sourceCircleShape.curObj);
+					    if(mySubViewStackBanner.selectedChild==genericBanner)
+						{
+					    	genericBanner.removeAllChildren();
+					    	
+					 	}else if(mySubViewStackBanner.selectedChild==genericBannerBack)
+					 	{
+					 		genericBannerBack.removeAllChildren();
+					 	}
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+					    if(mySubViewStack.selectedChild==genericTshirt)
+						{
+					    	genericTshirt.removeAllChildren();
+					    	
+					 	}else if(mySubViewStack.selectedChild==genericTshirtBack)
+					 	{
+					 		genericTshirtBack.removeAllChildren();
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtLeft){
+					 	
+					 		genericTshirtLeft.removeAllChildren();
+					 		
+					 	}else if(mySubViewStack.selectedChild==genericTshirtRight){
+					 	
+					 		genericTshirtRight.removeAllChildren();
+					 	}	
+					    
+					} else{
+					
+						generic.removeAllChildren();
+					
+					} 
+            	
+            	
+            }
+			public function undo():void
+			{
+				//generic.visible=false;
+				//genericBanner.visible=false;
+				//genericTshirt.visible=false;
+				
+				if(myViewStack.selectedChild==texteditor)
+				{
+					generic.removeAllChildren();
+					
+				}else if(myViewStack.selectedChild==banner)
+				{
+				   genericBanner.removeAllChildren();
+				    
+				}else if(myViewStack.selectedChild==Tshirt)
+				{
+				    generic.removeAllChildren();
+				}
+				
+				
+			}
+			public function redo():void
+			{
+				//generic.visible=true;
+				//genericBanner.visible=true;
+				//genericTshirt.visible=true;
+			}
+			
+			
+			[Bindable] private var assetsUrl:String;
+			[Bindable] private var myxml:String;
+			
+			private function getSessionListener(event:ResultEvent):void
+			{
+				assetsUrl = ObjectUtil.toString(event.result);
+				myxml = myUrl + "signimal_flex_php/uploads/" + event.result + "/assetsXml.xml";
+				
+				fileupload(myxml);
+			}
+			
+			[Bindable] public var galleries:ArrayCollection = new ArrayCollection();
+			
+			
+			[Bindable]private var request:URLRequest;
+			
+			import mx.rpc.events.ResultEvent;
+            import mx.rpc.events.FaultEvent;
+            import mx.controls.Alert;
+			private var alert:Alert;
+
+			private var loadRequests:int = 0;
+
+			private function fileupload(src:String):void
+			{
+				
+				httpService.url= src;	
+				httpService.send();
+				httpService.method="GET";
+				httpService.addEventListener(ResultEvent.RESULT, httpService_result);
+				
+				
+			}
+			 private function httpService_fault(evt:FaultEvent):void {
+                var title:String = evt.type + " (" + evt.fault.faultCode + ")";
+                var text:String = evt.fault.faultString;
+                //alert = Alert.show(text, title);
+                xmlListColl.removeAll();
+            }
+
+			[Bindable]
+			private var xmlListColls:XMLListCollection = new XMLListCollection();
+			
+			private function httpService_result(evt:ResultEvent):void {
+            	
+            	
+                var xmlList:XMLList = XML(evt.result).gallery.img;
+                xmlListColls = new XMLListCollection(xmlList);
+                
+                if(myViewStack.selectedChild==banner)
+				{
+				   imageRepeaterBanner3.dataProvider = xmlListColls;
+				   
+				    
+				}else if(myViewStack.selectedChild==Tshirt)
+				{
+				    imageRepeater2.dataProvider = xmlListColls;
+				    
+				}
+                
+                
+            }
+
+		public function colorize(value:Number) :void
+			{
+				// Create a new ColorTransform instance.
+				var colorTrans:ColorTransform = new ColorTransform();
+				// Set the color value to be used by the ColorTransform instance.
+				colorTrans.color = value;
+				// Apply the transform to image.
+				if(myViewStack.selectedChild==banner)
+				{
+					
+				    	bannerpreviewImg.transform.colorTransform = colorTrans;
+						Front.transform.colorTransform = colorTrans;
+						Back.transform.colorTransform = colorTrans;
+				
+				    
+				}else if(myViewStack.selectedChild==Tshirt)
+				{
+			        previewImg.transform.colorTransform = colorTrans;
+					Top.transform.colorTransform = colorTrans;
+					Bottom.transform.colorTransform = colorTrans;
+					Left.transform.colorTransform = colorTrans;
+					Right.transform.colorTransform = colorTrans;
+				}
+				
+			}
+			
+			
+			public function colorizeClipart(value:Number) :void
+			{
+				// Create a new ColorTransform instance.
+				var colorTrans:ColorTransform = new ColorTransform();
+				// Set the color value to be used by the ColorTransform instance.
+				colorTrans.color = value;
+				// Apply the transform to image.
+				if(myViewStack.selectedChild==banner)
+				{
+					if(selectedObject != null)
+					{
+						selectedObject.transform.colorTransform=colorTrans;
+					}
+				    
+				}else if(myViewStack.selectedChild==Tshirt)
+				{
+				    if(selectedObject != null)
+					{
+						selectedObject.transform.colorTransform=colorTrans;
+					}
+				}
+				
+			}
+			
+			[Bindable]
+	     	private var banners:Array = 
+	     	[
+	     	 {img:"picture/1.jpg",  front:"picture/1.jpg", back:"picture/2.jpg", left:"picture/3.jpg", right:"picture/4.jpg"},
+	     	 {img:"picture/2.jpg",  front:"picture/2.jpg", back:"picture/1.jpg", left:"picture/3.jpg", right:"picture/4.jpg"},
+	     	 {img:"picture/3.jpg",  front:"picture/3.jpg", back:"picture/4.jpg", left:"picture/2.jpg", right:"picture/1.jpg"},
+	     	 {img:"picture/4.jpg",  front:"picture/4.jpg", back:"picture/3.jpg", left:"picture/1.jpg", right:"picture/2.jpg"}
+	     	];
+			
+			
+			[Bindable]
+			private var dataArray:ArrayCollection = new ArrayCollection
+			([
+			 {
+			   id: 'Latest',description: [{img: 'picture/clipart/clip1.png'},                  
+			                           	  {img: 'picture/clipart/clip2.png'}]
+			 },
+			 {
+			   id: 'Other',description: [{img: 'picture/clipart/clip3.png'},              
+			                         	 {img: 'picture/clipart/clip4.png'}]
+			 }
+			]);
+			
+			private function onCategory(event:Array):void
+			{
+				 if(myViewStack.selectedChild==banner)
+				 {
+				 	if(leftsidepenalbanner.selectedIndex==1)
+					{
+				 		imageRepeaterBanner1.dataProvider=event;
+				 		myimg1.preloaderTitleWindow = SquaresSpinnerPreloadingWindow;
+
+				 	}	
+				 	
+				 }else if(myViewStack.selectedChild==Tshirt){	
+				 	
+				 	if(leftsidepenal.selectedIndex==1)
+					{
+				 		imageRepeater1.dataProvider=event;
+				 	}	
+				 }
+				 
+			}
+			private function onLoadClipart():void
+			{
+				
+				//leftsidepenalbanner
+					
+					if(myViewStack.selectedChild==banner)
+					{
+						if(leftsidepenalbanner.selectedIndex==1)
+						{
+						  imageRepeaterBanner1.dataProvider=namesComboBox.selectedItem.description;
+						}
+					}else if(myViewStack.selectedChild==Tshirt)
+					{
+						if(leftsidepenal.selectedIndex==1)
+						{
+							imageRepeater1.dataProvider=clipComboBox.selectedItem.description;
+						}
+					}
+			}
+			
+			[Bindable]
+			private var productsDataArray:ArrayCollection = new ArrayCollection
+			([
+			 {
+			 	img:'picture/pro-1-1.png',
+			 	front:'picture/pro-1-1.png', 
+			 	back:'picture/pro-1-3.png',
+			 	left:'picture/pro-1-3.png',
+			 	right:'picture/pro-1-4.png'
+			 	},
+			 	
+			 	{img:'picture/pro-2-1.png',
+			 	front:'picture/pro-2-1.png', 
+			 	back:'picture/pro-2-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-3-1.png',
+			 	front:'picture/pro-3-1.png', 
+			 	back:'picture/pro-3-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-4-1.png',
+			 	front:'picture/pro-4-1.png', 
+			 	back:'picture/pro-4-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-5-1.png',
+			 	front:'picture/pro-5-1.png', 
+			 	back:'picture/pro-5-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-6-1.png',
+			 	front:'picture/pro-6-1.png', 
+			 	back:'picture/pro-6-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-7-1.png',
+			 	front:'picture/pro-7-1.png', 
+			 	back:'picture/pro-7-2.png',
+			 	left:'picture/pro-7-3.png',
+			 	right:'picture/pro-7-4.png'
+			 	},
+			 	{img:'picture/pro-8-1.png',
+			 	front:'picture/pro-8-1.png', 
+			 	back:'picture/pro-8-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-9-1.png',
+			 	front:'picture/pro-9-1.png', 
+			 	back:'picture/pro-9-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-10-1.png',
+			 	front:'picture/pro-10-1.png', 
+			 	back:'picture/pro-10-2.png',
+			 	left:'picture/pro-10-3.png',
+			 	right:'picture/pro-10-4.png'
+			 	},
+			 	{img:'picture/pro-11-1.png',
+			 	front:'picture/pro-11-1.png', 
+			 	back:'picture/pro-11-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-12-1.png',
+			 	front:'picture/pro-12-1.png', 
+			 	back:'picture/pro-12-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-13-1.png',
+			 	front:'picture/pro-13-1.png', 
+			 	back:'picture/pro-13-2.png',
+			 	left:'',
+			 	right:''
+			 	},
+			 	{img:'picture/pro-14-1.png',
+			 	front:'picture/pro-14-1.png', 
+			 	back:'picture/pro-14-2.png',
+			 	left:'',
+			 	right:''
+			 	}
+			 
+			]);
+			
+			 private function getProducts_result(event:ResultEvent):void
+			 {
+			 	Alert.show(ObjectUtil.toString(event));
+			 	
+			 }
+			 
+			 private function getProducts_fault(event:FaultEvent):void
+			 {
+			 	
+			 }
+		
+			
+		]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="myRemote" destination="zend" source="MyService" showBusyCursor="true" fault="faultListener(event)">
+	     <mx:method name="myXml" result="myXmlListener(event)"/>
+	     <mx:method name="sendMail" result="sendMailListener(event)"/>
+	     <mx:method name="test" result="testListener(event)"/>
+	     <mx:method name="getSession_id" result="getSessionListener(event)"/>
+	  </mx:RemoteObject>
+	 
+	<!--<mx:HTTPService id="galleryData" url="mainproducts.xml" />-->
+	<mx:HTTPService id="httpService" result="httpService_result(event)" fault="httpService_fault(event)"/>
+
+	<mx:XMLListCollection id="xmlListColl" />
+	<degrafa:Surface>
+       <degrafa:strokes>
+           <paint:SolidStroke id="whiteStroke" color="#000" weight="1" alpha=".2"/>
+       </degrafa:strokes>
+       <degrafa:GeometryGroup>
+       		<grid:VerticalLineRepeater  count="{80}"
+                                            stroke="{whiteStroke}"
+                                            x="0"
+                                            y="0"
+                                            y1="{Application.application.height}"
+                                            offsetX="0"
+                                            offsetY="0"
+                                            moveOffsetX="{Application.application.width/80}"
+                                            moveOffsetY="0"/>
+            <grid:HorizontalLineRepeater    count="{80}"
+                                            stroke="{whiteStroke}"
+                                            x="0"
+                                            y="0"
+                                            x1="{Application.application.width}"
+                                            offsetX="0"
+                                            offsetY="0"
+                                            moveOffsetX="0"
+                                            moveOffsetY="{Application.application.width/80}"/>
+        
+        </degrafa:GeometryGroup>
+   </degrafa:Surface>
+  	<mx:Canvas width="850" height="547.25" backgroundAlpha="1.0" styleName="grid" horizontalCenter="-1" verticalCenter="-14" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:Canvas id="mainCanvas" width="830" height="528.25" backgroundColor="#ffffff" x="10" y="10" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		
+		 	<mx:HBox x="10" y="-5" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" height="36" width="98%" backgroundColor="#ffffff" horizontalScrollPolicy="off" verticalScrollPolicy="off" cornerRadius="0">        
+	            <mx:Button id="TextEditor" label="Text Editor" click="myViewStack.selectedChild=texteditor;"/>
+	            <mx:Button id="TshirtEditor" label="Tshirt Editor" click="myViewStack.selectedChild=Tshirt"/>
+	            <mx:Button id="BannerEditor" label="Banner Editor" click="myViewStack.selectedChild=banner;"/>
+	        </mx:HBox>
+			<mx:HBox x="10" y="30" height="40" width="98%" backgroundColor="#ffffff" paddingTop="5" paddingBottom="5" paddingLeft="5" horizontalScrollPolicy="off" verticalScrollPolicy="off" cornerRadius="0">
+				<mx:Button label="Remove Selection" styleName="button" id="removeselection" width="31" height="29" click="removeSelection(event);" icon="@Embed(source='images/icons/remove.png')" cornerRadius="0" upSkin="{null}" borderColor="#FFFFFF" color="#FFFFFF" themeColor="#FFFFFF" fillColors="[#FFFFFF, #FFFFFF]"/>
+				<mx:Button label="Text tool" id="test" width="31" height="31" click="hit(event);" icon="@Embed(source='images/icons/txt.png')"/>
+				<mx:Button label="Mouse Move" id="moves" width="31" height="29" click="hits(event);" icon="@Embed(source='images/icons/mouse.png')"/>
+				<mx:Button click="arc(event);" id="draws" icon="@Embed(source='images/icons/shape.png')" width="31" height="29" label="Shapes Tool"></mx:Button>
+				<mx:Button click="arc(event);" id="arcTextm" icon="@Embed(source='images/icons/curve-text.png')" width="31" height="29" label="Arc Text Editor"  focusAlpha="0"></mx:Button>
+				<mx:Button label="Email" id="email" width="36" height="29" click="arc(event);" icon="@Embed(source='images/icons/e-mail.png')"/>
+				<mx:Button label="Upload Vector Image" id="uploadVectorImg" width="31" height="29" click="arc(event)" icon="@Embed(source='images/icons/upload-vectore.png')"/>
+				
+				<mx:Button label="Deletes Selection Object" id="deleteselectionobject" width="31" height="29" click="Delete()" icon="@Embed(source='images/icons/trash.png')"/>
+				<mx:Button label="New Object File" id="newobjectfile" width="31" height="29" click="newfile()" icon="@Embed(source='images/icons/new.png')"/>
+				<mx:Button label="Undo" id="undoobject" width="31" height="29" click="undo()" icon="@Embed(source='images/icons/undo_t.png')"/>
+				<mx:Button label="Redo" id="redoobject" width="31" height="29" click="redo()" icon="@Embed(source='images/icons/redo_t.png')"/>
+				<mx:Button label="copy" id="Copy" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/copy.png')"/>
+				<mx:Button label="cut" id="Cut" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/cut.png')"/>
+				<mx:Button label="paste" id="Paste" width="36" height="29" click="paste()" icon="@Embed(source='images/icons/past.png')"/>
+				<mx:Label x="207" y="157" id="myl" text="hi" visible="false"/>
+				<mx:Label x="207" y="157" id="mywidth" text="hi" visible="false"/>
+				<mx:Label x="207" y="157" id="myheight" text="hi" visible="false"/>
+				
+			</mx:HBox>		
+			<mx:HBox x="10" y="75" height="37" width="98%" styleName="innertop" backgroundColor="#FFFFFF" paddingTop="5" paddingLeft="5" paddingBottom="5">
+			<mx:ColorPicker id="colorPicker" colorField="value" editable="false" selectedColor="#000000" click="setBackground(solidYellow);"  change="OnColorChange(event);"/>
+		         <mx:NumericStepper id="ip2" minimum="-50" maximum="50" value="{curSize}" stepSize="1" click="setNewStyles();" />
+		         <mx:ComboBox id="combobox" dataProvider="{cards}" width="150" change="onCmbFontChange(event)"/>
+		         <mx:Image width="20" height="20" source="images/justifyleft.gif" id="left" click="setTextAlign(event);"/>
+		         <mx:Image width="20" height="20" source="images/justifycenter.gif" id="center" click="setTextAlign(event);"/>
+		         <mx:Image width="20" height="20" source="images/justifyright.gif" id="right" click="setTextAlign(event);"/>
+		         <mx:Button x="137" y="70" label="B" width="33" fontWeight="bold" toggle="true" id="boldtext" mouseUp="checkbold()"/>
+				 <mx:Button x="171" y="70" label="I" width="35" fontStyle="italic" toggle="true" id="italictext" mouseUp="checkitalic()"/>
+				 <mx:Button x="205" y="70" label="U" width="33" textDecoration="underline" toggle="true" id="underlinetext" mouseUp="checkunderline()"/>
+		         <mx:Label text="Zoom :"/>
+		         <mx:HSlider id="slider"
+		         width="145"
+		         minimum="1"
+		         maximum="100"
+		         values="[50]" 
+		         tickInterval="10"
+		         snapInterval="1" 
+		         liveDragging="true" 
+		         change="changeZoom(event)"
+		         dataTipFormatFunction="myDataTipFunc"/>
+			</mx:HBox>
+			 <!--<mx:LinkBar dataProvider="{myViewStack}" borderStyle="solid"/>-->
+			<mx:ViewStack id="myViewStack" borderStyle="none" width="824"  height="403.25" y="117" x="6">
+				<mx:Canvas id="texteditor" borderColor="#ff0000" borderStyle="none" label="Search" width="824"  height="384.6" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="117" x="6">
+					
+					<mx:Canvas id="generic" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="#CCCCCC" backgroundAlpha="1" width="100%"  height="100%">
+						<mx:Label id="selectwidth"/><mx:Label id="selectheight"/><mx:Label id="selectx"/><mx:Label id="selecty"/>
+					</mx:Canvas>
+				</mx:Canvas>
+				
+				<!--Start T-shirt-->
+				
+				<mx:Canvas width="819" id="Tshirt" label="T-shirt" height="390.25" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="100" x="6">
+			  		<mx:Panel  width="532" height="373" id="viewPanel" title="view panel" cornerRadius="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" x="10" y="2" backgroundColor="#FFFFFF" borderColor="#F3F1F1">
+						<mx:Canvas id="Tshirteditor" x="100" width="500" borderStyle="none" borderColor="#ff0000" height="317" verticalScrollPolicy="off" horizontalScrollPolicy="off" >
+							<mx:Tile direction="vertical" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="10" y="10" width="75" height="300" borderColor="#FFFFFF" borderStyle="solid" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+								<mx:VBox width="70" height="300" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+									
+									<fabulousFlex:PreloadingImage id="Top"
+								  	height="50"
+								  	width="50"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	source="picture/pro-1-1.png"
+								  	click="mySide(String(Top.source),'top'); mySubViewStack.selectedChild=genericTshirt;"
+								  	/>
+								  	<fabulousFlex:PreloadingImage id="Bottom"
+								  	height="50"
+								  	width="50"
+								  	source="picture/pro-1-2.png"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	click="mySide(String(Bottom.source),'bottom');mySubViewStack.selectedChild=genericTshirtBack;"
+								  	/>
+								  	<fabulousFlex:PreloadingImage id="Left"
+								  	height="50"
+								  	width="50"
+								  	source="picture/pro-1-3.png"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	click="mySide(String(Left.source),'left');mySubViewStack.selectedChild=genericTshirtLeft;"
+								  	/>
+								  	
+								  	<fabulousFlex:PreloadingImage id="Right"
+								  	height="50"
+								  	width="50"
+								  	source="picture/pro-1-4.png"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	click="mySide(String(Right.source),'right');mySubViewStack.selectedChild=genericTshirtRight;"
+								  	/>
+								
+									
+										
+								</mx:VBox>
+							</mx:Tile>
+							<fabulousFlex:PreloadingImage id="previewImg" x="100" y="24" height="328" width="300" source="picture/pro-1-1.png" />
+							
+							<mx:ViewStack id="mySubViewStack" borderStyle="none" width="500"  height="403" x="75">
+							
+							<mx:Canvas id="genericTshirt" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="productcolorPicker" colorField="value" editable="false" selectedColor="0x000000" change="colorize(Number(productcolorPicker.selectedColor));"/>
+							</mx:Canvas>
+							<mx:Canvas id="genericTshirtBack" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="productcolorPickerBack" colorField="value" editable="false" 
+									selectedColor="0x000000" change="colorize(Number(productcolorPickerBack.selectedColor));"/>
+							</mx:Canvas>
+							<mx:Canvas id="genericTshirtLeft" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="productcolorPickerLeft" colorField="value" editable="false" selectedColor="0x000000" change="colorize(Number(productcolorPickerLeft.selectedColor));"/>
+							</mx:Canvas>
+							<mx:Canvas id="genericTshirtRight" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="productcolorPickerRight" colorField="value" editable="false" selectedColor="0x000000" change="colorize(Number(productcolorPickerRight.selectedColor));"/>
+							</mx:Canvas>
+							
+							</mx:ViewStack>
+							
+						</mx:Canvas>
+		 		 	</mx:Panel>
+ 					<mx:TabNavigator id="leftsidepenal" width="263" height="375" x="550" y="0" borderColor="#BDB9B9" backgroundColor="#FFFFFF" borderStyle="solid" click="onLoadClipart();">
+							<mx:Panel label="Products" width="100%" height="342" layout="absolute" id="ThumbsPanel" title="Products" x="58" y="60" borderColor="#FFFFFF" themeColor="#FFFFFF">
+								<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF">
+									<mx:Repeater dataProvider="{productsDataArray}" id="imageRepeater">
+										<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+											<fabulousFlex:PreloadingImage id="myimg"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeater.currentItem.img}"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	click="getImage(event.currentTarget.getRepeaterItem().img, event.currentTarget.getRepeaterItem().front, event.currentTarget.getRepeaterItem().back, event.currentTarget.getRepeaterItem().left,event.currentTarget.getRepeaterItem().right)"/>
+											
+										</mx:HBox>
+									</mx:Repeater>	
+								</mx:Tile>
+							</mx:Panel>
+							<mx:Panel label="Designs" width="100%" height="342" borderColor="#FFFFFF" layout="absolute" backgroundColor="#FFFFFF" x="58" y="60" themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="Designs" id="ThumbsPanel1">
+								  <mx:ComboBox id="clipComboBox" labelField="id"  dataProvider="{dataArray}" selectedItem="Latest"  x="30" y="10" change="onCategory(clipComboBox.selectedItem.description)" horizontalCenter="center"/>
+								  <mx:ColorPicker x="200" y="10" id="colorPickerClipArt" colorField="value" editable="false" selectedColor="0x000000" change="colorizeClipart(Number(colorPickerClipArt.selectedColor));"/>
+								  <mx:Tile x="10" y="30" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+									 <mx:Repeater id="imageRepeater1">
+										<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+											<fabulousFlex:PreloadingImage id="myimg1"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeater1.currentItem.img}"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	click="getImages(event.currentTarget.getRepeaterItem().img)"/>
+										</mx:HBox>
+									</mx:Repeater>	
+								</mx:Tile>
+							</mx:Panel>
+							<mx:Panel label="My Assets" width="100%" height="100%" borderColor="#FFFFFF" backgroundColor="#FFFFFF" 
+								themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="My Assets" id="ThumbsPanel2">
+								<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+									<mx:Repeater id="imageRepeater2">
+										<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+											<fabulousFlex:PreloadingImage id="myimgs"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeater2.currentItem.img}" 
+										  	click="getImageAssets(event)"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	/>
+											
+										</mx:HBox>
+									</mx:Repeater>
+								</mx:Tile>
+							</mx:Panel>
+					 </mx:TabNavigator>	
+				</mx:Canvas>
+				<!--End Tshirt-->
+				<!--Start banner-->
+				<mx:Canvas width="824" id="banner" label="Banner" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="117" x="6">
+					<mx:Panel  width="532" height="373" id="tshirtviewPanel" title="view panel" cornerRadius="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" x="10" y="2" backgroundColor="#FFFFFF" borderColor="#F3F1F1">
+						<mx:Canvas id="BnnerContainer" x="100" width="500" borderStyle="none" borderColor="#ff0000" height="317" verticalScrollPolicy="off" horizontalScrollPolicy="off" >
+							<mx:Tile direction="vertical" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="10" y="10" width="75" height="300" borderColor="#FFFFFF" borderStyle="solid" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+								<mx:VBox width="70" height="300" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+									<fabulousFlex:PreloadingImage id="Front"
+								  	height="50"
+								  	width="50"
+								  	source="picture/1.jpg"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	click="mySideBanner(String(Front.source),'front'); mySubViewStackBanner.selectedChild=genericBanner;"
+								  	/>
+									<fabulousFlex:PreloadingImage id="Back"
+								  	height="50"
+								  	width="50"
+								  	source="picture/1.jpg"
+								  	horizontalAlign="center" 
+								  	verticalAlign="middle"
+								  	click="mySideBanner(String(Back.source),'back'); mySubViewStackBanner.selectedChild=genericBannerBack;"
+								  	/>
+									
+								</mx:VBox>
+							</mx:Tile>
+							<fabulousFlex:PreloadingImage id="bannerpreviewImg" x="100" y="24"
+								  	height="300"
+								  	width="328"
+								  	source="picture/1.jpg"
+								  	/>	
+							<mx:ViewStack id="mySubViewStackBanner" borderStyle="none" width="500"  height="403" x="75">
+							
+							<mx:Canvas id="genericBanner" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="BannercolorPicker" colorField="value" editable="false" selectedColor="0x000000" change="colorize(Number(BannercolorPicker.selectedColor));"/>
+							</mx:Canvas>
+							<mx:Canvas id="genericBannerBack" x="75" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="0xffffff" backgroundAlpha="0" width="500"  height="403">
+								<mx:Label text="Select your product Color:" x="239" y="10"/>
+								<mx:ColorPicker x="396" y="10" id="bannerProductcolorPickerBack" colorField="value" editable="false" 
+									selectedColor="0x000000" change="colorize(Number(bannerProductcolorPickerBack.selectedColor));"/>
+							</mx:Canvas>
+							
+							</mx:ViewStack>
+							
+						   </mx:Canvas>
+						
+		 		 	</mx:Panel>
+	 		 		<mx:TabNavigator id="leftsidepenalbanner" width="263" height="375" x="550" y="0" borderColor="#BDB9B9" backgroundColor="#FFFFFF" borderStyle="solid"  click="onLoadClipart();">
+						<mx:Panel label="Products" width="100%" height="342" layout="absolute" id="ThumbsPaneltshirt" title="Products" x="58" y="60" borderColor="#FFFFFF" themeColor="#FFFFFF">
+							<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF">
+								<mx:Repeater dataProvider="{banners}" id="imageRepeaterBanner">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="myimgBanner"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeaterBanner.currentItem.img}" 
+										  	click="bannerGetImage(event.currentTarget.getRepeaterItem().img, 
+											event.currentTarget.getRepeaterItem().front, event.currentTarget.getRepeaterItem().back)"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	/>	
+									</mx:HBox>
+								</mx:Repeater>	
+							</mx:Tile>
+						</mx:Panel>
+						<mx:Panel label="Designs" width="100%" height="342" borderColor="#FFFFFF" layout="absolute" backgroundColor="#FFFFFF" x="58" y="60" themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="Designs" id="ThumbsPanelBanner1">
+							 <mx:ComboBox id="namesComboBox" labelField="id"  dataProvider="{dataArray}" selectedItem="Latest"  x="30" y="10" change="onCategory(namesComboBox.selectedItem.description)" horizontalCenter="center"/>
+							 <mx:ColorPicker x="200" y="10" id="colorPickerClipArtBanner" colorField="value" editable="false" selectedColor="0x000000" change="colorizeClipart(Number(colorPickerClipArtBanner.selectedColor));"/>
+							 <mx:Tile x="10" y="30" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+								 <mx:Repeater id="imageRepeaterBanner1">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" 
+										verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="myimgBanner1"
+										  	height="50"
+										  	width="50" preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeaterBanner1.currentItem.img}" 
+										  	click="getImages(event.currentTarget.getRepeaterItem().img)"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	/>	
+									</mx:HBox>
+								</mx:Repeater>	
+							</mx:Tile>
+						</mx:Panel>
+						<mx:Panel label="My Assets" width="100%" height="100%" borderColor="#FFFFFF" backgroundColor="#FFFFFF" 
+							themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="My Assets" id="ThumbsPaneltshirt3">
+							<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" 
+								horizontalAlign="center">
+								<mx:Repeater id="imageRepeaterBanner3">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="myimgtshirt3"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeaterBanner3.currentItem}" 
+										  	click="getImageAssets(event)"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	rollOutEffect="{out}" rollOverEffect="{over}"
+										  	/>
+									</mx:HBox>
+								</mx:Repeater>
+							</mx:Tile>
+							
+
+						</mx:Panel>
+					 </mx:TabNavigator>
+					
+				</mx:Canvas>
+				<!--End banner-->
+		</mx:ViewStack>
+		</mx:Canvas>	
+		
+	</mx:Canvas>	
+	<!--Start Arc Text Editor, Thumbnail Effect & popup window -->		
+	<!-- Start popup windows -->
+	<!--Shapes-->
+	<resize:ResizableWindow id="drawsp" 
+	            	x="200" 
+	            	y="100" 
+	            	visible="false" 
+	            	width="370"
+	            	height="225" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Arc Text Editor" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true"
+			       titleIcon="@Embed(source='assets/check.png')">
+		
+			<mx:Tile id="drawsp1" 
+				backgroundAlpha="0" 
+				direction="horizontal" 
+				borderStyle="none" 
+	            paddingLeft="10" 
+	            paddingTop="10" 
+	            paddingBottom="10" 
+	            paddingRight="10" 
+	            verticalScrollPolicy="off" 
+	            horizontalScrollPolicy="off" 
+	            hideEffect="5" 
+	            showEffect="5" 
+	            initialize="0"
+	            >
+	        	<mx:Repeater id="rp" dataProvider="{dp}">
+	        		<mx:Button height="25" width="75" label="{rp.currentItem.label }" icon="{rp.currentItem.icon }" click="drawShape(event.currentTarget.getRepeaterItem().label)" />
+	            </mx:Repeater>    
+	        </mx:Tile>
+	</resize:ResizableWindow> 
+	<!--Shapes-->
+	<!--ArcText managemant tool-->
+	<resize:ResizableWindow id="window" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="300"
+	            	height="300" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Arc Text Editor" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true"
+			       titleIcon="@Embed(source='assets/check.png')">
+			    <mx:HBox horizontalGap="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+					<mx:Label text="Choose Your color and text first After then Draw Arc Text." color="#ff0000"/>
+					<mx:Label text="because after raw Arc Text you are not able to change color and text." color="#ff0000"/>
+				</mx:HBox>
+	            <mx:HBox horizontalGap="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+					<mx:CheckBox label="Movable?" selected="true" id="movableCheckBox" fontWeight="bold"/>
+					<mx:CheckBox label="Resizable?" selected="true" id="resizableCheckBox" fontWeight="bold"/>
+					<mx:ColorPicker id="drawtextcolorPicker" colorField="value" editable="false" selectedColor="#ff0000" change="TextOnColorChange(event);"/>
+					<mx:NumericStepper id="textSize" minimum="-50" maximum="50" value="{textCurSize}" stepSize="1" click="textOnSizeChange();" />
+				</mx:HBox>
+	            <mx:TextInput id="myActTextRound" text="My site @ http://www.octalsoftware.com"/>
+	        	<mx:Button label="Draw Arc Text" click="drawText()" />
+				
+	            <mx:HBox>
+	            	<mx:HSlider id="sliders"
+					 x="199" 
+					 y="10"
+			         width="145"
+			         minimum="-9.3"
+			         maximum="9.3"
+			         values="['9.3']" 
+			         tickInterval="9.3"
+			         snapInterval="1" 
+			         liveDragging="true" 
+			         change="changeCir(event)"
+			         />
+					<mx:HSlider id="mySlider"
+					     x="500" 
+						 y="10"
+				         width="145"
+				         minimum="-125" 
+				         maximum="125" 
+				         values="['-125']" 
+			             tickInterval="10"
+			             snapInterval="1"  
+			             liveDragging="true"
+			             change="changeCir(event)"/>
+				</mx:HBox>      
+	          	<mx:HBox>
+	          		<mx:TextInput x="200" y="10" width="50" id="sliderTextBox" text="{sliders.values}"/>
+	          		<mx:TextInput x="500" y="10" width="20" id="mySliderTextBox" text="{mySlider.values}"/> 
+	          	</mx:HBox>
+	          	<mx:HBox>
+	          		<mx:Button label="Change Orient" x="650" id="cirOri" click="orientation()" />
+					<mx:Button label="Change Orient New" x="800" id="cirOriNew" click="orientationNew()"/> 
+	          	</mx:HBox>
+	          	
+	          	<mx:Tile>
+	          		<mx:HBox>
+	          			<mx:Button x="10" y="148" label="Left" click="moveLeft();"/>
+					</mx:HBox>
+					<mx:VBox>
+						<mx:Button x="10" y="148" label="Up" click="moveUp();" width="56"/>
+					</mx:VBox>
+					<mx:VBox>
+						<mx:Button x="10" y="148" label="Down"  click="moveDown();"/>
+					</mx:VBox>
+					<mx:HBox>
+	          			<mx:Button x="10" y="148" label="Right" click="moveRight();"/>
+					</mx:HBox>
+	          	</mx:Tile> 
+	          	 
+	</resize:ResizableWindow>
+	<!--ArcText managemant tool-->
+	<!--Email box-->
+	<resize:ResizableWindow id="emails" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Contact us"  
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true">
+			<mx:Form x="9" y="10" width="360">
+				<mx:FormItem label="Name :">
+					<mx:TextInput id="senderName"/>
+				</mx:FormItem>
+			<mx:FormItem label="Email :">
+				<mx:TextInput id="senderEmail"/>
+			</mx:FormItem>
+			<mx:FormItem label="Subject :">
+				<mx:TextInput id="emailSubject"/>
+			</mx:FormItem>
+			<mx:FormItem label="Message :">
+				<mx:TextArea id="emailMessage" height="132" width="213"/>
+			</mx:FormItem>
+		</mx:Form>
+		
+		<mx:Button label="Send" click="sendMail()" x="138" y="274"/>
+		<mx:Label id="resultLabel" x="212" y="276"/>
+	</resize:ResizableWindow>	
+	<!--Email box-->
+	<!--Fileupolad box-->
+	<resize:ResizableWindow id="upload" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Vector Image Upload" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true">
+					
+		<fileupload:FileUpload
+			width="100%" height="100%"
+			uploadUrl="{_strUploadScript}"
+			uploadComplete=" myRemote.getSession_id();" 
+			uploadIOError="Alert.show('IO Error in uploading file.', 'Error')" 
+			uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"/>
+					
+		</resize:ResizableWindow>	
+		<!--Fileupolad box-->
+		
+		
+		<resize:ResizableWindow id="dropShadow" 
+	            	x="500" 
+	            	y="100" 
+	            	visible="false" 
+	            	width="350"
+	            	height="250" paddingTop="20" paddingLeft="20"
+	            	
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Set TextArea Shadow" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true">
+		
+		
+	       		 <mx:HBox>
+	            	<mx:Label text="dropShadowEnabled:"/>
+	                <mx:CheckBox id="shadowcheckBox" selected="true" click="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="borderEnabled:"/>
+	                <mx:CheckBox id="bordercheckBox" selected="false" click="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	           		 <mx:Label text="Border Color:"/>
+	                 <mx:ColorPicker id="borderColorPicker" change="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="dropShadowColor:"/>
+	                <mx:ColorPicker id="shadowColorPicker" change="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="shadowDirection:"/>
+	                <mx:ComboBox id="shadowcomboBox" selectedIndex="1" change="OnShadowcolor();">
+	                    <mx:dataProvider>
+	                        <mx:Array>
+	                            <mx:Object label="left" />
+	                            <mx:Object label="center" />
+	                            <mx:Object label="right" />
+	                        </mx:Array>
+	                    </mx:dataProvider>
+	                </mx:ComboBox>
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="shadowDistance:"/>
+	                <mx:HSlider id="shadowSlider"
+	                        minimum="-10"
+	                        maximum="10"
+	                        value="0"
+	                        labels="[-10,-5,0,5,10]"
+	                        liveDragging="true"
+	                        snapInterval="1"
+	                        tickInterval="2"  change="OnShadowcolor();"/>
+	       		</mx:HBox>
+	   
+	</resize:ResizableWindow>		
+			
+		<!-- End popup windows -->
+		<!-- Start Rollover & rollout effect for thambnail -->
+		
+		<mx:Parallel id="out">
+			<mx:Zoom duration="100" zoomHeightTo="1.0" zoomWidthTo="1.0"/>
+			<mx:Glow id="glowImage" duration="300" alphaFrom="1.0" alphaTo="1.0" blurXFrom="0.0" blurXTo="30.0" blurYFrom="0.0" blurYTo="30.0" color="0xffffff"/>  	
+		</mx:Parallel>
+		<mx:Parallel id="over">
+			<mx:Zoom duration="100" zoomHeightTo="1.4" zoomWidthTo="1.4"/>
+		</mx:Parallel>
+		
+		<!-- end Rollover & rollout effect for thambnail -->
+	<!--End Arc Text Editor, Thumbnail Effect & popup window -->	
+	<mx:EmailValidator id="mailValidator"
+		source="{senderEmail}" property="text" 
+		requiredFieldError="Enter your email" required="true" />
+	<mx:StringValidator id="nameValidator"  
+		source="{senderName}" property="text" 
+		requiredFieldError="Enter your name" required="true"/>
+	<mx:StringValidator id="emailValidator"  
+		source="{emailMessage}" property="text" 
+		requiredFieldError="Enter your message" required="true"/>
+		<degrafa:Surface>
+			<degrafa:fills>
+				<paint:SolidFill color="{colorPicker.selectedColor}" id="solidYellow" />
+			</degrafa:fills>
+			<degrafa:strokes>
+			<paint:SolidStroke color="{colorPicker.selectedColor}" weight="2" id="greenStroke" />
+		</degrafa:strokes>		
+	</degrafa:Surface>
+	 <mx:Glow id="glowImages" duration="1000" 
+        alphaFrom="1.0" alphaTo="0.3" 
+        blurXFrom="0.0" blurXTo="50.0" 
+        blurYFrom="0.0" blurYTo="50.0" 
+        color="0x00FF00"/>
+    <mx:Glow id="unglowImage" duration="800"  
+            alphaFrom="1" alphaTo="0"
+            blurXFrom="30.0" blurXTo="0.0"
+            blurYFrom="30.0" blurYTo="0.0"  strength="2"
+            color="0x000000" target="{previewImg}"/>
+
+	
+</mx:Application>

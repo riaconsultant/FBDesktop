@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="640" 
+	height="100" 
+	borderThickness="0"
+	horizontalAlign="center"
+	verticalAlign="middle"
+	>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import mx.events.ColorPickerEvent;
+			import com.adobesamples.events.ColorChosenEvent;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+
+			[Bindable]
+			private var __baseColor:Number;
+			
+			[Bindable]
+			private var __trimColor:Number;
+			
+			private var __dataProvider:ConfigurationItem;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+
+			[Bindable]
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+
+				__dataProvider = i_dataProvider;
+				__baseColor = i_dataProvider.baseColor;
+				__trimColor = i_dataProvider.trimColor;
+			
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __dataProvider;
+			}
+			
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+			private function handleBaseChange(event:ColorPickerEvent):void{
+				this.dispatchEvent(new ColorChosenEvent(ColorChosenEvent.BASE_COLOR_CHOSEN,event.color));
+			}
+			 
+			private function handleTrimChange(event:ColorPickerEvent):void{
+				this.dispatchEvent(new ColorChosenEvent(ColorChosenEvent.TRIM_COLOR_CHOSEN,event.color));	
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	 
+	<mx:VBox horizontalAlign="center">
+		<mx:ColorPicker id="baseColorPicker" selectedColor="{dataProvider.baseColor}" change="handleBaseChange(event)" itemRollOver="handleBaseChange(event)" />	
+		<mx:Label text="Base Color"/>
+	</mx:VBox>
+	
+	  
+	<mx:VBox horizontalAlign="center">
+		<mx:ColorPicker id="trimColorPicker" selectedColor="{dataProvider.trimColor}" change="handleTrimChange(event)" itemRollOver="handleTrimChange(event)" />
+		<mx:Label text="Trim Color"/>
+	</mx:VBox>
+	 
+</mx:HBox>

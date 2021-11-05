@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	 width="640"
+	 height="439" 
+	 paddingLeft="40"
+	 xmlns:controls="com.adobesamples.controls.*"
+	 >
+	 
+	<mx:Metadata>
+		[Event(name="close_window", type="flash.events.Event")]
+	</mx:Metadata>
+
+	 
+	 <mx:Script>
+	 	<![CDATA[
+	 	
+	 		/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+	 		import com.adobesamples.vo.ConfigurationItem;
+	 		import mx.controls.Alert;
+	 		
+	 		private var __dataProvider:ConfigurationItem;
+	 		
+	 		[Bindable]
+	 		public function set dataProvider(i_config:ConfigurationItem):void{
+	 			__dataProvider = i_config;
+	 		}
+	 		public function get dataProvider():ConfigurationItem{
+	 			return __dataProvider;
+	 		}
+	 		
+	 		
+	 		[Bindable]
+			private var __baseColorStr:String;
+			
+			[Bindable]
+			private var __trimColorStr:String;
+			
+	 		public function getFixedColor(i_color:Number):String{
+	 			var colorStr:String = "#"+this.fixedInt(i_color,'000000');
+	 			return colorStr;
+	 		}
+	 		
+	 		private function handleClose(event:Event):void{
+	 			var closeEvent:Event = new Event("close_window");
+	 			this.dispatchEvent(closeEvent);
+	 		}
+
+	 		
+	 		private function fixedInt(value:int, mask:String):String {
+                return String(mask + value.toString(16)).substr(-mask.length).toUpperCase();
+            }
+            
+            private function handleSave(event:Event):void{
+            	
+            	Alert.show("Enter your save handler here.", "Save Configuration",Alert.OK | Alert.CANCEL);
+
+            }
+            
+	 		
+	 	]]>
+	 </mx:Script>
+	 
+	 <mx:HBox width="100%" horizontalAlign="right" paddingTop="20" paddingRight="20">
+	 	<controls:ButtonClose click="handleClose(event)"/>	
+	</mx:HBox>
+	 <mx:HBox width="100%" height="80%">
+		 <mx:VBox width="100%" height="100%" left="20" top="30">
+		 	<mx:Label text="Confirm Your Selection"/>
+		 	<mx:Spacer height="15"/>
+		 	<mx:VBox>
+		 		<mx:HBox verticalAlign="middle" height="30">
+		 			<mx:Label text="Shirt Style:" styleName="finalWindowBoldStyle" width="80"/>
+		 			<controls:DesignItemHolder id="designItemHBox" shirt="{dataProvider.design}" width="25" height="25" horizontalAlign="center" verticalAlign="middle" />
+		 			<mx:Label text="{dataProvider.designName}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" height="30">
+		 			<mx:Label text="Shirt Color:" styleName="finalWindowBoldStyle" width="80"/>
+		 			<controls:ColorCircle color="{this.dataProvider.baseColor}"/>
+		 			<mx:Label text="{this.getFixedColor(this.dataProvider.baseColor)}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" height="30">
+		 			<mx:Label text="Accent Color:" styleName="finalWindowBoldStyle" width="80"/>
+		 			<controls:ColorCircle color="{this.dataProvider.trimColor}"/>
+		 			<mx:Label text="{this.getFixedColor(this.dataProvider.trimColor)}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" styleName="finalWindowBoldStyle" height="30">
+		 			<mx:Label text="Logo:" width="80"/>
+		 			<mx:Image source="{this.dataProvider.logo}" width="25" height="25"/>
+		 			<mx:Label text="{this.dataProvider.logoName}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" styleName="finalWindowBoldStyle" height="30">
+		 			<mx:Label text="Player Name:" width="80"/>
+		 			<mx:Label text="{this.dataProvider.name_text}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" styleName="finalWindowBoldStyle" height="30">
+		 			<mx:Label text="Font:" width="80"/>
+		 			<mx:Label text="{this.dataProvider.name_font}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 		<mx:HBox verticalAlign="middle" height="30">
+		 			<mx:Label text="Font Color:" styleName="finalWindowBoldStyle" width="80"/>
+		 			<controls:ColorCircle color="{this.dataProvider.name_font_color}"/>
+		 			<mx:Label text="{this.getFixedColor(this.dataProvider.name_font_color)}" styleName="finalWindowRegularStyle"/>
+		 		</mx:HBox>
+		 	</mx:VBox>
+		 	
+		 </mx:VBox>
+		 <mx:VBox height="100%" width="100%">
+		 	<!-- <mx:HBox id="designItemHBoxBoth" horizontalAlign="center" verticalAlign="middle" /> -->	
+		 	<controls:ConfigurationArea width="400" height="165" design="{dataProvider.design}" trimColor="{dataProvider.trimColor}" baseColor="{dataProvider.baseColor}" logo="{dataProvider.logo}" playersName="{dataProvider.name_text}" playersNameColor="{dataProvider.name_font_color}" playersNameFont="{dataProvider.name_font}"/>
+		 	<mx:HBox width="100%" horizontalAlign="center">
+		 		<mx:Label text="Front" styleName="finalWindowRegularStyle" width="140"/>
+		 		<mx:Label text="Back" styleName="finalWindowRegularStyle" width="30"/>
+		 	</mx:HBox>
+		 </mx:VBox>
+	 	 	
+	 </mx:HBox>
+	 <mx:HBox width="100%" horizontalAlign="center">
+	 	<mx:Button label="Save" styleName="customButtonStyle" height="22" width="93" click="handleSave(event)"/>
+	 	<mx:Button label="Cancel" styleName="customButtonStyle" height="22" width="93" click="handleClose(event)"/>
+	 </mx:HBox>
+	
+</mx:VBox>

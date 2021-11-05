@@ -1,0 +1,284 @@
+/* CSS file */
+
+@font-face {
+	src:url("../fonts/arial.swf");
+	fontFamily: "Arial";
+}
+
+@font-face {
+	src:url("../fonts/helvetica.swf");
+	fontFamily: "Helvetica";
+}
+
+@font-face {
+	src:url("../fonts/helvetica_rounded_bold.swf");
+	fontFamily: "HelveticaRounded Bold";
+}
+
+@font-face {
+	src:url("../fonts/myriad_pro.swf");
+	fontFamily: "Myriad Pro";
+}
+
+@font-face {
+	src:url("../fonts/myriad_pro_bold.swf");
+	fontWeight:"bold";
+	fontFamily: "Myriad Pro";
+}
+
+
+@font-face {
+	src:url("../fonts/tahoma.swf");
+	fontFamily: "Tahoma";
+}
+
+@font-face {
+	src:url("../fonts/brothers_bold.swf");
+	fontFamily: "Brothers";
+}
+
+@font-face {
+	src:url("../fonts/times.swf");
+	fontFamily: "Times";
+}
+
+.headerStyle{
+	backgroundImage: Embed("/images/ui/header_bg.png");
+}
+
+.Arial{
+	fontFamily:"Arial";
+}
+
+.MyriadPro{
+	fontFamily:"Myriad Pro";
+}
+
+
+.Brothers{
+	fontFamily:"Brothers";
+}
+
+.Times{
+	fontFamily:"Times";
+}
+
+
+.finalWindowStyle{
+	backgroundImage: Embed("/images/ui/panel_bg.png");
+	color:#FFFFFF;
+	fontSize:16px;
+	fontWeight:"regular";
+	fontFamily:"Myriad Pro";
+	paddingLeft:30px;
+}
+
+.finalWindowBoldStyle{
+	color:#999999;
+	fontSize:12px;
+	fontWeight:"bold";
+	fontFamily:"Myriad Pro";
+}
+
+.finalWindowRegularStyle{
+	color:#FFFFFF;
+	fontSize:12px;
+	fontWeight:"regular";
+	fontFamily:"Myriad Pro";
+}
+
+.configurableAreaStyle{
+	/* backgroundColor:#333333; */
+	backgroundColor:#ffffff;
+}
+
+.designItem{
+}
+
+.logoItem{
+}
+
+.alleyTextStyle{
+	fontSize:19;
+	color:#FFFFFF;
+	fontFamily:"HelveticaRounded Bold";
+}
+
+.closeBtn{
+	upSkin: Embed("/images/ui/close.png");
+	downSkin: Embed("/images/ui/close.png");
+	overSkin: Embed("/images/ui/close.png");
+	selectedUpSkin: Embed("/images/ui/close.png");
+	selectedOverSkin: Embed("/images/ui/close.png");
+	selectedDownSkin: Embed("/images/ui/close.png");
+	disabledSkin: Embed("/images/ui/close.png");
+	focusSkin: Embed("/images/ui/close.png");
+}
+
+.helpPanel{
+	backgroundImage: Embed("/images/ui/panel_bg.png");
+	color:#999999;
+	fontWeight:"normal";
+	fontFamily:"Myriad Pro";
+}
+
+.textInputStyleName{
+	backgroundColor:#333333;
+	color:#999999;
+	borderColor:#333333;
+	borderThickness:0;
+}
+
+.comboBoxStyle {
+	borderColor:#5D5D5D;
+	color:#cccccc;
+	fillColors:#242424,#242424;
+	backgroundColor:#242424;
+	fontThickness:0;
+	fontWeight:"normal";
+	fontFamily:"Myriad Pro";
+	rollOverColor:#999999;
+	selectionColor:#999999;
+	dropdownStyleName:"comboDropdown";
+}
+
+.comboDropdown{
+	backgroundColor:#5D5D5D;
+	color:#cccccc;
+	fontFamily:"Myriad Pro";
+}
+
+.textInputStyleName{
+}
+
+.shirtTextStyle{
+	fontSize:19;
+	width:123;
+	textAlign:"center";
+}
+
+.customButtonStyle{
+	fontSize:13;
+	fontFamily:"Myriad Pro";
+	fontWeight:"normal";
+	color:#000000;
+	textRollOverColor:#ffffff;
+    textSelectedColor:#ffffff;
+
+	upSkin: Embed("/images/ui/button_regular.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	downSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	overSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	selectedUpSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	selectedOverSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	selectedDownSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	disabledSkin: Embed("/images/ui/button_regular.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+	focusSkin: Embed("/images/ui/button_down.png", scaleGridTop="5", scaleGridBottom="18", scaleGridLeft="5", scaleGridRight="118");
+}
+
+.cancelBtnStyle{
+}
+
+.shirtTextSmall{
+	fontSize:13;
+	width:123;
+	textAlign:"center";
+}
+
+.colorTabStyle{
+	fontSize:13;
+	color:#999999;
+	fontFamily:"Myriad Pro";
+}
+
+.playerNameTabStyle{
+	fontSize:13;
+	color:#999999;
+	fontFamily:"Myriad Pro";
+}
+
+.applicationWrapperStyle{
+	/* backgroundColor:#333333; */
+	backgroundColor:#ffffff;
+	verticalGap:0;
+}
+
+.shirtsTextStyle{
+	fontSize:19;
+	color:#CCCCCC;
+	fontFamily:"HelveticaRounded Bold";
+}
+
+.mainTabStyle{
+	color:#999999;
+	textRollOverColor:#FFFFFF;
+	fontSize:13;
+	paddingLeft:10;
+	borderThickness:0;
+	fontWeight:"regular";
+	fontFamily:"Myriad Pro";
+
+	upSkin: Embed("/images/ui/tab.png");
+	downSkin: Embed("/images/ui/tab.png");
+	overSkin: Embed("/images/ui/tab.png");
+	selectedUpSkin: Embed("/images/ui/tab_selected.png");
+	selectedOverSkin: Embed("/images/ui/tab_selected.png");
+	selectedDownSkin: Embed("/images/ui/tab_selected.png");
+	disabledSkin: Embed("/images/ui/tab.png");
+	focusSkin: Embed("/images/ui/tab.png");
+}
+
+
+.refreshBtnStyle{
+	upSkin: Embed("/images/ui/refresh.png");
+	downSkin: Embed("/images/ui/refresh.png");
+	overSkin: Embed("/images/ui/refresh_over.png");
+	selectedUpSkin: Embed("/images/ui/refresh.png");
+	selectedOverSkin: Embed("/images/ui/refresh.png");
+	selectedDownSkin: Embed("/images/ui/refresh.png");
+	disabledSkin: Embed("/images/ui/refresh.png");
+	focusSkin: Embed("/images/ui/refresh.png");
+}
+
+.helpBtnStyle{
+	upSkin: Embed("/images/ui/info.png");
+	downSkin: Embed("/images/ui/info.png");
+	overSkin: Embed("/images/ui/info_over.png");
+	selectedUpSkin: Embed("/images/ui/info.png");
+	selectedOverSkin: Embed("/images/ui/info.png");
+	selectedDownSkin: Embed("/images/ui/info.png");
+	disabledSkin: Embed("/images/ui/info.png");
+	focusSkin: Embed("/images/ui/info.png");
+}
+
+.arialStyle{
+	fontSize:19;
+	fontFamily:"Arial";
+}
+
+.tahomaStyle{
+	fontSize:19;
+	fontFamily:"Tahoma";	
+}
+
+.helveticaStyle{
+	fontSize:19;
+	fontFamily:"Helvetica";
+}
+
+.myriadProStyle{
+	fontSize:19;
+	fontFamily:"Myriad Pro";
+}
+
+.mainTabsStyle{
+	focusThickness:.5;
+	/* backgroundColor:#1F1F1F; */
+	backgroundColor:#ffffff;
+	color:#999999;
+	borderColor:#515151;
+}
+
+
+.footerStyle{
+	/*backgroundColor:#000000;*/
+}

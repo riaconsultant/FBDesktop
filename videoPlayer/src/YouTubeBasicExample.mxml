@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:ui="ui"
+	layout="absolute"
+	backgroundGradientColors="[#242013, #72643f]" 
+	viewSourceURL="srcview/index.html"
+	creationComplete="init();">
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/**
+			 * Basic YouTubeLib API Example
+			 * Sean Moore
+			 * seantheflashguy.com
+			 * actionscriptcheatsheet.com
+			 * seantheflashguy@gmail.com
+			 * 09/22/07
+			 */
+			
+			import data.VideoVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.CursorManager;
+			
+			import com.adobe.webapis.youtube.YouTubeService;
+			import com.adobe.webapis.youtube.events.YouTubeServiceEvent;
+			import com.adobe.webapis.youtube.methodgroups.Videos;
+
+			
+			/**
+			 * Update the YouTube API Key with your own. You will
+			 * need to create a YouTube account and then create an
+			 * API Key. After you create your YouTube account and 
+			 * log in go to: 
+			 * My Account -> Account Settings -> Developer Profile
+			 */
+			private var YOUTUBE_API_KEY:String = "AI39si4PUqO3gE1rJAyzhcU0MqihM71DM_i1_B-zetQ61nGpjJUIBfKDNNB1v0PzmciS-VgdeL8jBii_JCuDPmyzbxCvyflLeQ";
+			
+			[Bindable]
+			private var featuredVideos:ArrayCollection
+			
+			/**
+			 * Call method to begin communication with the YouTube API.
+			 */
+			private function init():void
+			{
+				CursorManager.setBusyCursor();
+				setupYTService();
+			}
+			/**
+			 * Create YouTubeService object instance, add event listener for
+			 * listFeatured method call. Create Videos object instance and pass
+			 * a single argument of the YouTubeService instance. The Videos
+			 * object makes the call listFeatured to retrieve the "featured" videos
+			 * from YouTube.com.
+			 */
+			private function setupYTService():void
+			{
+				// Create the YouTube service. This is the entry point
+				// into the youtubelib API.
+				var youTubeService:YouTubeService = new YouTubeService( YOUTUBE_API_KEY );
+				// Register the method that will be used to handle the
+				// "featured" video data from the YouTube service.
+				youTubeService.addEventListener( YouTubeServiceEvent.VIDEOS_LIST_FEATURED, onFeaturedVideos );
+				// Use an instance of the Videos class to make the 
+				// actual call to retrieve the videos array from YouTube.
+				// NOTE: The videosList property that is returned from the
+				// youtubelib API will contain the top 100 "featured" YouTube
+				// videos.
+				var vids:Videos = new Videos( youTubeService );
+				// Asynchronous call to get 100 "featured" YouTube videos
+				// This method call is handled by the onFeaturedVideos method.
+				var abc:*=vids.getDetails('5P6UU6m3cqk');
+				//vids.listFeatured();
+			}
+			/**
+			 * Callback method for YouTube service's listFeatured method call
+			 * which is executed by setupYTService(). Step through the first ten
+			 * "featured" YouTube videos and populate the featuredVideos array
+			 * with the custom, bindable VideoVO objects.
+			 */
+			private function onFeaturedVideos( event:YouTubeServiceEvent ):void
+			{
+				var vids:Array = event.data.videoList;				
+				var vidsArray:Array = new Array();
+
+				// Step through the first ten "featured" YouTube videos.
+				// Create a VideoVO object instance on each pass through
+				// the for loop. Push the VideoVO object into vidsArray.
+				for ( var i:uint=0;i<9;i++ ) {
+					var videoVO:Object = new VideoVO();
+					videoVO.author = vids[i].author;
+					videoVO.title = vids[i].title;
+					videoVO.lengthSeconds = vids[i].lengthSeconds;
+					videoVO.ratingAvg = vids[i].ratingAvg;
+					videoVO.ratingCount = vids[i].ratingCount;
+					videoVO.description = vids[i].description;
+					videoVO.viewCount = vids[i].viewCount;
+					videoVO.commentCount = vids[i].commentCount;
+					videoVO.tags = vids[i].tags;
+					videoVO.url = vids[i].url;
+					videoVO.thumbnailUrl = vids[i].thumbnailUrl;
+					videoVO.playerURL = vids[i].playerURL;
+					vidsArray.push(videoVO);
+				}
+				
+				// Populate the YTFeatVideosTileList's dataProvider.
+				// NOTE: List based Flex components should have thier
+				// dataProvider's data set as an ArrayCollection, vs an
+				// array for example.
+				featuredVideos = new ArrayCollection( vidsArray );
+				YTFeatVideosTileList.visible = true;
+				CursorManager.removeBusyCursor();
+			}
+			/**
+			 * Handle mouse down gesture by launching the Video's url
+			 * in a new (_blank) browser window. 
+			 */
+			private function onTileListClicked( event:Event ):void
+			{
+				var request:URLRequest = new URLRequest( event.currentTarget.selectedItem.url );
+				navigateToURL( request, "_blank" );
+			}
+		]]>
+	</mx:Script>
+	<mx:SWFLoader id="bg" 
+		source="assets/bg.swf" 
+		x="0" y="0"/>
+	<mx:Label text="Top 10 Featured Videos" 
+		fontWeight="bold" 
+		color="#f4a500" 
+		fontSize="16" 
+		y="81" x="42"/>
+	<mx:TileList id="YTFeatVideosTileList"
+		dataProvider="{featuredVideos}" 
+		width="380" height="540"
+		rowHeight="116"
+		itemRenderer="ui.YTThumbnail" 
+		alternatingItemColors="[0xF3F2F1, 0xF7F7F7]"
+		themeColor="#F5F5F5"
+		click="onTileListClicked(event)"
+		visible="false"
+		showEffect="Fade"
+		horizontalScrollPolicy="off"
+		y="115" x="125"/>
+	<mx:SWFLoader id="monthLogo" 
+		source="assets/October.swf" 
+		y="680" x="326"/>
+	<mx:SWFLoader id="youTubeLogo" 
+		x="42" y="0" 
+		source="assets/YouTube.swf"/>
+</mx:Application>

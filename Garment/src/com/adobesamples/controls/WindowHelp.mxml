@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	 width="640"
+	 height="439"
+	 paddingLeft="40"
+	 xmlns:controls="com.adobesamples.controls.*"
+	 >
+	 
+	<mx:Metadata>
+		[Event(name="close_window", type="flash.events.Event")]
+	</mx:Metadata>
+	 
+	<mx:Script>
+	 	<![CDATA[
+	 	
+	 		private function handleClose(event:Event):void{
+	 			var closeEvent:Event = new Event("close_window");
+	 			this.dispatchEvent(closeEvent);
+	 		}
+	 		
+	 	]]>
+	</mx:Script>
+	 
+	<mx:HBox width="100%" horizontalAlign="right" paddingTop="20" paddingRight="20">
+	 	<controls:ButtonClose click="handleClose(event)"/>	
+	 </mx:HBox>
+	 <mx:HBox width="100%" height="80%">
+		 <mx:VBox width="100%" height="100%" left="20" top="30">
+		 	<mx:Label text="Alley Shirts Shirt Configurator"/>
+		 	<mx:Spacer height="15"/>	
+		 	<mx:Text text="Design your own Bowling Shirt by selecting from the multiple options of shirt designs, colors and graphics." width="500" styleName="finalWindowRegularStyle"/>
+			<mx:Label text="Currently, there are four configurations that the application supports." styleName="finalWindowRegularStyle" width="500"/>
+			<mx:Spacer height="15"/>	
+			<mx:HBox><mx:Label text="Designs:" width="100" styleName="finalWindowBoldStyle" /><mx:Text text="We have five designs that you can choose, from basic to a little more elaborate." width="450" styleName="finalWindowRegularStyle"/></mx:HBox>
+			<mx:HBox><mx:Label text="Color:" width="100" styleName="finalWindowBoldStyle" /><mx:Text text="Mix and match a wide variety of color options. There are two areas of the shirt that can be manipulated, the Base color and the Trim color." width="450" styleName="finalWindowRegularStyle"/></mx:HBox>
+			<mx:HBox><mx:Label text="Logo:" width="100" styleName="finalWindowBoldStyle" /><mx:Text text="Logos (or Graphics) can be added to both the front and back of the shirt." width="450" styleName="finalWindowRegularStyle"/></mx:HBox>
+			<mx:HBox><mx:Label text="Player Name:" width="100" styleName="finalWindowBoldStyle" /><mx:Text text="If you would like to customize your shirts a little further, place your player’s name on the back of the shirt. You can also select the font in which your name is to be written with." width="450" styleName="finalWindowRegularStyle"/></mx:HBox>
+		 </mx:VBox>
+	 </mx:HBox>
+	 <mx:HBox width="100%" horizontalAlign="center">
+	 	<mx:Button label="Okay" styleName="customButtonStyle" height="22" width="93" click="handleClose(event)"/>
+	 </mx:HBox>
+</mx:VBox>

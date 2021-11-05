@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" minWidth="450" minHeight="300" backgroundColor="#202020"
+				creationComplete="init()" >
+	<mx:Style source="style/myStyle.css" />
+	<mx:Script>
+		<![CDATA[
+			//import ca.newcommerce.youtube.events.VideoDataEvent;
+			
+			import data.VideoVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.effects.easing.Bounce;
+			import mx.effects.easing.Elastic;
+			import mx.events.SliderEvent;
+			import mx.events.VideoEvent;
+			import mx.utils.ObjectUtil;
+			/* [Bindable]
+			private var featuredVideos:ArrayCollection */
+			[Bindable]
+			public var conMenu:ContextMenu;
+			
+			[Bindable]
+			public var currentValume:Number=0.75;
+			
+			[Bindable]
+			public var is_play:Number=1;
+			
+			[Embed(source="assets/img/replogo.png")]
+			[Bindable]
+			public var imgCls:Class;
+
+			//private var YOUTUBE_API_KEY:String = "AI39si4PUqO3gE1rJAyzhcU0MqihM71DM_i1_B-zetQ61nGpjJUIBfKDNNB1v0PzmciS-VgdeL8jBii_JCuDPmyzbxCvyflLeQ";
+			
+			public function addPlayer(arg:String,arg1:Boolean):void{
+				if(arg!=''){
+					myPlayer.source=arg;
+					if(arg1 == true){
+						//myPlayer.autoPlay=arg1;
+						//playId.styleName="pauseButton" as Object;
+						myPlay();
+					}
+					//Alert.show(arg);
+				}
+			}
+			
+			public function init():void{
+				Security.allowDomain("*");
+				Security.loadPolicyFile("*");
+				var arg:String=Application.application.parameters.movie;
+				//var arg:String="http://10.0.1.140/webradio/mp3music/BoomBoomBoom.mp3";
+				//var arg:String="http://10.0.1.127/projects/rev_eng/vedio/assets/ankush.flv";
+				//var arg:String="http://64.15.136.251:8080/rev_engg/repsearchfinal.flv";
+				//Alert.show(arg);
+				//ExternalInterface.call("myJS");
+				//if (ExternalInterface.available){
+					//ExternalInterface.addCallback("addPlayer", addPlayer);
+				//}
+				var cumArr:Array=new Array();
+				var conMenuItem:ContextMenuItem=new ContextMenuItem("Developed By : Octal Info Solution India",true);
+				conMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,openSite);
+				var conMenuItem1:ContextMenuItem=new ContextMenuItem("Go Full Screen",true);
+				conMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,fullScreenSite);
+				cumArr[0]=conMenuItem;
+				cumArr[1]=conMenuItem1;
+				conMenu=new ContextMenu();
+				conMenu.hideBuiltInItems();
+				
+				conMenu.builtInItems.print=false;
+				conMenu.customItems=cumArr;
+				Application.application.contextMenu=conMenu;
+				this.contextMenu=conMenu;
+				videoCanvas.contextMenu=conMenu;
+				myPlayer.source=arg;
+				myPlay();
+			}
+			
+			public function openSite(event:ContextMenuEvent):void{
+				//Alert.show(event.currentTarget.valueOf());
+				var site:URLRequest=new URLRequest("http://www.octalsoftware.com");
+				navigateToURL(site,"_blank");
+			}
+			public function fullScreenSite(event:ContextMenuEvent):void{
+				this.video_fullscreen();
+			}
+						
+			private function video_fullscreen():void {
+				try {
+					switch (this.stage.displayState) {
+						case StageDisplayState.FULL_SCREEN:
+							this.stage.displayState = StageDisplayState.NORMAL;
+							fullId.styleName="fullScreenButAtMin" as Object;
+							break;
+						default:
+							this.stage.displayState = StageDisplayState.FULL_SCREEN;
+							fullId.styleName="fullScreenButAtMax" as Object;
+							break;
+					}
+				} catch (err:SecurityError) {
+					// ignore
+				}
+			}
+			private function myPlay():void{
+				//Alert.show(ObjectUtil.toString(myPlayer));
+				if(myPlayer.source==''){
+					Alert.show("Invalid File.");
+				}
+				//myPlayer.addEventListener(VideoEvent.PLAYHEAD_UPDATE,videoRun);
+				//videoSeek.addEventListener(SliderEvent.THUMB_RELEASE,thumbPlay);
+				myPlayer.addEventListener(ProgressEvent.PROGRESS,onProgress);
+				if(myPlayer.playing){
+					playId.styleName="playButton" as Object;
+					myPlayer.pause();
+					rePlayCanvas.visible=false;
+					//playId.label="play";
+				}else{
+					playId.styleName="pauseButton" as Object;
+					myPlayer.play();
+					rePlayCanvas.visible=false;
+					//playId.label="pause";
+				}
+			}
+			
+			private function onProgress(evt:ProgressEvent):void{
+				//trace(evt.bytesLoaded,evt.bytesTotal);
+				videoProgress.maximum=evt.bytesTotal;
+				videoProgress.setProgress(evt.bytesLoaded,evt.bytesTotal);
+			}
+			
+			private function sliderThumbEvent(event:SliderEvent):void
+			{      
+				trace(event.currentTarget.value);              
+				if(event.type == SliderEvent.THUMB_PRESS){
+					                     
+				}else{      
+					myPlayer.playheadTime = videoSeek.value;
+					myPlayer.addEventListener(VideoEvent.PLAYHEAD_UPDATE, onVal);
+					this.myPlay();
+				}
+			}
+			
+			private function onVal(event:VideoEvent):void{
+				myPlayer.removeEventListener(VideoEvent.PLAYHEAD_UPDATE, onVal);
+				//_timer.addEventListener(TimerEvent.TIMER, onTimer);
+				
+			}
+			
+			private function formatTime(value:int):String {
+				var result:String = (value % 60).toString();
+		           if (result.length == 1)
+				        result = Math.floor(value / 60).toString() + ":0" + result;
+		           else
+		              result = Math.floor(value / 60).toString() + ":" + result;
+		           return result;
+			  }
+						
+			private var mute : Boolean = false;
+			private function videoRun(evt:VideoEvent):void{
+				startTime.text=formatTime(evt.playheadTime)+"";
+				endTime.text=formatTime(myPlayer.totalTime)+"";
+				videoSeek.maximum=myPlayer.totalTime;
+				videoSeek.value=evt.playheadTime;
+				//trace(evt.playheadTime+"----"+myPlayer.totalTime);
+				if(evt.playheadTime >= myPlayer.totalTime){
+					is_play=0;
+					//Alert.show(is_play.toString());
+				}
+				if(videoSeek.maximum > 0 && videoSeek.value == 0){
+					playId.styleName="playButton" as Object;
+					rePlayCanvas.visible=true;
+					//is_play=1;
+				}else{
+					rePlayCanvas.visible=false;
+					//playId.styleName="pauseButton" as Object;
+				}
+			}
+			private function muteHandler(event:MouseEvent):void{
+				if (!mute) {
+					myPlayer.volume = 0;
+					volSlider.value=0;
+					mute = true;
+					//valMute.label="m";
+					valMute.styleName="offValStyle" as Object;
+					//muteBtn.label = "Unmute";
+				}
+				else{
+					volSlider.value=currentValume;
+					myPlayer.volume = currentValume;
+					mute = false;
+					valMute.styleName="onValStyle" as Object;
+					//valMute.label="u";
+					//muteBtn.label = "Mute";
+				}
+			}
+			
+			private function showControl():void{
+				controlCanvas.visible=true;
+				//fadeIn.play([controlCanvas]);
+			}
+			private function hideControl():void{
+				controlCanvas.visible=false;
+				//fadeOut.play([controlCanvas]);
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Canvas left="0" top="0" bottom="0" right="0" id="videoCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:VideoDisplay left="0" top="0" bottom="0" right="0" id="myPlayer" autoPlay="false" playheadUpdate="videoRun(event)"/>
+		<mx:Canvas left="0" top="0" bottom="0" right="0"  backgroundColor="#FAF7F7" backgroundAlpha="0.0" doubleClick="video_fullscreen();" doubleClickEnabled="true" 
+				   rollOver="showControl()" rollOut="hideControl()" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Canvas id="rePlayCanvas" visible="true" horizontalCenter="0" width="450" height="300" verticalCenter="0">
+				<mx:Button width="140" height="30" styleName="rePlayButton" click="myPlay();rePlayCanvas.visible=false;" buttonMode="true" horizontalCenter="0" verticalCenter="55"/>
+				<mx:Image source="{imgCls}" alpha="1.0" horizontalCenter="0" width="340" height="95" y="89"/>
+				<!--<mx:Label text="@2009-2010 Octal Info Solution" color="#B0B1B1" alpha="0.39" left="3" bottom="35"/>-->
+			</mx:Canvas>
+		</mx:Canvas>
+	</mx:Canvas>
+	<mx:DateFormatter id="dateFormatter" formatString="NN:SS"/>
+	<mx:Canvas id="controlCanvas" bottom="0" right="0" left="0" styleName="controlCanvasCSS" visible="true" rollOver="showControl()" rollOut="hideControl()" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundAlpha="0.7">
+		<mx:ProgressBar minimum="0" left="77" right="235" verticalCenter="-4" label=" " height="4" id="videoProgress" mode="manual"/>
+		<mx:HSlider id="videoSeek" verticalCenter="-4" left="72" right="235" showDataTip="false" minimum="0" maximum="10" 
+					thumbPress="sliderThumbEvent(event);myPlayer.pause();" thumbRelease="sliderThumbEvent(event)" snapInterval="1" styleName="seek"/>
+		<mx:Label text="00:00" id="startTime" left="40" verticalCenter="0" styleName="timeLabel"/>
+		<mx:Label right="205" verticalCenter="0" id="endTime" styleName="timeLabel"/>
+		<mx:Button x="5" verticalCenter="0" id="playId" click="myPlay()" width="31" height="15" styleName="playButton" buttonMode="true"/>
+		<mx:Button id="fullId" verticalCenter="0" right="5" width="20" height="15" click="video_fullscreen()" styleName="fullScreenButAtMin" buttonMode="true"/>
+		<mx:Button id="valMute" verticalCenter="0" right="113" width="20" height="15" click="muteHandler(event)" styleName="onValStyle" buttonMode="true"/>
+		<mx:Canvas width="70" height="30" right="134" verticalCenter="0" backgroundColor="#000000" borderStyle="solid" cornerRadius="4" borderColor="#4E4E4E">
+			<mx:Label text="3 Mbps" styleName="customLabel" right="0" verticalCenter="0"/>
+			<mx:Label text="HD" left="-2" verticalCenter="0" styleName="HD"/>
+		</mx:Canvas>
+		<mx:HSlider id="volSlider" right="26" verticalCenter="-4" width="85" liveDragging="true" 
+					minimum="0.0" maximum="1.0" value="{currentValume}" styleName="volumeStyle"
+					snapInterval="0.01" showDataTip="false" change="myPlayer.volume=volSlider.value;currentValume=volSlider.value;valMute.styleName='onValStyle' as Object;"/>
+	</mx:Canvas>
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0"/>
+</mx:Application>

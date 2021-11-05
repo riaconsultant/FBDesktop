@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+				showCloseButton="true" 
+				close="titleWin_close(event);" 
+				width="380" height="170" 
+				backgroundColor="#FFFFFF"
+				backgroundAlpha="0.7"
+				horizontalScrollPolicy="off"
+				verticalScrollPolicy="off"
+				title="Login">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			public var regArr:Array = new Array();
+			
+			private function titleWin_close(evt:Event):void {
+				PopUpManager.removePopUp(evt.target as IFlexDisplayObject);
+			}
+			private function signup_user():void{
+				loginCnv.visible = false;
+				registerCnv.visible = true;
+				this.height = 350;
+				this.title = 'Register New User';
+			}
+			
+			private function compareString(str1:String,str2:String):Boolean
+			{
+				if(str1 == str2)
+					return true;
+				else
+					return false;
+			}
+			
+			private function checkPassword():void
+			{
+				if(!this.compareString(pass.text,conf_password.text))
+				{
+					Alert.show("Password not matched");
+				}
+			}
+			
+			private function cancelEvent():void
+			{
+				registerCnv.visible=false;
+				loginCnv.visible=true;
+				this.height = 170; 
+				this.title = 'Login';
+			}
+			
+			private function validate():void
+			{
+				var _name:String = fname.text;
+				var _userName:String = user_name.text;
+				var _password:String = pass.text;
+				var _confpass:String = conf_password.text;
+				var _email:String = email.text;
+				var _address:String = address.text;
+				var _phone:String = phone.text;
+				
+				var arr:Array = new Array();
+				
+				var isValidMail:ValidationResultEvent = mailValidator.validate();
+				var isValidUserName:ValidationResultEvent = usernameValidator.validate();
+				
+				
+				if (isValidMail.type == ValidationResultEvent.VALID 
+					&& isValidUserName.type == ValidationResultEvent.VALID)
+				{
+					arr.push({name:_name},{userName:_userName},{pass:_password},{email:_email},{address:_address},{phone:_phone});
+					regArr = arr;
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:Style>
+		.login{
+			upIcon: Embed(source="../assets/images/login.png");
+			downIcon: Embed(source="../assets/images/login.png");
+			overIcon: Embed(source="../assets/images/login.png");
+			disabledIcon: Embed(source="../assets/images/login.png");
+			cornerRadius: 0;
+			horizontalGap: 0;
+			vertical-gap:0;
+			border-thickness:0;
+		}
+	</mx:Style>
+	<mx:Canvas id="loginCnv" visible="true" width="100%" height="130" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:Label text="Username" top="23" left="10" id="label1" width="95"/>
+		<mx:TextInput right="29" top="21" id="username" borderStyle="solid"/>
+		<mx:Label text="Password" width="95" top="56" left="10" id="label2"/>
+		<mx:TextInput displayAsPassword="true" right="29" top="54" id="password" borderStyle="solid"/>
+		<mx:Button id="login" cornerRadius="5" fontFamily="Times New Roman" fontSize="16" fontStyle="normal" textDecoration="none" useHandCursor="true" label="Login" x="161" y="85" width="72"/>
+		<mx:LinkButton x="260" y="84" label="Sign up" click="signup_user();" height="28"/>
+	</mx:Canvas>
+	<mx:Canvas width="100%" height="289" id="registerCnv" visible="false" horizontalScrollPolicy="off" verticalScrollPolicy="off" horizontalCenter="0" verticalCenter="0">
+		<mx:Form width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<mx:FormItem label="Name :">
+				<mx:TextInput id="fname"/>
+			</mx:FormItem>
+			<mx:FormItem label="Username :">
+				<mx:TextInput id="user_name"/>
+			</mx:FormItem>
+			<mx:FormItem label="Password :">
+				<mx:TextInput id="pass" displayAsPassword="true"/>
+			</mx:FormItem>
+			<mx:FormItem label="Confirm Password :">
+				<mx:TextInput id="conf_password" displayAsPassword="true" focusOut="checkPassword();"/>
+			</mx:FormItem>
+			<mx:FormItem label="Email :">
+				<mx:TextInput id="email" />
+			</mx:FormItem>
+			<mx:FormItem label="Address :">
+				<mx:TextArea id="address"/>
+			</mx:FormItem>
+			<mx:FormItem label="Phone :">
+				<mx:TextInput id="phone" restrict="0-9 \-"/>
+			</mx:FormItem>
+			
+		</mx:Form>
+		
+		<mx:HBox y="250">
+			<mx:Spacer width="60" />
+			<mx:Button label="Submit" id="register" click="validate()"/>
+			<mx:Button label="Reset"/> 
+			<mx:LinkButton label="Login" click="cancelEvent();" height="28"/>
+		</mx:HBox>
+		
+	</mx:Canvas>
+	<mx:EmailValidator id="mailValidator" source="{email}" property="text" 
+					   requiredFieldError="Enter your email" required="true" />
+	<mx:StringValidator id="nameValidator"  
+						source="{fname}" property="text" 
+						requiredFieldError="Enter your username" minLength="2" required="true"/>
+	<mx:StringValidator id="usernameValidator"  
+						source="{user_name}" property="text" 
+						requiredFieldError="Enter your username" minLength="2" required="true"/>
+	<mx:StringValidator id="passwordValidator"  
+						source="{pass}" property="text" 
+						requiredFieldError="Enter your password" minLength="5" required="true"/>
+	<mx:StringValidator id="confpasswordValidator"  
+						source="{conf_password}" property="text" 
+						requiredFieldError="ReEnter your password" minLength="5" required="true"/>
+	
+</mx:TitleWindow>

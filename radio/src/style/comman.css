@@ -1,0 +1,134 @@
+/* CSS file */
+Application{
+	backgroundGradientAlphas: 1, 1;
+	backgroundGradientColors: #eeeeee,#d7d7d7;
+	color:#606060;
+}
+.playButton
+{
+	up-skin: Embed(source="../assets/img/PlayIcon.png");
+	down-skin: Embed(source="../assets/img/PlayIcon.png");
+	over-skin: Embed(source="../assets/img/PlayIcon.png");
+	disabled-skin: Embed(source="../assets/img/PlayIcon.png");
+	selected-over-skin:Embed(source="../assets/img/PauseBtn.png");
+	selected-up-skin:Embed(source="../assets/img/PauseBtn.png");
+	selected-down-skin:Embed(source="../assets/img/PauseBtn.png");
+	cornerRadius: 0;
+}
+.stopButton
+{
+	up-skin: Embed(source="../assets/img/StopBtn.png");
+	down-skin: Embed(source="../assets/img/StopBtn.png");
+	over-skin: Embed(source="../assets/img/StopBtn.png");
+	disabled-skin: Embed(source="../assets/img/StopBtn.png");
+	selected-over-skin:Embed(source="../assets/img/StopBtn.png");
+	selected-up-skin:Embed(source="../assets/img/StopBtn.png");
+	selected-down-skin:Embed(source="../assets/img/StopBtn.png");
+	cornerRadius: 0;
+}
+
+.preButton
+{
+	upIcon: Embed(source="../assets/img/Prev.png");
+	downIcon: Embed(source="../assets/img/Prev.png");
+	overIcon: Embed(source="../assets/img/Prev.png");
+	disabledIcon: Embed(source="../assets/img/Prev.png");
+	cornerRadius: 0;
+}
+.nxtButton
+{
+	upIcon: Embed(source="../assets/img/Next.png");
+	downIcon: Embed(source="../assets/img/Next.png");
+	overIcon: Embed(source="../assets/img/Next.png");
+	disabledIcon: Embed(source="../assets/img/Next.png");
+	cornerRadius: 0;
+}
+.volButton
+{
+	up-skin: Embed(source="../assets/img/VolumeIcon.png");
+	down-skin: Embed(source="../assets/img/VolumeIcon.png");
+	over-skin: Embed(source="../assets/img/VolumeIcon.png");
+	disabled-skin: Embed(source="../assets/img/VolumeIcon.png");
+	selected-over-skin:Embed(source="../assets/img/SoundMute.png");
+	selected-up-skin:Embed(source="../assets/img/SoundMute.png");
+	selected-down-skin:Embed(source="../assets/img/SoundMute.png");
+	cornerRadius: 0;
+	
+}
+.loop
+{
+	up-skin: Embed(source="../assets/img/loop.png");
+	down-skin: Embed(source="../assets/img/loop.png");
+	over-skin: Embed(source="../assets/img/loop.png");
+	disabled-skin: Embed(source="../assets/img/loop.png");
+	selected-over-skin:Embed(source="../assets/img/LoopOn.png");
+	selected-up-skin:Embed(source="../assets/img/LoopOn.png");
+	selected-down-skin:Embed(source="../assets/img/LoopOn.png");
+	cornerRadius: 0;
+}
+.suffle
+{
+	upIcon: Embed(source="../assets/img/SuffleIcon.png");
+	up-skin: Embed(source="../assets/img/SuffleIcon.png");
+	down-skin: Embed(source="../assets/img/SuffleIcon.png");
+	over-skin: Embed(source="../assets/img/SuffleIcon.png");
+	disabled-skin: Embed(source="../assets/img/SuffleIcon.png");
+	selected-over-skin:Embed(source="../assets/img/ShuffleOn.png");
+	selected-up-skin:Embed(source="../assets/img/ShuffleOn.png");
+	selected-down-skin:Embed(source="../assets/img/ShuffleOn.png");
+	cornerRadius: 0;
+}
+.title
+{
+	fontSize: 14;
+	fontFamily: Arial;
+	color:#EFB12C;
+}
+.valSliderCSS
+{
+	thumbSkin: Embed(source="../assets/img/TrackBall.png");
+	thumbUpSkin: Embed(source="../assets/img/TrackBall.png");
+	dataTipOffset: -10;
+	trackSkin: Embed(source="../assets/img/Slider.gif");
+	showTrackHighlight: true;
+	themeColor: #E4E0E0;
+}
+.positionSliderCSS
+{
+	thumbSkin: Embed(source="../assets/img/TrackBall.png");
+	thumbUpSkin: Embed(source="../assets/img/TrackBall.png");
+	dataTipOffset: -10;
+	tickLength: 0;
+	trackSkin: Embed(source="../assets/img/progressbar.gif");
+	showTrackHighlight: true;
+	themeColor: #BB8E04;
+}
+ProgressBar
+{
+	borderColor: #FFCC33;
+	barColor: #FFCC33;
+	verticalGap: 0;
+	trackHeight: 5;
+	color: #FFCC33;
+	trackSkin: Embed(source="../assets/img/progressbar.gif");
+}
+ToolTip{
+	backgroundColor: #FFFFE1;
+	color: #010101;
+	fontSize: 11;
+	fontWeight: normal;
+	cornerRadius: 0;
+	borderStyle: solid;
+	borderColor: #010101;
+	borderThickness: 1;
+	fontFamily: Arial;
+	backgroundSize: auto;
+	
+}
+@font-face
+{
+	fontFamily: Arial;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Arial");
+}

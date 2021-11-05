@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+				backgroundGradientColors="[#FFFCFC, #000000]" 
+				backgroundGradientAlphas="[1.0, 0.93]" horizontalAlign="center" viewSourceURL="srcview/index.html">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.VideoEvent;
+			
+			private var mute : Boolean = false;
+			
+			private function muteHandler(event:MouseEvent):void{
+				if (!mute) {
+					player.volume = 0;
+					mute = true;
+					muteBtn.label = "Unmute";
+				}
+				else{
+					player.volume = volSlider.value;
+					mute = false;
+					muteBtn.label = "Mute";
+				}
+			}
+			
+			private function formatTime(value:int):String
+			{
+				var result:String = (value % 60).toString();
+				if (result.length == 1)
+					result = Math.floor(value / 60).toString() + ":0" + result;
+				else 
+					result = Math.floor(value / 60).toString() + ":" + result;
+				return result;
+			}
+			
+			private function videoDisplay_playheadUpdate(event:VideoEvent):void{
+				progressBar.setProgress(event.playheadTime, player.totalTime);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label text="Basic Video Player in Flex" fontFamily="Georgia" 
+			  fontSize="30" fontWeight="bold" color="#6D0A26"/>
+	<mx:VideoDisplay id="player" source="assets/MagMag_Trailer_002_E.flv" 
+					 maintainAspectRatio="true"  
+					 width="450" height="300" autoPlay="false"
+					 playheadUpdate="videoDisplay_playheadUpdate(event);"/>
+	<mx:ProgressBar id="progressBar" mode="manual" label=" " width="{player.width}"/>
+	<mx:HBox width="450">
+		<mx:Button label="Play" click="player.play()"/>
+		<mx:Button label="Pause" click="player.pause()"/>
+		<mx:Button label="Stop" click="player.stop()"/>
+		<mx:Button id="muteBtn" label="Mute" click="muteHandler(event)" width="70"/>
+		<mx:HSlider id="volSlider" 
+					liveDragging="true" 
+					minimum="0.0"
+					maximum="1.0"
+					value="1.0"
+					snapInterval="0.01"
+					change="player.volume=volSlider.value" width="100"/>
+		<mx:Label text="{formatTime(player.playheadTime)} / {formatTime(player.totalTime)}" 
+				  color="#FFFFFF" width="73"/>
+	</mx:HBox>
+	
+</mx:Application>

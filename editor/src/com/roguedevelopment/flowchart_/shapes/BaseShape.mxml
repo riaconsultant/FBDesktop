@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+/**
+ *  Latest information on this project can be found at http://www.rogue-development.com/objectHandles.xml
+ * 
+ *  Copyright (c) 2008 Marc Hughes 
+ * 
+ *  Permission is hereby granted, free of charge, to any person obtaining a 
+ *  copy of this software and associated documentation files (the "Software"), 
+ *  to deal in the Software without restriction, including without limitation 
+ *  the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *  and/or sell copies of the Software, and to permit persons to whom the Software 
+ *  is furnished to do so, subject to the following conditions:
+ * 
+ *  The above copyright notice and this permission notice shall be included in all 
+ *  copies or substantial portions of the Software.
+ * 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ *  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ *  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+ *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * 
+ * 
+ * 
+ **/
+
+-->
+<oh:ObjectHandles  
+		 xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:oh="com.roguedevelopment.objecthandles.*"
+		 xmlns:degrafa="com.degrafa.*"
+		 creationComplete="initShape();"
+		 allowRotate="true">
+	<mx:Script>
+		<![CDATA[
+			import mx.graphics.LinearGradient;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import com.abdulqabiz.utils.QueryString;
+			
+			
+			import mx.utils.ObjectUtil;
+			import com.degrafa.paint.LinearGradientStroke;
+			//import mx.graphics.SolidColorStroke;
+			import mx.controls.Alert;
+			import com.roguedevelopment.objecthandles.SelectionManager;
+			import mx.effects.Resize;
+			import mx.effects.Move;
+			import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+			import com.degrafa.paint.SolidStroke;
+			import com.degrafa.paint.GradientStop;
+			import com.degrafa.paint.LinearGradientFill;
+			import com.degrafa.core.IGraphicsFill;
+			import com.degrafa.core.IGraphicsStroke;
+			
+			[Bindable] public var background:IGraphicsFill;
+			[Bindable] public var stroke:IGraphicsStroke;
+			
+			
+			
+			/**
+			 * Initialized the fill & stroke for the shape and sets up some event listeners.
+			 **/
+			[Bindable] 
+			private var sessionid:String;
+			private var qs:QueryString;
+			
+			//private var _color:String;
+			
+			 
+			protected function initShape() : void
+			{	
+				
+				qs = new QueryString();
+	    		sessionid = qs.parameters.p;
+	    		//sessionid = qs.parameters.p;
+	    		if(sessionid != '')
+	    		{
+	    			myRemote.getBannerData(sessionid);
+				}
+	    		var lgStroke:LinearGradientStroke = new LinearGradientStroke();
+				lgStroke.gradientStops = [ new GradientStop( 0x000000, 1 ), new GradientStop( 0x000000, 1 ) ];
+				lgStroke.weight = 2;
+				stroke = lgStroke;
+				
+				sortOrder = -100;
+				addEventListener(ObjectHandleEvent.OBJECT_MOVED_EVENT, onMovedOrResized );													
+				
+				
+				
+				if(this !=null)
+				SelectionManager.instance.addSelectable(this);
+			}
+			
+			
+			
+			/**
+			 * Whenever we move the flag, lets snap the size/position to the
+			 * grid.
+			 * 
+			 * Also, if we move it outside the drawing canvas area, lets get rid
+			 * of it.
+			 **/
+			
+			public function getBannerDataListener(event:ResultEvent):void
+			{
+			
+				var arr:Array = event.result as Array;
+				var n:int = arr.length;
+				for (var i:int = 0; i < n; i++)
+		 		{
+		 		   	
+		 			if(arr[i].proudct_id == "TShirt")
+		 			{	
+		 				
+		 				 if(arr[i].subproduct_id == "TShirtFront")
+				 		 {
+				 		 	 if(arr[i].object_type == "CircleShape")
+							   {
+							   		
+							   		//var _color2:uint = uint(arr[i].color);
+							   		//Alert.show(''+arr[i].color);
+							   		var lgbackground:LinearGradientFill	 = new LinearGradientFill();
+									lgbackground.gradientStops = [ new GradientStop(arr[i].color, 1 ), new GradientStop( arr[i].color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   /* if(arr[i].object_type == "SquareShape")
+							   {
+							   		 _color = arr[i].color;
+							   		lgbackground = new LinearGradientFill();
+							   		lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "RoundRect4")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "Cross")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "Ellipse")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "ellipticalarc")
+							   {
+							   			 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   if(arr[i].object_type == "ployline")
+							   {
+							   		_color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   if(arr[i].object_type == "RoundRect1")
+							   {
+							   			 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   } */
+				 		 }
+				 		 
+				 		 if(arr[i].subproduct_id == "TShirtBack")
+				 		 {
+				 		 	/*  if(arr[i].object_type == "CircleShape")
+							   {
+							   		 _color = arr[i].color;
+							   		
+							   		//lgbackground = new LinearGradientFill();
+									lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   } */
+							   
+							   if(arr[i].object_type == "SquareShape")
+							   {
+							   		 
+							   		var lgbackground1:LinearGradientFill	 = new LinearGradientFill();
+							   		lgbackground1.gradientStops = [ new GradientStop(arr[i].color, 1 ), new GradientStop(arr[i].color, 1 ) ];
+									lgbackground1.angle=90;									
+									background = lgbackground1;
+							   }
+							   
+							  /*  
+							   if(arr[i].object_type == "RoundRect4")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "Cross")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "Ellipse")
+							   {
+							   		 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   
+							   if(arr[i].object_type == "ellipticalarc")
+							   {
+							   			 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   if(arr[i].object_type == "ployline")
+							   {
+							   			 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   }
+							   
+							   if(arr[i].object_type == "RoundRect1")
+							   {
+							   			 _color = arr[i].color;
+						   			lgbackground = new LinearGradientFill();
+						   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+									lgbackground.angle=90;									
+									background = lgbackground;
+							   } */	
+				 		 }
+					 	/* if(arr[i].subproduct_id == "TShirtLeft")
+				 		{
+				 		   if(arr[i].object_type == "CircleShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+								lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "SquareShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+						   		lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "RoundRect4")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Cross")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Ellipse")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "ellipticalarc")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "ployline")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "RoundRect1")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }	
+				 		}
+				 		
+				 		if(arr[i].subproduct_id == "TShirtRight")
+			 		    {
+			 		       if(arr[i].object_type == "CircleShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+								lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "SquareShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+						   		lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "RoundRect4")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Cross")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Ellipse")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "ellipticalarc")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "ployline")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "RoundRect1")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+				 		} */
+				 		
+				 	}
+				 	/*if( || arr[i].proudct_id == "Banner" || arr[i].proudct_id == "DecalDesigns" || arr[i].proudct_id == "diecutters")
+				 	{		
+			 			 if(arr[i].subproduct_id == "Banner" || arr[i].subproduct_id == "DecalDesigns" || arr[i].subproduct_id == "diecutters")
+			 		    {
+				 		   if(arr[i].object_type == "CircleShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+								lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "SquareShape")
+						   {
+						   		 _color = arr[i].color;
+						   		lgbackground = new LinearGradientFill();
+						   		lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "RoundRect4")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Cross")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "Ellipse")
+						   {
+						   		 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   
+						   if(arr[i].object_type == "ellipticalarc")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "ployline")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+						   
+						   if(arr[i].object_type == "RoundRect1")
+						   {
+						   			 _color = arr[i].color;
+					   			lgbackground = new LinearGradientFill();
+					   			lgbackground.gradientStops = [ new GradientStop( _color, 1 ), new GradientStop( _color, 1 ) ];
+								lgbackground.angle=90;									
+								background = lgbackground;
+						   }
+			 			} 
+				  	} */
+		 		}	
+			
+			}
+			
+			protected function onMovedOrResized(e:Event) : void
+			{
+				
+				// Snap to the grid
+				var m:Move = new Move( this );
+				m.xTo = Math.round( x/25) * 25;
+				m.yTo = Math.round( y/25) * 25 + 7;
+				//m.play();
+				
+				var r:Resize = new Resize( this );
+				r.widthTo = Math.round( width/25) * 25;
+				r.heightTo = Math.round( height/25) * 25 ;
+				//r.play();
+			}
+			
+			
+			
+			[Embed(source="picture/resize_handle.png")]
+			protected var handleGraphic:Class;
+			
+			
+			/**
+			 * Sets a custom graphic for the handles so they look prettier.
+			 **/
+			override protected function createHandles() : Array
+			{
+				//resizeHandleImage = handleGraphic;
+				return super.createHandles();
+			}
+			private function faultListener(event:FaultEvent):void {
+                Alert.show(event.fault.message, "Error");
+            }
+			
+			
+		]]>
+	</mx:Script>
+<mx:RemoteObject id="myRemote" destination="zend" source="MyService" showBusyCursor="true" fault="faultListener(event)">
+	<mx:method name="getBannerData" result="getBannerDataListener(event)"/>
+</mx:RemoteObject>	
+</oh:ObjectHandles>

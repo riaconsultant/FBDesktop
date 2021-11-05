@@ -1,0 +1,1897 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute"
+	width="98%"
+	height="98%"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+ 	creationComplete="handleCreationComplete();removeObject();"
+ 	verticalAlign="middle"
+ 	horizontalAlign="center"
+ 	initialize="initapps()"
+ 	backgroundGradientColors="[#cccccc, #787878]"
+ 	
+ 	xmlns:controls="com.adobesamples.controls.*" 
+	xmlns:resize="flex.utils.ui.resize.*" 
+	xmlns:oh="com.roguedevelopment.objecthandles.*" 
+	xmlns:be="com.redrock.be.*" 
+	xmlns:canvasPaint="canvasPaint.*"
+ 	xmlns:flash.filters="flash.filters.*" 
+    xmlns:degrafa="com.degrafa.*"
+    xmlns:paint="com.degrafa.paint.*"
+    xmlns:geometry="com.degrafa.geometry.*"
+    xmlns:grid="com.degrafa.geometry.repeaters.*"
+ 	>
+	
+	<!--
+		This is a simple configurator which allows you to choose the look 
+		and feel of your very own bowling shirt. You can review your
+		configuration when you finish and choose to save.
+	-->
+	<!-- This stylesheet is used throughout the whole application -->
+	<mx:Style source="css/stylesheet.css"/>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+		
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS 
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import com.adobesamples.vo.ConfigurationData;
+			import com.adobesamples.controls.Shirt1Back;
+			import com.adobesamples.controls.Shirt1Front;
+			import com.adobesamples.controls.*;
+			import com.adobesamples.events.*;
+			import com.adobesamples.vo.ConfigurationItem;
+			import flash.utils.*;	
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION 
+			
+			
+			[Bindable]
+			private var __chosenConfigurationItem:ConfigurationItem = new ConfigurationItem();
+			
+			[Bindable]
+			private var __chosenConfigurationData:ConfigurationData = new ConfigurationData();
+		
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			//[Bindable("onDataProviderSet")]
+			/**
+			* This dataProvider is public so that the application is extensible.
+			*
+			* <p>Properties within the ConfigurationItem are bindable. The components
+			* within this application all update based on these properties.</p>
+			*
+			* @param i_dataProvider The object consisting the configuration options.
+			*
+			* @see com.adobesamples.vo.ConfigurationItem The ConfigurationItem class.
+			*/
+			/* public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+				
+				__chosenConfigurationItem = new ConfigurationItem();
+				__chosenConfigurationItem.design = i_dataProvider.design;
+				__chosenConfigurationItem.designName = i_dataProvider.designName;
+				__chosenConfigurationItem.baseColor = i_dataProvider.baseColor;
+				__chosenConfigurationItem.trimColor = i_dataProvider.trimColor;
+				__chosenConfigurationItem.logo = i_dataProvider.logo;
+				__chosenConfigurationItem.logoName = i_dataProvider.logoName ;
+				__chosenConfigurationItem.name_font = i_dataProvider.name_font;
+				__chosenConfigurationItem.name_font_color = i_dataProvider.name_font_color;
+				__chosenConfigurationItem.name_text = i_dataProvider.name_text;
+				__chosenConfigurationItem.trimColor = i_dataProvider.trimColor;
+				
+				this.dispatchEvent(new Event("onDataProviderSet"));
+				
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __chosenConfigurationItem;
+			} */
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE METHODS
+			
+			/* private function setupListeners():void{
+				
+				//this.configuratorHeader.addEventListener("onReset",handleResetReleased);
+				//this.configuratorHeader.addEventListener("onHelp",handleHelpReleased);
+				
+				this.mainTabs.addEventListener(ColorChosenEvent.BASE_COLOR_CHOSEN,handleBaseColorChange);
+				this.mainTabs.addEventListener(ColorChosenEvent.TRIM_COLOR_CHOSEN,handleTrimColorChange);
+				this.mainTabs.addEventListener(DesignChosenEvent.DESIGN_CHOSEN,handleDesignChange);
+				this.mainTabs.addEventListener(LogoChosenEvent.LOGO_CHOSEN,handleLogoChange);
+				this.mainTabs.addEventListener(ColorChosenEvent.NAME_LABEL_COLOR_CHOSEN,handleNameColorChange);
+				this.mainTabs.addEventListener(NameTextChosenEvent.NAME_CHOSEN,handleNameChange);
+				this.mainTabs.addEventListener(FontChosenEvent.FONT_CHOSEN,handleFontChange);
+			} */
+			
+			/* private function populateConfigurationData():void{
+				
+				__chosenConfigurationData = new ConfigurationData();
+				
+			} */
+			
+			/* private function resetDataProvider():void{
+				
+				this.dataProvider = new ConfigurationItem();
+					
+			} */
+
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+			/**
+			* Instantiates listeners, configuration data, and the default state.
+			*/
+			
+			  private function handleCreationComplete():void{
+					
+				/* this.setupListeners();
+				// this.currentState = "NoWindow";
+				if(__chosenConfigurationData == null){
+					this.populateConfigurationData();
+				}
+
+				this.resetDataProvider(); */
+			} 
+			
+			/*private function handleResetReleased(event:Event):void{
+				this.resetDataProvider();
+			}
+			
+			
+			private function handleHelpReleased(event:Event):void{
+				this.currentState = "Help";
+			}
+			
+			private function handleNameColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.name_font_color = event.color;
+			}
+			
+			private function handleNameChange(event:NameTextChosenEvent):void{
+				__chosenConfigurationItem.name_text = event.nameText;
+			}
+			
+			private function handleFontChange(event:FontChosenEvent):void{
+				__chosenConfigurationItem.name_font = event.font;
+			}
+			
+			private function handleDesignChange(event:DesignChosenEvent):void{
+
+				var baseColor:Number = __chosenConfigurationItem.baseColor;
+				var trimColor:Number = __chosenConfigurationItem.trimColor;
+
+				__chosenConfigurationItem.design = event.design.front;
+				__chosenConfigurationItem.designName = event.design.name;
+				
+				// Refreshes the baseColor within the flash shirt designs.
+				if(__chosenConfigurationItem.baseColor > 0){
+					__chosenConfigurationItem.baseColor -= 1;
+				}else{
+					__chosenConfigurationItem.baseColor += 1;
+				}
+				
+				// Refreshes the baseColor within the flash shirt designs.
+				if(__chosenConfigurationItem.trimColor > 0){
+					__chosenConfigurationItem.trimColor -= 1;
+				}else{
+					__chosenConfigurationItem.trimColor += 1;
+				}
+				
+				__chosenConfigurationItem.baseColor = baseColor;
+				__chosenConfigurationItem.trimColor = trimColor;
+
+			}
+			
+			private function handleLogoChange(event:LogoChosenEvent):void{
+				__chosenConfigurationItem.logo = event.logo.image;
+				__chosenConfigurationItem.logoName = event.logo.name;
+			}
+			
+			private function handleBaseColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.baseColor = event.color;
+			}
+			
+			private function handleTrimColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.trimColor = event.color;
+			}
+			
+			private function handleFinalWindowClose(event:Event):void{
+				this.currentState = "NoFinal";
+			}
+			
+			private function handleHelpWindowClose(event:Event):void{
+				this.currentState = "NoHelp";
+			}
+			
+			private function handleSaveConfig(event:Event):void{
+				this.currentState = "Final";
+			}
+			
+			private function handleFinalScreenAdd():void{
+				this.finalScreen.dataProvider = this.__chosenConfigurationItem;
+			} */
+			//new addd
+		
+			import com.adobesamples.vo.ConfigurationItem;
+			import mx.collections.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			/* [Bindable]
+			private var __dataProvider:ConfigurationItem;
+		
+			
+			[Bindable]
+			public function set dataProvider1(i_dataProvider:ConfigurationItem):void{
+				__dataProvider = i_dataProvider;
+			}
+			
+			public function get dataProvider1():ConfigurationItem{
+				return __dataProvider;
+			} */
+			
+			//start my code 14-07-2009//
+		//	import com.roguedevelopment.objecthandles.myClass1;
+			//import com.roguedevelopment.objecthandles.myClass;
+			import mx.events.*;
+			import mx.containers.*;
+			import mx.core.*;
+			import flash.events.Event;
+	        import mx.events.DropdownEvent;
+	        import com.roguedevelopment.objecthandles.ObjectHandles;
+	     //   import com.roguedevelopment.objecthandles.myClass;
+	        import mx.effects.*;
+			import mx.events.SliderEvent;
+			import mx.controls.*;
+		
+		//import com.roguedevelopment.objecthandles.ShapesFactory;
+     	//import mx.core.UIComponent;   
+       
+       	import mx.events.SliderEvent;
+     	import com.redrock.be.TextPath;
+       
+        import mx.controls.Image;
+		import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+		import com.roguedevelopment.objecthandles.ObjectHandlesMouseCursors;
+		
+		protected var resize_handle:Class;
+		protected var rotate_handle:Class;
+		
+		
+		//start popup box
+     	//import mx.controls.Label;
+        import mx.events.CloseEvent;
+        import mx.containers.TitleWindow;
+        import mx.managers.PopUpManager;
+		
+		private var fade:Effect = new Fade();
+		private var iris:Effect = new Iris();
+		private var blur:Blur = new Blur();
+		private var bool:Boolean = true;
+		private var titleWindow:TitleWindow;
+		
+		[Bindable]
+        public var selectedItem:Object;
+
+		
+		
+		
+		
+		// for text size//	
+		[Bindable]
+		private var curSize:int = 10;
+		private var curFont:String = "";
+		private var selectedObject:ObjectHandles = null;
+		
+		private var cnvsParent:Canvas = new Canvas();
+		
+		// Strat for gallery//	
+		
+		// end for gallery//
+		
+		[Embed(source='images/tools/circle.png')]
+		private var circle:Class;
+		[Embed(source='images/tools/rectangle.png')]
+		private var rectangle:Class;
+		[Embed(source='images/tools/polygon.png')]
+		private var polygon:Class;
+		[Embed(source='images/tools/triangle.png')]
+		private var triangle:Class;
+       	
+     	[Bindable]
+     	//private var dp:Array = [ "circle", "rectangle", "polygon", "triangle" ];
+     	private var dp:Array = [{icon:circle, label:"circle"}, {icon:rectangle, label:"rectangle"},{icon:polygon, label:"polygon"},{icon:triangle, label:"traingle"}];
+     	
+     	[Bindable]
+     	public var cards: Array = [ {label:"arial", data:1}, 
+            {label:"arial black", data:2}, {label:"verdana", data:3} ];
+        
+        /*
+        * Strat font chagne styel 
+        */
+        
+        private function onCmbFontChange(event:ListEvent):void
+        {
+          	if(selectedObject != null)
+	        {
+        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        		if(txt != null)
+        		{
+        			txt.setStyle("fontFamily", combobox.selectedLabel);
+        		}
+	        }
+        }
+		
+	   /*
+        * End font chagne styel 
+        * Start text align
+        */
+        
+          
+	    public function setTextAlign(event:MouseEvent):void 
+	    {
+	       	var align:String = event.currentTarget.id;
+	       	if(selectedObject != null)
+        	{
+        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        		if(txt != null)
+        		{
+        			txt.setStyle("textAlign",align);
+        		}
+        	}
+	    }
+	        
+     	/*
+        * End text align 
+        * Statr bold italic under line 
+        */
+     	
+     	
+     	private function checkbold ():void
+		{
+			if(boldtext.selected==true)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("fontWeight","normal");
+	        		}
+	        	}
+			}
+			if(boldtext.selected==false)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle("fontWeight","bold");
+	        		}
+	        	}
+			}
+		}
+		private function checkitalic ():void
+		{
+			if(italictext.selected==true)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("fontStyle","normal");
+	        		}
+	        	}
+			}
+			if(italictext.selected==false)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle("fontStyle","italic");
+	        		}
+	        	}
+			}
+		}
+		
+		private function checkunderline ():void
+		{
+			if(underlinetext.selected==true)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("textDecoration","underline");
+	        		}
+	        	}
+			}
+			if(underlinetext.selected==false)
+			{
+				if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle("textDecoration","underline");
+	        		}
+	        	}
+				
+				
+			}
+		}
+     	
+     	/*
+        * End bold italic under line 
+        * Start Font color Change  
+        */
+     	
+     	
+	 	private function intToHex(color:int = 0):String {
+            var mask:String = "000000";
+            var str:String = mask + color.toString(16).toUpperCase();
+            return "#" + str.substr(str.length - 6);
+        }
+           
+        private function OnColorChange(event:ColorPickerEvent):void
+        {
+        	if(selectedObject != null)
+        	{
+        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        		if(txt != null)
+        		{
+        			txt.setStyle('color', event.color);
+        		}
+        	}
+        }   
+            
+		/*
+        * End Font color Change 
+        * Start remove object  
+        */
+		
+		
+		
+		private function removeObject():void
+		{
+			//viewPanel.removeChild(oh);
+			
+		}
+		
+		/*
+        * End remove object  
+        * Start create & select Daynamic Object
+        */ 
+		
+		private function val(ho2id:String):String
+		{
+			return ho2id;
+		}
+		private function OnObjectHandlesSelected(event:ObjectHandleEvent):void
+   		{
+   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+   			if(oh1 != null)
+   			{
+				selectedObject = oh1;
+   			}
+   		}
+   		
+   		
+   		private function OnObjectHandlesSelectedShp(event:ObjectHandleEvent):void
+   		{
+   			var shpOh1:ObjectHandles = event.currentTarget as ObjectHandles;
+   			if(shpOh1 != null)
+   			{
+				selectedObject = shpOh1;
+   			}
+   		}
+   		
+   		
+   		
+   		
+   		private function hit(event:MouseEvent):void
+		{
+			var randomNum:Number = Math.floor(Math.random() * (999 - 1 + 1)) + 1;
+			var dd:String = event.currentTarget.id;
+			var oh1:ObjectHandles = new ObjectHandles();
+			//oh1.onMouseDown(event.currentTarget.id);
+			//oh1.onMouseDown();
+			oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+			oh1.allowRotate=false;
+			oh1.x=158; 
+			oh1.y=94;
+			oh1.height=47; 
+			oh1.width=168; 
+			oh1.setStyle("backgroundAlpha","0");
+			oh1.setStyle("borderThickness","0");
+			val(oh1.id)
+			
+			var txt:TextArea = new TextArea();
+			txt.text = "Click here and type your text2.";
+			txt.horizontalScrollPolicy = "off";
+			txt.verticalScrollPolicy = "off";
+			txt.percentWidth=100;
+			txt.percentHeight=100;
+			//txt.id="box1";
+			txt.setStyle("backgroundAlpha","0") 
+			txt.setStyle("fontSize","14");  
+			txt.setStyle("color","#FFDFBA");
+			txt.setStyle("fontFamily","Verdana");
+			txt.setStyle("fontWeight","bold");
+			txt.setStyle("textAlign","center");
+			txt.setStyle("borderThickness","0");
+			txt.setStyle("borderThickness","0");
+			txt.setStyle("borderStyle","none");
+			txt.addEventListener(MouseEvent.CLICK ,	clickDis);
+			if(dd=="test")
+			{
+				oh1.allowHMove=true;
+				oh1.allowHResize=true;
+				oh1.allowVMove=true;
+				oh1.allowVResize=true;
+				oh1.allowRotate=false;
+				oh1.mouseChildren=true;
+//				oh1._allowKeyboardManipulation=false;
+				oh1.addChild(txt);
+				genericExamples.addChild(oh1);
+			}
+			
+   		}
+   		private function clickDis(event:MouseEvent):void
+   		{
+   			//Alert.show("adsf");
+   			if(selectedObject != null)
+        	{
+        		selectedObject.allowHMove=false;
+				selectedObject.allowHResize=false;
+				selectedObject.allowRotate=false;
+				selectedObject.allowVMove=false;
+				selectedObject.allowVResize=false;
+				selectedObject.mouseChildren=true;
+        	}
+   		}
+   		//removeSelection
+   		private function removeSelection(event:MouseEvent):void
+   		{
+   			var remove:String = event.currentTarget.id;
+   			if(remove=="removeselection"){
+	   			if(selectedObject != null)
+	        	{
+	        		selectedObject.allowHMove=false;
+					selectedObject.allowHResize=false;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=false;
+					selectedObject.allowVResize=false;
+					selectedObject.mouseChildren=true;
+//					selectedObject.enable=false;
+					var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        			if(txt != null)
+        			{
+        			  txt.editable=true;
+        			}
+		    	}
+   			}
+   		 }
+   		
+   		private function hits(event:MouseEvent):void
+		{
+				var dd:String = event.currentTarget.id;
+				if(selectedObject != null)
+        		{
+					selectedObject.allowHMove=true;
+					selectedObject.allowHResize=true;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=true;
+					selectedObject.allowVResize=true;
+					selectedObject.mouseChildren=true;
+					var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        			if(txt != null)
+        			{
+        			  txt.editable=false;
+        			}
+        		}
+   		 }
+   		 
+   		 
+   		
+   		
+   		 private function ontxtMouseDoubleClick(event:MouseEvent):void
+   		 {
+   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+   		 }
+   		
+   		/*
+        * End create & select Daynamic Object  
+        * Start zoom in or zoom out
+        */ 
+   		
+   		 private function changeZoom(event:SliderEvent) : void
+		 {
+			
+			
+			if(selectedObject!=null)
+			{
+				selectedObject.scaleY = event.target.values[0]*2/100;
+				selectedObject.scaleX = event.target.values[0]*2/100;
+				
+			} 
+			
+			//configurableArea.scaleX = event.target.values[0]*2/100;
+			//configurableArea.scaleY = event.target.values[0]*2/100;
+			
+			//genericExamples1.scaleX = event.target.values[0]*2/100;
+			//genericExamples1.scaleY = event.target.values[0]*2/100;
+		 }
+		 
+		 private function adjustDefaultZoom() : void
+		 {
+			
+			if(selectedObject!=null)
+			{
+				selectedObject.scaleX = slider.values[0]/100*2;
+				selectedObject.scaleY = slider.values[0]/100*2;
+			} 
+				//configurableArea.scaleX = slider.values[0]/100*2;
+				//configurableArea.scaleY = slider.values[0]/100*2;
+			
+				//genericExamples1.scaleX = slider.values[0]/100*2;
+				//genericExamples1.scaleY = slider.values[0]/100*2;
+			
+			
+		 }
+		 private function myDataTipFunc(val:String):String {
+		   return  String(val)+ "%";
+		 }
+		/*
+        * End zoom in or zoom out  
+        * Start Create popup box
+        */ 
+     	 private function popup(event:MouseEvent):void 
+         {
+        	var drwShp:String = event.currentTarget.id; 
+            var label:Label = new Label();
+            titleWindow = new TitleWindow();
+            titleWindow.showCloseButton = true;
+            titleWindow.addEventListener(CloseEvent.CLOSE, titleWindow_close);
+            if(drwShp=="email")
+            {
+            	titleWindow.title = "Email Design";
+                titleWindow.width = 400;
+                titleWindow.height = 350;
+                titleWindow.addChild(emails);
+                titleWindow.x = emails.x + 300;
+            	titleWindow.y = emails.y + 100 ;
+            
+            }else if(drwShp=="draws"){
+            	titleWindow.title = "Shapes";
+                titleWindow.width = 240;
+                titleWindow.height = 180;
+                titleWindow.x = draws.x + 100;
+            	titleWindow.y = draws.y + 60;
+             	titleWindow.addChild(drawsp);
+             	
+             	
+            }else if(drwShp=="arcTextm"){
+            	
+            	//titleWindow.title = "Arc Text Editor";
+                //titleWindow.width = 350;
+                //titleWindow.horizontalScrollPolicy="off"
+                //titleWindow.height = 400;
+             	//titleWindow.addChild(arcText);
+             	//titleWindow.x = arcText.x + 250;
+            	//titleWindow.y = arcText.y + 65;
+            } 
+            this.addChild(titleWindow);
+          }
+          private function titleWindow_close(evt:CloseEvent):void {
+            
+            this.removeChild(titleWindow);
+            
+          }
+          
+         
+
+        /*
+        * End Create popup box 
+        * Start Path Text 
+        */  
+        
+        
+     	public function drawText():void {
+     	
+     	 var radius:Number = -100;
+         var spacing:Number = 9;
+     	 var centerText:Point = new Point(125,125);   
+     	cnvsParent = new Canvas();
+     	 var myText:String = String(myActTextRound.text);
+         
+          for (var char:uint=0;char<myText.length;char++) 
+          {
+	      		var tempCnvs:Canvas = new Canvas();
+	             tempCnvs.id="genericExamples1" 
+		         tempCnvs.label="Generic1"; 
+		         tempCnvs.verticalScrollPolicy="off"; 
+		         tempCnvs.horizontalScrollPolicy="off"; 
+		         tempCnvs.width=364;
+		         tempCnvs.height=273; 
+		         tempCnvs.x=0; 
+		         tempCnvs.y=0;	
+          	   var tempText:TextPath = new TextPath();
+          	   tempText.x = radius * Math.cos(degrees2radians(char*spacing)) + centerText.x;
+               tempText.y = radius * Math.sin(degrees2radians(char*spacing)) + centerText.y;
+               tempText.text = myText.charAt(char);
+               tempCnvs.addChild(tempText);
+               //genericExamples.addChild(tempCnvs);
+               cnvsParent.addChild(tempCnvs);
+          }
+          genericExamples.addChild(cnvsParent);
+          
+          
+        }
+        
+	    private function degrees2radians(deg:Number):Number {
+	    	 return (2 * Math.PI * deg) / 360; 
+	    }
+        private function radians2degrees(rad:Number):Number {            
+          return rad * 180 / Math.PI; 
+     	}
+     	private function changeCir(event:SliderEvent) : void
+		{
+			
+			var s:Number =Math.round(slider.value);
+		    var r:Number =Math.round(mySlider.value);
+		   
+		    var radius:Number = r;
+       	    var spacing:Number = s;
+       	    
+			var centerText:Point = new Point(125,125);
+			var char:uint=0
+			
+			var tempCnvs:Canvas = cnvsParent;
+			var arr:Array = tempCnvs.getChildren();
+			var myText:String = String(myActTextRound.text);
+			
+			//for each(var tempText:TextPath in arr)
+			for each(var cv:Canvas in arr) 
+			{
+				var tempText:TextPath = cv.getChildAt(0) as TextPath;
+				if(tempText != null)
+				{
+	               	tempText.x = radius * Math.cos(degrees2radians(char*event.target.values[0])) + centerText.x;
+	               	tempText.y = radius * Math.sin(degrees2radians(char*event.target.values[0])) + centerText.y;
+	               	tempText.text = myText.charAt(char);
+    			}
+               	char++;
+             }
+		 } 
+         private function orientation():void
+         {
+     		var ss:Number =Math.round(sliders.value);
+		    var rr:Number =Math.round(mySlider.value);
+		    var radius:Number = -rr;
+	        var spacing:Number = ss;
+			var center:Point = new Point(125,125);
+			var char:uint=0
+			
+			/* var tempCnvs:Canvas = new Canvas();
+	        tempCnvs.id="genericExamples1" 
+	        tempCnvs.label="Generic1"; 
+	        tempCnvs.verticalScrollPolicy="off"; 
+	        tempCnvs.horizontalScrollPolicy="off"; 
+	        tempCnvs.width=364;
+	        tempCnvs.height=273; 
+	        tempCnvs.x=0; 
+	        tempCnvs.y=0;  */
+			var myText:String = myActTextRound.text
+			var tempCnvs:Canvas = cnvsParent;
+			var arr:Array = tempCnvs.getChildren();
+			//for each(var tempText:TextPath in arr)
+			for each(var cv:Canvas in arr) 
+			{
+				var tempText:TextPath = cv.getChildAt(0) as TextPath;
+				if(tempText != null)
+				{ 
+		   			tempText.x = radius * Math.cos(degrees2radians(char*ss)) + center.x;
+               		tempText.y = radius * Math.sin(degrees2radians(char*ss)) + center.y;
+               		tempText.text = myText.charAt(char);
+    			}
+               char++;
+          	 }
+
+         }
+         private function orientationNew():void
+	     {
+	     		var myText:String = String(myActTextRound.text);
+	     		var ss:Number =Math.round(sliders.value);
+			    var rr:Number =Math.round(mySlider.value);
+			    var radius:Number = rr;
+		        var spacing:Number = ss;
+				var center:Point = new Point(125,125);
+				var char:uint=0
+				var tempCnvs:Canvas = new Canvas();
+		        
+		        tempCnvs.label="Generic1"; 
+		        tempCnvs.verticalScrollPolicy="off"; 
+		        tempCnvs.horizontalScrollPolicy="off"; 
+		        tempCnvs.width=364;
+		        tempCnvs.height=273; 
+		        tempCnvs.x=0; 
+		        tempCnvs.y=0; 
+				
+				var tempCnvs1:Canvas = cnvsParent;
+				var arr:Array = tempCnvs1.getChildren();
+			
+				for each(var cv:Canvas in arr) 
+				{
+					var tempText:TextPath = cv.getChildAt(0) as TextPath;
+					if(tempText != null)
+					{ 
+						tempText.x = radius * Math.cos(degrees2radians(char*ss)) + center.x;
+	              		tempText.y = radius * Math.sin(degrees2radians(char*ss)) + center.y;
+	              		tempText.text = myText.charAt(char);
+	              		char++;
+	       			}
+	   			}	
+	      }
+	     
+	     private function moveRight():void
+	     {
+	     	var tempCnvs:Canvas = cnvsParent;
+	     	tempCnvs.x+=5; 
+	     	
+	     		
+	     }
+	     private function moveLeft():void{
+	     	
+	     	    var tempCnvs:Canvas = cnvsParent;
+	     	    tempCnvs.x-=5; 
+	     	   
+	     }
+	     private function moveUp():void{
+	     	var tempCnvs:Canvas = cnvsParent; 
+	        tempCnvs.y-=5; 
+	        //genericExamples1.y-=5;
+	        
+	        
+	     } 
+	    private function moveDown():void{
+	    	var tempCnvs:Canvas = cnvsParent;
+	           tempCnvs.y+=5; 
+	           
+	     }     		  		    
+        
+        import mx.core.UIComponent;   
+   	    //public var myShapes:ShapesFactory;
+		public var rectangle1:UIComponent;
+		public var circle1:UIComponent;
+		    
+		import mx.core.UIComponent;
+  		import flash.display.*; 
+	  	
+	  	
+		public function initapps():void
+    	{
+        	//myShapes= new ShapesFactory();
+        	//removeChild(drawsp);
+        	//removeChild(arcText);
+        }
+       	public function drawShape(id:String):void
+	    {
+        	var shape:String=id;
+        	var shpOh1:ObjectHandles = new ObjectHandles();
+        	shpOh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelectedShp);
+        	shpOh1.allowRotate=false;
+			shpOh1.x=158; 
+			shpOh1.y=94;
+			shpOh1.height=100; 
+			shpOh1.width=100;
+			shpOh1.setStyle("backgroundAlpha","0");
+			shpOh1.setStyle("borderThickness","0");
+     		shpOh1.resizeHandleImage = resize_handle;
+     		
+        	if(shape=="circle")
+        	{
+        		/* var img:Image= myShapes.Circle();
+        		img.percentHeight = 100;
+				img.percentWidth = 100;
+				img.maintainAspectRatio = false; */
+    		 /* 	circle1 = myShapes.Circle();
+    			circle1.x=-50;
+    			circle1.y=-50; 
+    			circle1.percentHeight = 100;
+    			circle1.percentWidth =100; 
+    			shpOh1.addChild(circle1);
+				genericExamples.addChild(shpOh1);
+				shpOh1.allowHMove=true;
+				shpOh1.allowHResize=true;
+				shpOh1.allowRotate=true;
+				shpOh1.allowVMove=true;
+				shpOh1.allowVResize=true;
+				shpOh1.addEventListener(ResizeEvent.RESIZE,objectHandlesrezise);
+				 */
+			}
+			else if(shape=="rectangle")
+			{
+    			/* var bmd:BitmapData = new BitmapData(80, 80, true, 0xFFCCCCCC);
+				var rect:Rectangle = new Rectangle(100, 100, 100, 100);
+				bmd.fillRect(rect, 0xFFFF0000);
+				            
+				var bm:Bitmap = new Bitmap(bmd);
+				var img1:Image = new Image();
+				img1.load(bm);
+				img1.percentHeight = 100;
+				img1.percentWidth = 100;
+				img1.maintainAspectRatio = false; */
+        		/*  rectangle1=myShapes.Rectangle();
+        		rectangle1.x=-100;
+    			rectangle1.y=-100; 
+           		shpOh1.addChild(rectangle1);
+				genericExamples.addChild(shpOh1);
+        		shpOh1.allowRotate = true;
+        		shpOh1.allowHMove=true;
+				shpOh1.allowHResize=true;
+				shpOh1.allowRotate=true;
+				shpOh1.allowVMove=true;
+				shpOh1.allowVResize=true; */
+			
+			}
+         }
+        
+        /*
+        * End draw shap 
+        * Start 
+        */	
+        
+        
+         private function objectHandlesrezise(event:ResizeEvent):void
+         {
+        	var objhandles:ObjectHandles = event.currentTarget as ObjectHandles;
+        	if(objhandles != null)
+        	{
+        		var img:UIComponent = objhandles.getChildAt(0) as UIComponent;
+        		img.height = objhandles.height;
+        		img.width = objhandles.width;
+        	}
+         }
+        
+        /*
+        * 
+        * Start  font size
+        */	
+		
+		
+		
+         
+    
+		
+		
+		 private function initApp():void {
+		 	
+		 	// this code for upload file Start //
+		 	// this code for upload file End //
+		 	
+		 	
+        	var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        	if(selectedObject != null)
+        	{
+        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+        		if(txt1 != null)
+        		{
+        			txt1.setStyle('fontSize', curSize);
+        		}
+        	}
+ 	 	 }
+  	     public function showStyles():void {
+	        //mx.controls.Alert.show("Font size is " + box1.getStyle("fontSize") + ".");
+	     }
+	     
+	     public function setNewStyles():void {
+        	curSize = Number (ip2.value);
+        	var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        	if(selectedObject != null)
+        	{
+        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+        		if(txt1 != null)
+        		{
+        			txt1.setStyle('fontSize', curSize);
+        		}
+        	}
+         }
+     	 /*
+        * 
+        * End  font size
+        */	
+        private function arc(event:MouseEvent):void
+        {
+        	
+        	var pUp:String = event.currentTarget.id;
+        	if(pUp=="email")
+        	{
+        	    	emails.visible=true;
+        	
+        	}else if(pUp=="arcTextm"){
+        	window.visible=true;
+        	}else if(pUp=="uploadVectorImg"){
+        	
+        	upload.visible=true;
+        	
+        	}
+        	
+        
+        }
+        
+        
+        private function Delete():void
+        {
+        	
+        	if(selectedObject != null)
+	        {
+	 			//removeChild(selectedObject);
+	        	selectedObject.removeAllChildren();
+	        	
+	        }
+	        if(cnvsParent.parent!= null)
+	        	cnvsParent.parent.removeChild(cnvsParent);	
+        	
+        }
+        private function removePopup():void
+        {
+        	window.visible=false;
+        	emails.visible=false;
+        	upload.visible=false;
+        	        	
+        }	
+        
+        import com.roguedevelopment.objecthandles.SelectionManager;
+        
+        
+        // mail function start.//
+        
+        import mx.events.ValidationResultEvent;
+		import mx.controls.Alert;
+		
+		private function sendMail():void{
+			var _senderName:String = senderName.text;
+	        var _senderEmail:String = senderEmail.text;
+	        var _emailMessage:String = emailMessage.text;
+	        var _emailSubject:String = emailSubject.text;
+	       
+			var evValidMail:ValidationResultEvent = mailValidator.validate();
+			var evValidName:ValidationResultEvent = nameValidator.validate();
+			var evValidMessage : ValidationResultEvent = mailValidator.validate();
+			
+			if (evValidMail.type == ValidationResultEvent.VALID 
+			&& evValidName.type == ValidationResultEvent.VALID
+			&& evValidMessage.type == ValidationResultEvent.VALID){
+				emailService.send({senderName: _senderName, senderEmail:_senderEmail, emailSubject:_emailSubject, emailMessage: _emailMessage});
+			}
+			else{
+				resultLabel.text="There are Form errors";
+				resultLabel.setStyle("styleName", "invalid");
+			}
+		}
+		
+		private function emailResult():void{
+            Alert.show("Thank you for your submission ");
+            clearForm();
+		}
+		
+		private function clearForm():void{
+			resultLabel.text="";
+			emailSubject.text="";
+			emailMessage.text="";
+		}
+        
+        //End mail function  End.//
+        //===Strat Image Upload====//
+        	import mx.managers.PopUpManager;
+			
+			import flash.net.*;
+			import mx.controls.*;
+			
+			/* Location of our Upload script */
+			private static const UPLOAD_URL:String = "php/flex_file_upload.php";			
+			private static const IMAGE:String = "image";			
+			private static const MODE_BROWSE:String = "fileModeBrowse";			
+			private static const MODE_UPLOAD:String = "fileModeUpload";
+			
+			[Bindable]public var fileMode:String;
+			
+			private var maxFileSize:Number = 3500;			
+			
+			 public var fileReference:FileReference = new FileReference();
+			//private var fileReference:FileReference;
+			private var fileFilter:FileFilter;
+			private var fileType:String;
+			private var isReady:Boolean;			
+			
+			/* Set up our application */
+			private function init():void			
+			{
+				Security.allowDomain( "*" );
+				Security.loadPolicyFile( "crossdomain.xml" );
+						
+				PopUpManager.centerPopUp( this );
+				
+				this.isPopUp = false;
+				
+				//Set up the file upload components
+				fileMode = "";
+				pb_progress.label = "Select File Type";
+				var fileReference:FileReference = new FileReference();
+				
+				addListeners();
+			}		
+				
+			/* Register all of our event handlers and listeners */		
+			private function addListeners():void 
+			{
+				
+				
+				fileReference.addEventListener( Event.CANCEL, cancelHandler );
+				fileReference.addEventListener( Event.SELECT, selectHandler );
+				fileReference.addEventListener( IOErrorEvent.IO_ERROR, ioErrorHandler );
+				fileReference.addEventListener( ProgressEvent.PROGRESS, progressHandler );
+				fileReference.addEventListener( Event.COMPLETE, completeHandler );
+			}
+				
+			/* We can assign the correct file filters based on the selected check box */
+			private function assignFileType( event:Event ):void 
+			{
+				//We switch depending on the id of the check box that is selected
+				switch ( event.currentTarget.id ) 
+				{
+					//If the id is image
+					case "cb_image":
+						//Set varable to check if the cb_image box is selected
+						var image_selected:Boolean = ( cb_image.selected ) ? true : false;
+							if( image_selected != false )
+							{
+								//Enable the button
+								isReady = true;
+								
+								//Set the fileType to image
+								fileType = "image";
+								
+								//Display to user to browse
+								pb_progress.label = "Browse for File";
+								
+								//Filter the files based on fileType
+								filterFileType();
+							} else {							
+								//Else disable the button
+								isReady = false;
+							}
+					break;
+					
+					//If the id is a document
+					case "cb_document":
+						var document_selected:Boolean = ( cb_document.selected ) ? true : false;
+							if ( document_selected != false )
+							{
+								//Enable the button
+								isReady = true;
+								
+								//Set the fileType to document
+								fileType = "document";
+								
+								//Display to user to browse
+								pb_progress.label = "Browse for File";
+								
+								//Filter the files based on fileType
+								filterFileType();
+							} else {
+								//Else disable the button
+								isReady = false;
+							}
+					break;
+					
+					//If the id is a compressed
+					case "cb_compressed":
+						var compressed_selected:Boolean = ( cb_compressed.selected ) ? true : false;
+							if ( compressed_selected != false )
+							{
+								//Enable the button
+								isReady = true;
+								
+								//Set the fileType to document
+								fileType = "compressed";
+								
+								//Display to user to browse
+								pb_progress.label = "Browse for File";
+								
+								//Filter the files based on fileType
+								filterFileType();
+							} else {
+								//Else disable the button
+								isReady = false;
+							}
+					break;								
+				}
+			}			
+			
+			/* Filter the different filetypes */
+			private function filterFileType():void 
+			{
+				switch ( fileType )
+				{
+					case "image": 
+						fileFilter = new FileFilter( "Images (*.jpg; *.jpeg; *.gif; *.png;)",
+						 										"*.jpg; *.jpeg; *.gif; *.png" );
+					break;
+					
+					case "document":
+						fileFilter = new FileFilter( "Documents (*.pdf; *.txt; *.doc; *.rtf;)", 
+																"*.pdf; *.txt; *.doc; *.rtf;" );
+					break;
+					
+					case "compressed":
+						fileFilter = new FileFilter( "Compressed (*.zip; *.rar; *.7zip;)", 
+																 "*.zip; *.rar; *.7zip;" );
+					break; 				
+				}
+			
+			}	
+					
+			/* Submit the file to check if its legit */
+			private function submit( _fileMode:String ):void 
+			{
+				fileMode = _fileMode;
+				
+				
+				
+				if ( isReady != true )
+				{
+					Alert.show("Please select a file type!","ALERT", Alert.OK);
+				} else if ( fileMode == MODE_BROWSE ) 
+				{
+					
+					openBrowseWindow();
+					
+				} else if ( fileMode == MODE_UPLOAD )
+				{
+					uploadFile();
+				}
+			}		
+				
+			/* Open up the browse for file window */
+			private function openBrowseWindow():void 
+			{
+				try
+				{
+					fileReference.browse([fileFilter]);
+				}
+				catch ( illegalOperation:IllegalOperationError )
+				{
+					Alert.show( String(illegalOperation.type), "illegal operation error", 0);
+				}
+			
+			}
+			
+			/* Our select handler for checking the filesize, etc */
+			private function selectHandler( event:Event ):void 
+			{
+				//Get the filesize
+				var fileSize:Number = Math.round( fileReference.size/1024 );
+				
+				//Set the filename input to the filename of the file
+				txt_filename.text = fileReference.name;
+				
+				//Set the filesize text to the size of the file for upload
+				txt_filesize.text = String( fileSize ) + "kb";
+					
+					//If the current file size is less or equal to our max file size then up
+					if ( fileSize <= maxFileSize )
+					{
+						//Set the fileMode to upload
+						fileMode = MODE_UPLOAD;
+						
+						//Set the label on the progress bar
+						pb_progress.label = "Click Upload";
+						
+					} else {
+						//If the file is to big, alert the user
+						Alert.show( String("File is to large! \n\nPlease select a file smaller than "+ fileSize + "kb" ), 
+																							"File Size Error", Alert.OK );
+					}
+			}
+			
+			/* Sends the file to our script */
+			private function uploadFile():void 
+			{
+				var request:URLRequest = new URLRequest();
+					request.url = UPLOAD_URL;
+				
+				var params:URLVariables = new URLVariables();
+					params.FileType = fileType;
+					request.method = URLRequestMethod.POST;
+				
+				
+					request.data = params;
+				
+				fileReference.upload( request );
+			}	
+				
+			/* Handles our progress bar */	
+			private function progressHandler( event:ProgressEvent ):void 
+			{
+				//Set the progress to our bytesLoaded, and bytesTotal
+				pb_progress.setProgress( event.bytesLoaded, event.bytesTotal );
+				
+				//Set the label to uploading and do alittle math of displaying the current progress
+				pb_progress.label = "Uploading " + Math.round( event.bytesLoaded / 1024 ) + " kb of " +
+												   Math.round( event.bytesTotal / 1024 ) + " kb ";
+				
+			}	
+					
+			/* Just incase our user wants to cancel the upload */
+			private function cancelUpload():void 
+			{				
+				//Cancel the fileref
+				fileReference.cancel();
+				
+				//Reset the uploader
+				resetUploader();
+				
+				//Remove the popup
+				PopUpManager.removePopUp( this );
+			}
+						
+			/* We can handle the canceled download */
+			private function cancelHandler( event:Event ):void 
+			{
+				Alert.show( "File Upload Cancelled" );
+			}	
+			
+			/* IO Error handler */			
+			private function ioErrorHandler( event:IOErrorEvent ):void 
+			{
+				//Alert of the error
+				Alert.show( String( event.type ), "IOError", 0 );
+				
+				//Reset the uploader
+				resetUploader();
+			}
+			
+			/* Complete handler */
+			private function completeHandler( event:Event ):void 
+			{			
+				var file:FileReference = FileReference( event.target );
+				var fileURL:String = file.name;
+				
+				//Show the user the uploaded file
+				Alert.show( String( fileURL ), "File Uploaded", Alert.OK );
+			
+				//Reset the uploader
+				resetUploader();
+			}
+			
+			/* Reset the filemode, inputs, progress bar and selected check boxes */
+			private function resetUploader():void 
+			{
+				fileMode = "";
+				
+				isReady = false;
+				
+				txt_filename.text = "";
+				txt_filesize.text = "";
+
+				pb_progress.label = " Select File Type";
+				pb_progress.maximum = 0;
+				pb_progress.minimum = 0;
+		
+			}
+
+          
+        //===Strat Image Upload====//
+        
+      
+	
+        
+        
+        private function copy(event:MouseEvent):void
+        {
+        	
+        	var ids:String= event.currentTarget.id;
+        	myl.text=ids;
+        	if(myl.text=="Cut")
+        	{
+        		 if(selectedObject!=null)
+        		 {
+ 			 	 	selectedObject.visible=false;
+        		 }else{
+        		 
+        		 	Alert.show("Please object select first.");
+        		 
+        		 }
+        	}else if(myl.text=="Copy"){
+        	
+        		if(selectedObject!=null)
+        		 {
+ 			 	 	selectedObject.visible=true;
+ 			 	 	
+        		 }else{
+        		 
+        		 	Alert.show("Please object select first.");
+        		 
+        		 }
+        	
+        	}
+        	
+        	
+        	
+        }
+       
+        private function paste():void
+        {
+        	
+        		var myText:String=myl.text;
+        		
+        		if(myText=="Cut")
+        		{
+        			selectedObject.visible=true;
+        			
+        		}else if(myText=="Copy")
+        		{
+        			Alert.show("paste your selected object");
+        			//genericExamples.addChild(selectedObject);
+        			
+        			//genericExamples.addChild(clone(selectedObject));
+        			
+        		}else if(myText=="")
+        		{
+        			Alert.show("Please copy or cut object and then click on paste.");
+        		}
+        	
+        	
+        	
+        }
+        
+       
+        
+        
+        
+        
+        			
+		]]>
+	</mx:Script>
+	<mx:Style>
+    .myStyle {
+        swatchWidth:25;
+        swatchHeight:25;
+        textFieldWidth:95;
+    } 
+    @font-face {
+	    src: local("Arial");
+	    fontFamily: ArialEmbedded;
+	    fontWeight: normal;
+	}
+	 
+	TextPath {
+	    font-family: ArialEmbedded;
+	    font-size: 20;
+	}
+	
+Application
+{
+	/*background-image: Embed("images/check.png");
+	background-repeat: repeat;
+	borderSkin: ClassReference("com.degrafa.skins.CSSSkin");*/
+	backgroundcolor:#333333;
+}
+
+
+ 
+.invalid{
+   color:#990000;
+}
+
+
+</mx:Style>
+	<!-- 
+	
+		The components on the main stage are split up into 4 different main sections.
+		1. The header.
+		2. The shirt configurator area.
+		3. The tab area.
+		4. The footer.
+	
+	-->
+	
+	
+	<!--<degrafa:Surface>
+        
+        <degrafa:strokes>
+            <paint:SolidStroke     id="whiteStroke"
+                                    color="#000"
+                                    weight="1"
+                                    alpha=".2"/>
+        </degrafa:strokes>
+        
+        <degrafa:GeometryGroup>
+            <grid:VerticalLineRepeater  count="{80}"
+                                            stroke="{whiteStroke}"
+                                            x="0"
+                                            y="0"
+                                            y1="{Application.application.height}"
+                                            offsetX="0"
+                                            offsetY="0"
+                                            moveOffsetX="{Application.application.width/80}"
+                                            moveOffsetY="0"/>
+            <grid:HorizontalLineRepeater    count="{80}"
+                                            stroke="{whiteStroke}"
+                                            x="0"
+                                            y="0"
+                                            x1="{Application.application.width}"
+                                            offsetX="0"
+                                            offsetY="0"
+                                            moveOffsetX="0"
+                                            moveOffsetY="{Application.application.width/80}"/>
+        
+        </degrafa:GeometryGroup>
+        
+    </degrafa:Surface>-->
+	<!--<mx:HSlider id="countSlider"
+                    minimum="1"
+                    maximum="80"
+                    value="60"
+                    snapInterval="1"
+                    liveDragging="true"/>-->
+    <mx:Canvas width="850" height="520" backgroundAlpha="1.0" backgroundColor="#787878"  horizontalCenter="-1" verticalCenter="-21" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	<mx:Canvas width="830" height="500" backgroundColor="#787878" x="10" y="10" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:HBox x="10" y="10" height="40" width="98%" backgroundColor="#ffffff" paddingTop="5" paddingBottom="5" paddingLeft="5" horizontalScrollPolicy="off" verticalScrollPolicy="off" cornerRadius="0">
+			<mx:Button label="Remove Selection" id="removeselection" width="31" height="29" click="removeSelection(event);" icon="@Embed(source='images/icons/remove.png')"/>
+			<mx:Button label="Text tool" id="test" width="31" height="31" click="hit(event);" icon="@Embed(source='images/icons/txt.png')"/>
+			<mx:Button label="Mouse Move" id="moves" width="31" height="29" click="hits(event);" icon="@Embed(source='images/icons/mouse.png')"/>
+			<mx:Button click="popup(event);" id="draws" icon="@Embed(source='images/icons/shape.png')" width="31" height="29" label="Shapes Tool"></mx:Button>
+			<mx:Button click="arc(event);" id="arcTextm" icon="@Embed(source='images/icons/curve-text.png')" width="31" height="29" label="Arc Text Editor"  focusAlpha="0"></mx:Button>
+			<mx:Button label="Email" id="email" width="36" height="29" click="arc(event);" icon="@Embed(source='images/icons/e-mail.png')"/>
+			<mx:Button label="Upload Vector Image" id="uploadVectorImg" width="31" height="29" click="arc(event)" icon="@Embed(source='images/icons/upload-vectore.png')"/>
+			<mx:Button label="Deletes Selection Object" id="deleteselectionobject" width="31" height="29" click="Delete()" icon="@Embed(source='images/icons/trash.png')"/>
+			<mx:Button label="copy" id="Copy" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/copy.png')"/>
+			<mx:Button label="cut" id="Cut" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/cut.png')"/>
+			<mx:Button label="paste" id="Paste" width="36" height="29" click="paste()" icon="@Embed(source='images/icons/past.png')"/>
+			<!--<controls:ConfigurationFooter id="footer" save_config="handleSaveConfig(event)" width="153" height="29"/>-->
+			<mx:Label x="207" y="157" id="myl" text="hi" visible="false"/>
+		</mx:HBox>		
+		<mx:HBox x="10" y="55" height="37" width="98%" styleName="innertop" backgroundColor="#FFFFFF" paddingTop="5" paddingLeft="5" paddingBottom="5">
+		
+		 <mx:ColorPicker id="colorPicker" colorField="value" editable="false"  change="OnColorChange(event);"/>
+	         <mx:NumericStepper id="ip2" minimum="-50" maximum="50" value="{curSize}" stepSize="1" click="setNewStyles();" />
+	         <mx:ComboBox id="combobox" dataProvider="{cards}" width="150" change="onCmbFontChange(event)"/>
+	         <mx:Image width="20" height="20" source="images/justifyleft.gif" id="left" click="setTextAlign(event);"/>
+	         <mx:Image width="20" height="20" source="images/justifycenter.gif" id="center" click="setTextAlign(event);"/>
+	         <mx:Image width="20" height="20" source="images/justifyright.gif" id="right" click="setTextAlign(event);"/>
+	         
+	         <mx:Button x="137" y="70" label="B" width="33" fontWeight="bold" toggle="true" id="boldtext" mouseUp="checkbold()"/>
+			<mx:Button x="171" y="70" label="I" width="35" fontStyle="italic" toggle="true" id="italictext" mouseUp="checkitalic()"/>
+			<mx:Button x="205" y="70" label="U" width="33" textDecoration="underline" toggle="true" id="underlinetext" mouseUp="checkunderline()"/>
+	         <mx:Label text="Zoom :"/>
+	         <mx:HSlider id="slider"
+	         width="145"
+	         minimum="1"
+	         maximum="100"
+	         values="[50]" 
+	         tickInterval="10"
+	         snapInterval="1" 
+	         liveDragging="true" 
+	         change="changeZoom(event)"
+	         dataTipFormatFunction="myDataTipFunc"/>
+	         
+		</mx:HBox>
+		<mx:Canvas width="824" height="303" backgroundColor="#787878"  borderStyle="solid"  verticalScrollPolicy="off" horizontalScrollPolicy="off" y="100" x="6">
+	
+		<mx:VBox id="applicationWrapper" backgroundColor="#686868" width="561" height="296" styleName="applicationWrapperStyle">
+			<!--<controls:ConfigurationArea id="configurableArea"
+				design="{__chosenConfigurationItem.design}" 
+				baseColor="{__chosenConfigurationItem.baseColor}" 
+				trimColor="{__chosenConfigurationItem.trimColor}" 
+				logo="{__chosenConfigurationItem.logo}" 
+				playersName="{__chosenConfigurationItem.name_text}" 
+				playersNameFont="{__chosenConfigurationItem.name_font}" 
+				playersNameColor="{__chosenConfigurationItem.name_font_color}" 
+				styleName="configurableAreaStyle"
+				width="560" 
+				height="260" />-->
+				
+		</mx:VBox>
+		<mx:Canvas id="genericExamples" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" backgroundColor="#787878" backgroundAlpha="0" width="542" height="288" x="10" y="5">
+		</mx:Canvas>
+	<mx:VBox id="applicationWrapper1"  styleName="applicationWrapperStyle" backgroundColor="#686868" width="262" height="296" x="560" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="0">
+		<!--<controls:ConfigurationTabs id="mainTabs" designs="{__chosenConfigurationData.designsArray}" logos="{__chosenConfigurationData.logoArray}" dataProvider="{dataProvider}"  width="261" height="295"/>-->
+		
+	</mx:VBox>
+	</mx:Canvas>
+	<!--<controls:WindowFinal id="finalScreen" visible="false" styleName="finalWindowStyle" close_window="handleFinalWindowClose(event)" add="handleFinalScreenAdd()" dataProvider="{__chosenConfigurationItem}" y="41"  /> 
+	<controls:WindowHelp id="helpScreen" visible="false" close_window="handleHelpWindowClose(event)" styleName="finalWindowStyle" y="41" />-->
+	<!-- 
+		There are four basic states - Each state has a transition mapped to it which takes care of 
+		displaying the help / final windows and animating them in.
+	-->
+
+</mx:Canvas>
+
+
+</mx:Canvas>	
+ 	<mx:states>
+   		<mx:State name="Help"/>
+    	<mx:State name="Final"/>
+    	<mx:State name="NoHelp"/>
+    	<mx:State name="NoFinal"/>
+	</mx:states>
+	
+	
+	<!-- 
+		These transitions take care of showing and transitioning in the final and help screen.
+	-->
+<!--	<mx:transitions>
+	    <mx:Transition id="toFinalFromAny" fromState="*" toState="Final">
+	    	
+		    <mx:Parallel target="{finalScreen}">
+		    
+		    	<mx:SetPropertyAction target="{finalScreen}" name="visible" value="{true}"/>
+		       	<mx:Fade duration="300" alphaFrom="0" alphaTo="1" />
+		   		<mx:Blur duration="400" blurYFrom="20" blurYTo="1" blurXFrom="20" blurXTo="1" />
+	   		</mx:Parallel>
+		</mx:Transition>
+	    <mx:Transition id="toHelpFromAny" fromState="*" toState="Help">
+	       <mx:Parallel target="{helpScreen}">
+	      	 	<mx:SetPropertyAction target="{helpScreen}" name="visible" value="{true}"/>
+		       	<mx:Fade duration="300" alphaFrom="0" alphaTo="1" />
+		   		<mx:Blur duration="400" blurYFrom="20" blurYTo="1" blurXFrom="20" blurXTo="1" />
+	   		</mx:Parallel>
+	   	</mx:Transition>
+	   	<mx:Transition id="toNoHelpFromAny" fromState="*" toState="NoHelp">
+	   
+	   		<mx:Sequence target="{helpScreen}">
+	   			 <mx:Parallel target="{helpScreen}">
+		      	 	<mx:Fade duration="200" alphaFrom="1" alphaTo="0" />
+			   		<mx:Blur duration="100" blurYFrom="1" blurYTo="20" blurXFrom="20" blurXTo="1" />
+		   		</mx:Parallel>
+   				<mx:SetPropertyAction target="{helpScreen}" name="visible" value="{false}"/>
+   			</mx:Sequence>
+	   	</mx:Transition>
+	   	<mx:Transition id="toNoFinalFromAny" fromState="*" toState="NoFinal">
+   			<mx:Sequence target="{finalScreen}">
+	   			 <mx:Parallel target="{finalScreen}">
+	   			 
+		      	 	<mx:Fade duration="200" alphaFrom="1" alphaTo="0" />
+			   		<mx:Blur duration="100" blurYFrom="1" blurYTo="20" blurXFrom="20" blurXTo="1" />
+		   		</mx:Parallel>
+   				<mx:SetPropertyAction target="{finalScreen}" name="visible" value="{false}"/>
+   			</mx:Sequence>
+	   	</mx:Transition>
+	</mx:transitions>-->
+	
+	<!--Start Arc Text Editor, Thumbnail Effect & popup window -->		
+		<!-- Start popup windows -->
+		
+		<!--Shapes-->
+			<mx:Tile id="drawsp" 
+				backgroundAlpha="0" 
+				direction="vertical" 
+				borderStyle="inset" 
+	            horizontalGap="10" verticalGap="15"
+	            paddingLeft="10" 
+	            paddingTop="10" 
+	            paddingBottom="10" 
+	            paddingRight="10" 
+	            verticalScrollPolicy="off" 
+	            horizontalScrollPolicy="off" 
+	            hideEffect="5" 
+	            showEffect="5" 
+	            initialize="0">
+	        	<mx:Repeater id="rp" dataProvider="{dp}">
+	        		<mx:Button height="25" width="75" label="{rp.currentItem.label }" icon="{rp.currentItem.icon }" click="drawShape(event.currentTarget.getRepeaterItem().label)" />
+	            </mx:Repeater>    
+	        </mx:Tile>
+		<!--Shapes-->
+		
+		<!--ArcText managemant tool-->
+		 <resize:ResizableWindow id="window" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="300"
+	            	height="300" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Arc Text Editor" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true"
+			       titleIcon="@Embed(source='assets/check.png')">
+	            <mx:HBox horizontalGap="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+					<mx:CheckBox label="Movable?" selected="true" id="movableCheckBox" fontWeight="bold"/>
+					<mx:CheckBox label="Resizable?" selected="true" id="resizableCheckBox" fontWeight="bold"/>
+				</mx:HBox>
+	            <mx:TextInput id="myActTextRound" text="http://www.Octalsoftware.com"/>
+	        	<mx:Button label="Draw a circle" click="drawText()" />
+				
+	            <mx:HBox>
+	            	<mx:HSlider id="sliders"
+					 x="199" 
+					 y="10"
+			         width="145"
+			         minimum="-10"
+			         maximum="10"
+			         values="['10']" 
+			         tickInterval="10"
+			         snapInterval="1" 
+			         liveDragging="true" 
+			         change="changeCir(event)"
+			         />
+					<mx:HSlider id="mySlider"
+					     x="500" 
+						 y="10"
+				         width="145"
+				         minimum="-125" 
+				         maximum="125" 
+				         values="['-125']" 
+			             tickInterval="10"
+			             snapInterval="1"  
+			             liveDragging="true"
+			             change="changeCir(event)"/>
+				</mx:HBox>      
+	          	<mx:HBox>
+	          		<mx:TextInput x="200" y="10" width="50" id="sliderTextBox" text="{sliders.values}"/>
+	          		<mx:TextInput x="500" y="10" width="20" id="mySliderTextBox" text="{mySlider.values}"/> 
+	          	</mx:HBox>
+	          	<mx:HBox>
+	          		<mx:Button label="Change Orient" x="650" id="cirOri" click="orientation()" />
+					<mx:Button label="Change Orient New" x="800" id="cirOriNew" click="orientationNew()"/> 
+	          	</mx:HBox>
+	          	
+	          	<mx:Tile>
+	          		<mx:HBox>
+	          			<mx:Button x="10" y="148" label="Left" click="moveLeft();"/>
+					</mx:HBox>
+					<mx:VBox>
+						<mx:Button x="10" y="148" label="Up" click="moveUp();" width="56"/>
+					</mx:VBox>
+					<mx:VBox>
+						<mx:Button x="10" y="148" label="Down"  click="moveDown();"/>
+					</mx:VBox>
+					<mx:HBox>
+	          			<mx:Button x="10" y="148" label="Right" click="moveRight();"/>
+					</mx:HBox>
+	          	</mx:Tile> 
+	          	 
+			</resize:ResizableWindow>
+		<!--ArcText managemant tool-->
+		
+		<!--Email box-->
+		<resize:ResizableWindow id="emails" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Contact us" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true">
+			
+		
+	<mx:Form x="9" y="10" width="360">
+			<mx:FormItem label="Name :">
+				<mx:TextInput id="senderName"/>
+			</mx:FormItem>
+			<mx:FormItem label="Email :">
+				<mx:TextInput id="senderEmail"/>
+			</mx:FormItem>
+			<mx:FormItem label="Subject :">
+				<mx:TextInput id="emailSubject"/>
+			</mx:FormItem>
+			<mx:FormItem label="Message :">
+				<mx:TextArea id="emailMessage" height="132" width="213"/>
+			</mx:FormItem>
+		</mx:Form>
+		
+		<mx:Button label="Send" click="sendMail()" x="138" y="274"/>
+		<mx:Label id="resultLabel" x="212" y="276"/>
+	
+  
+	</resize:ResizableWindow>	
+		<!--Email box-->
+		
+		
+		
+		
+		<!--Fileupolad box-->
+		<resize:ResizableWindow id="upload" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	movable="{movableCheckBox.selected}" 
+	            	resizable="{resizableCheckBox.selected}" 
+					title="Vector Image Upload" 
+					status="Movable too"
+					close="removePopup();" 
+					showCloseButton="true">
+					
+		<mx:Form width="100%" height="100%">		
+
+		<!--File that is going to be uploaded-->
+		
+		<mx:FormItem label="File name:" required="true">	
+			<mx:TextInput id="txt_filename" width="100%"/>
+			<mx:Button id="btn_browse" label="Browse" click="submit( MODE_BROWSE )"/>
+		</mx:FormItem>
+			
+		<!--Size of the file to upload-->
+		<mx:Text id="txt_filesize" color="#000000" width="100%"/>
+			
+		<!--Type of file to upload-->
+		<mx:FormItem label="Type File of Upload:" required="true">
+				<mx:CheckBox id="cb_image" click="assignFileType( event )" label="Image"/>
+				<mx:CheckBox id="cb_document" click="assignFileType( event )" label="Document"/>
+				<mx:CheckBox id="cb_compressed" click="assignFileType( event )" label="Compressed"/>
+		</mx:FormItem>			
+	</mx:Form>
+	<mx:ControlBar>
+			<!--Cancel Button-->
+			<mx:Button id="btn_cancel" label="Cancel"  click="cancelUpload()"/>
+				
+			<!--Progress Bar-->
+			<mx:ProgressBar id="pb_progress" labelPlacement="center" trackHeight="8" width="100%"/>
+				
+			<!--Upload Button-->
+			<mx:Button label="Upload" id="upload_btn" click="submit( MODE_UPLOAD )" enabled="{ fileMode == MODE_UPLOAD }"/>
+	</mx:ControlBar>
+			
+					
+		</resize:ResizableWindow>	
+		<!--Fileupolad box-->
+		
+		
+		
+			
+		<!-- End popup windows -->
+		<!-- Start Rollover & rollout effect for thambnail -->
+		
+		<mx:Parallel id="out">
+			<mx:Zoom duration="100" zoomHeightTo="1.0" zoomWidthTo="1.0"/>
+			<mx:Glow id="glowImage" duration="300" alphaFrom="1.0" alphaTo="1.0" blurXFrom="0.0" blurXTo="30.0" blurYFrom="0.0" blurYTo="30.0" color="0xffffff"/>  	
+		</mx:Parallel>
+		<mx:Parallel id="over">
+			<mx:Zoom duration="100" zoomHeightTo="1.4" zoomWidthTo="1.4"/>
+		</mx:Parallel>
+		
+		<!-- end Rollover & rollout effect for thambnail -->
+	<!--End Arc Text Editor, Thumbnail Effect & popup window -->	
+	
+	<mx:HTTPService id="emailService" url="php/mail.php" method="POST" resultFormat="xml" result="emailResult()" useProxy="false"/>
+	<mx:EmailValidator id="mailValidator"
+		source="{senderEmail}" property="text" 
+		requiredFieldError="Enter your email" required="true" />
+	<mx:StringValidator id="nameValidator"  
+		source="{senderName}" property="text" 
+		requiredFieldError="Enter your name" required="true"/>
+	<mx:StringValidator id="emailValidator"  
+		source="{emailMessage}" property="text" 
+		requiredFieldError="Enter your message" required="true"/>
+	
+</mx:Application>

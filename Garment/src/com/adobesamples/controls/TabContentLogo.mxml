@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Tile xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="640" 
+	height="100%"
+	borderThickness="0"
+	xmlns:controls="com.adobesamples.controls.*"
+	xmlns:vo="com.adobesamples.vo.*"
+	horizontalAlign="center"
+ 	verticalAlign="middle">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import com.adobesamples.events.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE METHODS
+			
+			private var __selectedItem:Object;
+			private var __dataProvider:ConfigurationItem;
+			private var __repeaterItems:Array = new Array();
+			private var __logoList:Array;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			
+			/**
+			* This propery is an array of all the logos.
+			*
+			* @param i_logo_array An array filled with populated VOLogoItem's.
+			* 
+			* @see com.adobesamples.vo.VOLogoItem The VOLogoItem class.
+			*/
+			[Bindable]
+			public function set logoList(i_logo_array:Array):void{
+				__logoList = i_logo_array;
+			}
+			
+			public function get logoList():Array{
+				return __logoList;
+			}
+			
+			[Bindable("onDataProviderSet")]
+			/**
+			* This propery is a ConfigurationItem with the selected logo.
+			*
+			* @param i_dataProvider A ConfigurationItem populated with the current configuration.
+			* 
+			* @see com.adobesamples.vo.ConfigurationItem The ConfigurationItem class.
+			*/
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+				__dataProvider = i_dataProvider;
+				this.handleItemsInRepeaterInitialized();
+				this.dispatchEvent(new Event("onDataProviderSet"));
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __dataProvider;
+			}
+			
+			
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+			/**
+			* This method will unselect the previously selected option and select ButtonLogoItem 
+			* that was clicked.
+			*/
+			private function handleLogoSelect(event:Event):void{
+
+				if(__selectedItem != null){
+					__selectedItem.backgroundImage.visible = false;
+				}
+				__selectedItem = event.currentTarget;
+				var newLogoChosenEvent:LogoChosenEvent = new LogoChosenEvent(LogoChosenEvent.LOGO_CHOSEN,__selectedItem.dataProvider);
+				this.dispatchEvent(newLogoChosenEvent);
+	
+			}
+			
+			/**
+			* This method stores the repeater items in an array.
+			*
+			* <p>When the repeater has drawn all its children it will fire off the 
+			* handleItemsInRepeaterInitialized method.</p>
+			*/
+			private function handleRepeaterItemCreationComplete(event:Event):void{
+				__repeaterItems.push(event.currentTarget);
+				if(logoList.length == __repeaterItems.length){
+					this.handleItemsInRepeaterInitialized();
+				}
+			}
+			
+			
+			/**
+			* This will select the proper ButtonLogoItem based upon the dataProvider.
+			*/
+			private function handleItemsInRepeaterInitialized():void{
+				for(var i:uint=0;i<__repeaterItems.length;i++){
+					if(__dataProvider.logo == __repeaterItems[i].dataProvider.image){
+						if(__selectedItem != null){
+							__selectedItem.backgroundImage.visible = false;
+						}
+						__selectedItem = __repeaterItems[i];
+						var newLogoChosenEvent:LogoChosenEvent = new LogoChosenEvent(LogoChosenEvent.LOGO_CHOSEN,__selectedItem.dataProvider);
+						this.dispatchEvent(newLogoChosenEvent);
+						__selectedItem.backgroundImage.visible = true;
+					}
+				}	
+			}
+			
+			private function handleMouseOver(event:MouseEvent):void{
+				if(__selectedItem != event.currentTarget){
+					event.currentTarget.backgroundImage.visible=true;
+				}
+				
+			}
+			private function handleMouseOut(event:MouseEvent):void{
+				if(__selectedItem != event.currentTarget){
+					event.currentTarget.backgroundImage.visible=false;
+				}
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:Repeater id="logoRepeater" dataProvider="{logoList}">
+		<controls:ButtonLogoItem creationComplete="handleRepeaterItemCreationComplete(event)" rollOut="handleMouseOut(event)" rollOver="handleMouseOver(event)" styleName="logoItem" height="70" width="74" dataProvider="{logoRepeater.currentItem}" click="handleLogoSelect(event)"/>
+	</mx:Repeater>
+	
+</mx:Tile>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	styleName="closeBtn"
+	buttonMode="true"
+	mouseOver="handleMouseOver()"
+	mouseOut="handleMouseOut()"
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var __originalcolorTransform:ColorTransform; 
+			
+			private function handleMouseOver():void{
+				
+				__originalcolorTransform = this.transform.colorTransform;
+				
+				var resultColorTransform:ColorTransform = new ColorTransform();
+				resultColorTransform.redOffset = 255;
+				resultColorTransform.greenOffset = 255;
+				resultColorTransform.blueOffset = 255;
+				
+				this.transform.colorTransform = resultColorTransform;
+				
+			}
+			
+			private function handleMouseOut():void{
+				
+				this.transform.colorTransform = __originalcolorTransform;
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Button>

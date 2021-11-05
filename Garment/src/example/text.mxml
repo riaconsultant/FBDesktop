@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!-- embed\EmbedOtherFileTypes.mxml -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"> 
+ 
+  <mx:Script>
+        <![CDATA[
+            import mx.controls.Image;                    
+            import flash.net.URLLoaderDataFormat;    
+            public function addImage(event:Event) : void
+            {
+                var loader : URLLoader = new URLLoader();
+               // var request : URLRequest = new URLRequest("picture/CNBC.svg");
+                var request : URLRequest = new URLRequest("picture/1.jpg");
+                
+                
+               // loader.load(request);
+                //loader.dataFormat = URLLoaderDataFormat.BINARY;
+                loader.addEventListener(Event.COMPLETE , showImage);                                
+            }
+            public function showImage(event : Event) : void
+            {
+                var loader : URLLoader = URLLoader(event.target);
+                txtarea.htmlText = loader.data;                                 
+            }
+            
+             public function addImages(event:Event) : void
+            {
+                //file vim.png is present both in Project folder and in the src folder of the Project
+                txtareas.htmlText = "<img src='@Embed(picture/CNBC.svg)'>";
+//                txtarea.htmlText = "<img src=\"vim.png\">";
+        
+            }
+            
+        ]]>
+    </mx:Script>
+    <mx:TextArea x="103" y="70" height="50%" width="50%" editable="false" wordWrap="true"  
+        id="txtarea" creationComplete="addImage(event)"/>
+         
+         
+      
+    <mx:TextArea x="103" y="71" height="50%" width="50%" editable="false" wordWrap="true"  
+        id="txtareas" creationComplete="addImages(event)"/>   
+                
+</mx:Application>
+

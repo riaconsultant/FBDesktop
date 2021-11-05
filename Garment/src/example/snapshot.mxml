@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" xmlns:utils="com.abdulqabiz.utils.*" xmlns:local="*" viewSourceURL="srcview/index.html">
+    <utils:JavaScript>
+        <![CDATA[
+            function takeSnapshot(imgString, width, height) {
+            	window.open ("data:image/png;base64," + imgString, "", "width=" + width + ",height=" + height + ",resizable=1");
+            }
+        ]]>
+    </utils:JavaScript>
+    
+    <mx:Script>
+        <![CDATA[
+        	import mx.controls.Alert;
+            import com.adobe.images.PNGEncoder;
+            import mx.utils.Base64Encoder;
+            
+            private function takeSnapshot(comp:DisplayObject):void {
+                var bitmapData:BitmapData = new BitmapData(comp.width, comp.height, true, 0xffffff);
+               
+               	Alert.show(""+comp);
+                bitmapData.draw(comp);
+                
+                var bytes:ByteArray = PNGEncoder.encode(bitmapData);
+            
+                var b64encoder:Base64Encoder = new Base64Encoder();
+                b64encoder.encodeBytes(bytes);
+                
+                ExternalInterface.call("takeSnapshot", b64encoder.flush(), comp.width + 10, comp.height + 10);
+            }
+        ]]>
+    </mx:Script>
+    
+   <mx:Canvas id="aana" width="300" height="200">
+   	<mx:Label id="lable" text="jkahsdfjhajksd" width="300" height="200"/>
+   		
+   
+   </mx:Canvas>
+    
+    <mx:Button click="takeSnapshot(lable)" label="Take Snapshot of Chart" />
+    
+    <mx:Button click="takeSnapshot(aana)" label="Take Snapshot of Entire Panel" />
+    
+    
+</mx:Application>

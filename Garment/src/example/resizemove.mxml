@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application  xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:oh="com.roguedevelopment.objecthandles.*"
+        layout="absolute"
+        creationComplete="initApp()"
+        backgroundColor="0xFFFFFF">
+
+        <mx:Script>
+                <![CDATA[
+                	import mx.logging.LogLogger;
+                	import mx.controls.Alert;
+                	import mx.accessibility.AlertAccImpl;
+
+                        import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+                        //import org.osflash.thunderbolt.Logger;
+                        import mx.events.DragEvent;
+
+                        [Bindable] private var _ldr:Loader;
+                        [Bindable] private var w:int;
+                        [Bindable] private var h:int;
+
+                        private function initApp():void
+                        {
+                                _ldr = new Loader();
+                                _ldr.contentLoaderInfo.addEventListener( Event.INIT,displayAsset );
+                                _ldr.load( new URLRequest( "picture/1.jpg" ) );
+                                ohand.addEventListener( ObjectHandleEvent.OBJECT_MOVING_EVENT,onComplete );
+                        }
+
+                        private function onComplete( e:ObjectHandleEvent ):void
+                        {
+                                
+                                Alert.show( String( w ) ); // Traces 128 at all times
+                        }
+
+                        private function displayAsset( e:Event ):void
+                        {
+                                w = _ldr.width;
+                                h = _ldr.height;
+
+                                ohand.minWidth = _ldr.width/5;
+                                ohand.minHeight = _ldr.content.height/5;
+
+                                myImg.source =  _ldr.content;
+
+                                Alert.show( String( w ) ); // Traces 128
+                        }
+
+                ]]>
+        </mx:Script>
+
+        <oh:ObjectHandles id="ohand"
+                                  
+                                   allowRotate="false"
+                                   x="0" y="0"
+                                   width="{ w }"
+                                   height="{ h }">
+
+            <mx:Image id="myImg" maintainAspectRatio="true"
+scaleContent="true" width="100%" height="100%" />
+
+        </oh:ObjectHandles>
+
+</mx:Application> 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="640"
+	height="47"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+	verticalGap="1"
+	backgroundColor="#333333"
+	styleName="headerStyle"
+	xmlns:controls="com.adobesamples.controls.*" 
+	verticalAlign="middle">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			/////////////////////////////////////////////////////
+			// 	HANDLER MOTHODS
+			
+			private function handleReset():void{
+				
+				var resetEvent:Event = new Event("onReset");
+				this.dispatchEvent(resetEvent);
+				
+			}
+			
+			private function handleHelp():void{
+				
+				var helpEvent:Event = new Event("onHelp");
+				this.dispatchEvent(helpEvent);
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%" verticalScrollPolicy="off" verticalAlign="middle" paddingLeft="20" horizontalGap="1">
+		<mx:Image source="images/ui/bowling_ball.png" height="47" verticalAlign="bottom"/>
+		<mx:Label text="Alley" styleName="alleyTextStyle" paddingLeft="10"/>
+		<mx:Label text="Shirts" styleName="shirtsTextStyle"/>
+	</mx:HBox>
+	
+	<mx:HBox width="100%" horizontalAlign="right" verticalScrollPolicy="off" paddingRight="20">
+		<controls:ButtonReset id="resetButton" click="handleReset()" toolTip="Reset" />
+		<controls:ButtonHelp id="helpButton" click="handleHelp()"  toolTip="Help"/>
+	</mx:HBox>
+
+</mx:HBox>

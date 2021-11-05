@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+				width="700" height="500"
+				showCloseButton="true"
+				close="titleWin_close(event)"
+				initialize="initCrop()"
+				verticalScrollPolicy="off" 
+				horizontalScrollPolicy="off"
+				title="Crop Image">
+	<mx:Script>
+		<![CDATA[
+			import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+			import com.roguedevelopment.objecthandles.ObjectHandles;
+			import com.roguedevelopment.objecthandles.SelectionManager;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.core.IFlexDisplayObject;
+			import mx.core.UIComponent;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectUtil;
+			
+			public var site_url:String;
+			public var image_path:String = null;
+			public var sessionId:String = null;
+			public var imageType:String = null;
+			public var random_no:Number;
+			public var uploadId:int;
+			public var fileName:String;
+			private function titleWin_close(evt:Event):void {
+				var window:TitleWindow = evt.currentTarget as TitleWindow;
+				PopUpManager.removePopUp(window);
+				//oh.deselect();
+				//Application.application.myObj.getSessionImage();
+			}
+			
+			[Bindable]private var oh:ObjectHandles;
+			private function initCrop():void
+			{
+				sourceImage.source = image_path;
+				var temp:Array=image_path.split('/');
+				var temIndex:int=image_path.split('/').length-1;
+				fileName=temp[temIndex];
+				var img:Image = new Image();
+				img.id="abcd";
+				oh = new ObjectHandles();
+				oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+				oh.id="cId";
+				oh.x = 200;
+				oh.y = 100;
+				oh.width = 250;
+				oh.height = 250;
+				oh.alwaysMaintainAspectRatio = true;
+				oh.cornerMaintainAspectRatio = true;
+				
+				oh.allowHMove = true;
+				oh.allowVMove = true;
+				//oh.setStyle("backgroundColor",0xDFDFDF);
+				//oh.setStyle("backgroundAlpha",.3);
+				//oh.setStyle("borderColor",0x000000);
+				oh.addChild(img);
+				this.getCircle();
+				imageHolder.addChild(oh);
+				oh.select();
+			}
+			
+		    private function getCircle():void{
+				if(oh.getChildByName('maskArea') as UIComponent){
+					oh.removeChild(oh.getChildByName('maskArea') as UIComponent);
+				}
+				var ui:UIComponent = new UIComponent();
+				ui.name = 'maskArea';
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.beginFill(0xDFDFDF,.3);
+				rect.graphics.drawCircle(oh.width/2,oh.height/2,oh.width/2);
+				rect.graphics.endFill();
+				ui.addChild(rect);
+				oh.addChild(ui);
+			}
+			
+			private function getNewHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				oh.xpos = w;
+				oh.ypos = h;
+				this.getCircle();
+			}
+			
+			public var croptearray:ByteArray = new ByteArray();
+			public function imageSave():void
+			{
+				oh.deselect();
+				var bitmap:BitmapData = new BitmapData(sourceImage.width,sourceImage.height,true);
+				bitmap.draw(sourceImage);
+				
+				var cropedImage:BitmapData = new BitmapData(oh.width, oh.height, true, 0xFFFFFFFFFF);
+				var posPoint:Point = new Point(0,0);
+				cropedImage.copyPixels(bitmap, new Rectangle(oh.x, oh.y, oh.width, oh.height), posPoint);
+				
+				var png:PNGEncoder = new PNGEncoder();
+				croptearray = png.encode(cropedImage);
+				
+				//byteArray.compress();
+				
+				/* var reqUrl:String = site_url + "cropImage.php?dirname="+sessionId+"&fileName="+fileName;
+				var urlRequest:URLRequest = new URLRequest();
+				urlRequest.url = reqUrl;	
+				urlRequest.data = byteArray;
+				urlRequest.method = URLRequestMethod.POST;
+				urlRequest.contentType = 'image/jpg';
+				var urlLoader:URLLoader = new URLLoader();
+				urlLoader.load(urlRequest);
+				cropedImage.dispose(); */
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox height="25">
+		<mx:Label text="Use the object points" />
+		<mx:Button id="saveImage" label="Crop" click="imageSave()"  width="57" fontSize="11" fontFamily="Arial"/>
+	</mx:HBox>
+	
+	<mx:Canvas id="imageHolder" y="25" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+		<mx:Image id="sourceImage"/>
+	</mx:Canvas>
+</mx:TitleWindow>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute"
+	width="640"
+	height="480"
+	xmlns:controls="com.adobesamples.controls.*" 
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+ 	creationComplete="handleCreationComplete()"
+ 	verticalAlign="middle"
+ 	horizontalAlign="center"
+	 viewSourceURL="srcview/index.html">
+	
+	<!--
+	This is a simple configurator which allows you to choose the look 
+	and feel of your very own bowling shirt. You can review your
+	configuration when you finish and choose to save.
+	-->
+	
+	<!-- This stylesheet is used throughout the whole application -->
+	<mx:Style source="css/stylesheet.css"/>
+
+	<mx:Script>
+		<![CDATA[
+		
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS 
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import com.adobesamples.vo.ConfigurationData;
+			import com.adobesamples.controls.Shirt1Back;
+			import com.adobesamples.controls.Shirt1Front;
+
+			import com.adobesamples.controls.*;
+			import com.adobesamples.events.*;
+			import com.adobesamples.vo.ConfigurationItem;
+			import flash.utils.*;	
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION 
+			
+			
+			[Bindable]
+			private var __chosenConfigurationItem:ConfigurationItem = new ConfigurationItem();
+			
+			[Bindable]
+			private var __chosenConfigurationData:ConfigurationData = new ConfigurationData();
+		
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable("onDataProviderSet")]
+			/**
+			* This dataProvider is public so that the application is extensible.
+			*
+			* <p>Properties within the ConfigurationItem are bindable. The components
+			* within this application all update based on these properties.</p>
+			*
+			* @param i_dataProvider The object consisting the configuration options.
+			*
+			* @see com.adobesamples.vo.ConfigurationItem The ConfigurationItem class.
+			*/
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+				
+				__chosenConfigurationItem = new ConfigurationItem();
+				__chosenConfigurationItem.design = i_dataProvider.design;
+				__chosenConfigurationItem.designName = i_dataProvider.designName;
+				__chosenConfigurationItem.baseColor = i_dataProvider.baseColor;
+				__chosenConfigurationItem.trimColor = i_dataProvider.trimColor;
+				__chosenConfigurationItem.logo = i_dataProvider.logo;
+				__chosenConfigurationItem.logoName = i_dataProvider.logoName ;
+				__chosenConfigurationItem.name_font = i_dataProvider.name_font;
+				__chosenConfigurationItem.name_font_color = i_dataProvider.name_font_color;
+				__chosenConfigurationItem.name_text = i_dataProvider.name_text;
+				__chosenConfigurationItem.trimColor = i_dataProvider.trimColor;
+				
+				this.dispatchEvent(new Event("onDataProviderSet"));
+				
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __chosenConfigurationItem;
+			}
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE METHODS
+			
+			private function setupListeners():void{
+				
+				this.configuratorHeader.addEventListener("onReset",handleResetReleased);
+				this.configuratorHeader.addEventListener("onHelp",handleHelpReleased);
+				
+				this.mainTabs.addEventListener(ColorChosenEvent.BASE_COLOR_CHOSEN,handleBaseColorChange);
+				this.mainTabs.addEventListener(ColorChosenEvent.TRIM_COLOR_CHOSEN,handleTrimColorChange);
+				this.mainTabs.addEventListener(DesignChosenEvent.DESIGN_CHOSEN,handleDesignChange);
+				this.mainTabs.addEventListener(LogoChosenEvent.LOGO_CHOSEN,handleLogoChange);
+				this.mainTabs.addEventListener(ColorChosenEvent.NAME_LABEL_COLOR_CHOSEN,handleNameColorChange);
+				this.mainTabs.addEventListener(NameTextChosenEvent.NAME_CHOSEN,handleNameChange);
+				this.mainTabs.addEventListener(FontChosenEvent.FONT_CHOSEN,handleFontChange);
+			}
+			
+			private function populateConfigurationData():void{
+				
+				__chosenConfigurationData = new ConfigurationData();
+				
+			}
+			
+			private function resetDataProvider():void{
+				
+				this.dataProvider = new ConfigurationItem();
+					
+			}
+
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+			/**
+			* Instantiates listeners, configuration data, and the default state.
+			*/
+			
+			private function handleCreationComplete():void{
+					
+				this.setupListeners();
+				// this.currentState = "NoWindow";
+				if(__chosenConfigurationData == null){
+					this.populateConfigurationData();
+				}
+
+				this.resetDataProvider();
+			}
+			
+			private function handleResetReleased(event:Event):void{
+				this.resetDataProvider();
+			}
+			
+			
+			private function handleHelpReleased(event:Event):void{
+				this.currentState = "Help";
+			}
+			
+			private function handleNameColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.name_font_color = event.color;
+			}
+			
+			private function handleNameChange(event:NameTextChosenEvent):void{
+				__chosenConfigurationItem.name_text = event.nameText;
+			}
+			
+			private function handleFontChange(event:FontChosenEvent):void{
+				__chosenConfigurationItem.name_font = event.font;
+			}
+			
+			private function handleDesignChange(event:DesignChosenEvent):void{
+
+				var baseColor:Number = __chosenConfigurationItem.baseColor;
+				var trimColor:Number = __chosenConfigurationItem.trimColor;
+
+				__chosenConfigurationItem.design = event.design.front;
+				__chosenConfigurationItem.designName = event.design.name;
+				
+				// Refreshes the baseColor within the flash shirt designs.
+				if(__chosenConfigurationItem.baseColor > 0){
+					__chosenConfigurationItem.baseColor -= 1;
+				}else{
+					__chosenConfigurationItem.baseColor += 1;
+				}
+				
+				// Refreshes the baseColor within the flash shirt designs.
+				if(__chosenConfigurationItem.trimColor > 0){
+					__chosenConfigurationItem.trimColor -= 1;
+				}else{
+					__chosenConfigurationItem.trimColor += 1;
+				}
+				
+				__chosenConfigurationItem.baseColor = baseColor;
+				__chosenConfigurationItem.trimColor = trimColor;
+
+			}
+			
+			private function handleLogoChange(event:LogoChosenEvent):void{
+				__chosenConfigurationItem.logo = event.logo.image;
+				__chosenConfigurationItem.logoName = event.logo.name;
+			}
+			
+			private function handleBaseColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.baseColor = event.color;
+			}
+			
+			private function handleTrimColorChange(event:ColorChosenEvent):void{
+				__chosenConfigurationItem.trimColor = event.color;
+			}
+			
+			private function handleFinalWindowClose(event:Event):void{
+				this.currentState = "NoFinal";
+			}
+			
+			private function handleHelpWindowClose(event:Event):void{
+				this.currentState = "NoHelp";
+			}
+			
+			private function handleSaveConfig(evemt:Event):void{
+				this.currentState = "Final";
+			}
+			
+			private function handleFinalScreenAdd():void{
+				this.finalScreen.dataProvider = this.__chosenConfigurationItem;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<!-- 
+	
+		The components on the main stage are split up into 4 different main sections.
+		1. The header.
+		2. The shirt configurator area.
+		3. The tab area.
+		4. The footer.
+	
+	-->
+	<mx:VBox id="applicationWrapper" width="100%" height="100%" styleName="applicationWrapperStyle">
+		<controls:ConfiguratorHeader id="configuratorHeader"/>
+		<controls:ConfigurationArea id="configurableArea"
+			design="{__chosenConfigurationItem.design}" 
+			baseColor="{__chosenConfigurationItem.baseColor}" 
+			trimColor="{__chosenConfigurationItem.trimColor}" 
+			logo="{__chosenConfigurationItem.logo}" 
+			playersName="{__chosenConfigurationItem.name_text}" 
+			playersNameFont="{__chosenConfigurationItem.name_font}" 
+			playersNameColor="{__chosenConfigurationItem.name_font_color}" 
+			styleName="configurableAreaStyle"
+			width="640" 
+			height="247" />
+		<controls:ConfigurationTabs id="mainTabs" designs="{__chosenConfigurationData.designsArray}" logos="{__chosenConfigurationData.logoArray}" dataProvider="{dataProvider}" />
+		<controls:ConfigurationFooter id="footer" save_config="handleSaveConfig(event)"/>
+		
+	</mx:VBox>
+	<controls:WindowFinal id="finalScreen" visible="false" styleName="finalWindowStyle" close_window="handleFinalWindowClose(event)" add="handleFinalScreenAdd()" dataProvider="{__chosenConfigurationItem}" y="41"  />
+	<controls:WindowHelp id="helpScreen" visible="false" close_window="handleHelpWindowClose(event)" styleName="finalWindowStyle" y="41" />
+			
+	<!-- 
+		There are four basic states - Each state has a transition mapped to it which takes care of 
+		displaying the help / final windows and animating them in.
+	-->
+	
+ 	<mx:states>
+   		<mx:State name="Help"/>
+    	<mx:State name="Final"/>
+    	<mx:State name="NoHelp"/>
+    	<mx:State name="NoFinal"/>
+	</mx:states>
+	
+	<!-- 
+		These transitions take care of showing and transitioning in the final and help screen.
+	-->
+	<mx:transitions>
+	    <mx:Transition id="toFinalFromAny" fromState="*" toState="Final">
+	    	<!-- The Parallel tag allows for more than one transition at the same time --> 
+		    <mx:Parallel target="{finalScreen}">
+		    	<!-- This will blur and fade the window as it transitions in -->
+		    	<mx:SetPropertyAction target="{configuratorHeader.resetButton}" name="enabled" value="{false}"/>
+		    	<mx:SetPropertyAction target="{finalScreen}" name="visible" value="{true}"/>
+		       	<mx:Fade duration="300" alphaFrom="0" alphaTo="1" />
+		   		<mx:Blur duration="400" blurYFrom="20" blurYTo="1" blurXFrom="20" blurXTo="1" />
+	   		</mx:Parallel>
+		</mx:Transition>
+	    <mx:Transition id="toHelpFromAny" fromState="*" toState="Help">
+	       <mx:Parallel target="{helpScreen}">
+	      	 	<mx:SetPropertyAction target="{helpScreen}" name="visible" value="{true}"/>
+		       	<mx:Fade duration="300" alphaFrom="0" alphaTo="1" />
+		   		<mx:Blur duration="400" blurYFrom="20" blurYTo="1" blurXFrom="20" blurXTo="1" />
+	   		</mx:Parallel>
+	   	</mx:Transition>
+	   	<mx:Transition id="toNoHelpFromAny" fromState="*" toState="NoHelp">
+	   	<!-- The Sequence tag will wait for the first action to complete before moving onto the second --> 
+	   		<mx:Sequence target="{helpScreen}">
+	   			 <mx:Parallel target="{helpScreen}">
+		      	 	<mx:Fade duration="200" alphaFrom="1" alphaTo="0" />
+			   		<mx:Blur duration="100" blurYFrom="1" blurYTo="20" blurXFrom="20" blurXTo="1" />
+		   		</mx:Parallel>
+   				<mx:SetPropertyAction target="{helpScreen}" name="visible" value="{false}"/>
+   			</mx:Sequence>
+	   	</mx:Transition>
+	   	<mx:Transition id="toNoFinalFromAny" fromState="*" toState="NoFinal">
+   			<mx:Sequence target="{finalScreen}">
+	   			 <mx:Parallel target="{finalScreen}">
+	   			 	<mx:SetPropertyAction target="{configuratorHeader.resetButton}" name="enabled" value="{true}"/>
+		      	 	<mx:Fade duration="200" alphaFrom="1" alphaTo="0" />
+			   		<mx:Blur duration="100" blurYFrom="1" blurYTo="20" blurXFrom="20" blurXTo="1" />
+		   		</mx:Parallel>
+   				<mx:SetPropertyAction target="{finalScreen}" name="visible" value="{false}"/>
+   			</mx:Sequence>
+	   	</mx:Transition>
+	</mx:transitions>
+
+	
+</mx:Application>

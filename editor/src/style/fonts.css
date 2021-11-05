@@ -1,0 +1,140 @@
+/* CSS file */
+@font-face {
+	src:url("font/ARIAL.TTF");
+	fontFamily: "Arial";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/ALGER.TTF");
+	fontFamily: "ALGER";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/WTF.ttf");
+	fontFamily: "WTF";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/POORICH.TTF");
+	fontFamily: "POORICH";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/PLAYBILL.TTF");
+	fontFamily: "PLAYBILL";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/MATURASC.TTF");
+	fontFamily: "MATURASC";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/HARNGTON.TTF");
+	fontFamily: "HARNGTON";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/COOPBL.TTF");
+	fontFamily: "COOPBL";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/CONSTAN.TTF");
+	fontFamily: "CONSTAN";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+
+@font-face {
+	src:url("font/BOD_PSTC.TTF");
+	fontFamily: "BOD_PSTC";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+@font-face {
+	src:url("font/BKANT.TTF");
+	fontFamily: "BKANT";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+@font-face {
+	src:url("font/BAUHS93.TTF");
+	fontFamily: "BAUHS93";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}
+@font-face {
+	src:url("font/CooperBlackStd.otf");
+	fontFamily: "Cooper";
+	unicodeRange:
+		U+0041-U+005A, /* Upper-Case [A..Z] */
+		U+0061-U+007A, /* Lower-Case a-z */
+		U+0030-U+0039, /* Numbers [0..9] */
+		U+002E-U+002E; /* Period [.] */
+
+}

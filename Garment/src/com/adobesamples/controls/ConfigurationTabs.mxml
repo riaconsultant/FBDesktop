@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TabNavigator xmlns:mx="http://www.adobe.com/2006/mxml" 
+	styleName="mainTabsStyle" 
+	tabStyleName="mainTabStyle" 
+	selectedTabTextStyleName="mainTabStyle" 
+	width="274" 
+	horizontalAlign="center"
+	xmlns:controls="com.adobesamples.controls.*" >
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import mx.collections.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			[Bindable]
+			private var __dataProvider:ConfigurationItem;
+			
+			private var __designs:Array;
+			private var __logos:Array;
+			private var __designTab:DisplayObject;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable]
+			public function set designs(i_dataProvider:Array):void{
+				__designs = i_dataProvider;
+			}
+			
+			public function get designs():Array{
+				return __designs;
+			}
+			
+			[Bindable]
+			public function set logos(i_logos:Array):void{
+				__logos = i_logos;
+			}
+			
+			public function get logos():Array{
+				return __logos;
+			}
+			
+			[Bindable]
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+				__dataProvider = i_dataProvider;
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __dataProvider;
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<!-- 
+		The four components below will be listed within this TabNavigator's tabs.
+		The titles for these tabs are indicated on the label's of the components below.
+	 -->
+	<controls:TabContentDesign label="Designs" styleName="designTabStyle" dataProvider="{__dataProvider}" designs="{designs}" height="100%"/>
+	<controls:TabContentColor label="Color" styleName="colorTabStyle" dataProvider="{__dataProvider}"/>
+	<controls:TabContentLogo label="Logo" dataProvider="{__dataProvider}" logoList="{logos}"/>
+	<!--<controls:TabContentPlayerName label="Player Name" styleName="playerNameTabStyle" dataProvider="{__dataProvider}"/>-->
+        
+</mx:TabNavigator>

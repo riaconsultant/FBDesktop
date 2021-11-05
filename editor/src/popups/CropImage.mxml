@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+				width="700" height="500" 
+				showCloseButton="true"
+				close="titleWin_close(event)"
+				initialize="initCrop()"
+				verticalScrollPolicy="off" 
+				horizontalScrollPolicy="off"
+				title="Crop Image">
+	<mx:Script>
+		<![CDATA[
+			import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+			import com.roguedevelopment.objecthandles.ObjectHandles;
+			import com.roguedevelopment.objecthandles.SelectionManager;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.core.IFlexDisplayObject;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectUtil;
+			
+			public var site_url:String;
+			public var image_path:String = null;
+			public var sessionId:String = null;
+			public var imageType:String = null;
+			public var random_no:Number;
+			public var uploadId:int;
+			public var fileName:String;
+			private function titleWin_close(evt:Event):void {
+				var window:TitleWindow = evt.currentTarget as TitleWindow;
+				PopUpManager.removePopUp(window);
+				oh.deselect();
+				Application.application.myObj.getSessionImage();
+			}
+			
+			private var oh:ObjectHandles;
+			private function initCrop():void
+			{
+				sourceImage.source = image_path;
+				var temp:Array=image_path.split('/');
+				var temIndex:int=image_path.split('/').length-1;
+				fileName=temp[temIndex];
+				var img:Image = new Image();
+				img.id="abcd";
+				oh = new ObjectHandles();
+				oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+				oh.addEventListener(MouseEvent.MOUSE_UP,this.mouseUpHandler);				
+				oh.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler);
+				oh.addEventListener(MouseEvent.CLICK, this.mouseUpHandler);
+				oh.id="cId";
+				oh.x = 200;
+				oh.y = 100;
+				oh.width = 250;
+				oh.height = 250;
+				oh.allowHMove = true;
+				oh.allowVMove = true;
+				oh.allowHResize = true;
+				oh.allowVResize = true;
+				oh.mouseChildren=true;
+				oh.allowBottom=true;
+				oh.setStyle("backgroundColor",0xDFDFDF);
+				oh.setStyle("backgroundAlpha",.3);
+				oh.setStyle("borderColor",0x000000);
+				//img.mask=mask1;
+				oh.addChild(img);
+				imageHolder.addChild(oh);
+				oh.select();
+			}
+			
+			private function OnObjectHandlesSelected(event:ObjectHandleEvent):void{
+				
+			}
+			
+			private function getNewImagePosition(e:ObjectHandleEvent):void{
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				oh.xpos = oh.width;
+				oh.ypos = oh.height;
+			}
+			private function getNewHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				oh.xpos = w;
+				oh.ypos = h;
+				
+				//this.setNewHeightWidth(genericFront,h,w);
+			}
+			private function mouseUpHandler(event:MouseEvent):void{
+				oh.stopDrag();
+			}
+			
+			private function mouseDownHandler(event:MouseEvent):void{
+				oh.startDrag();
+			}
+			
+			public function imageSave():void
+			{
+				oh.deselect();
+				var bitmap:BitmapData = new BitmapData(sourceImage.width,sourceImage.height,true);
+				bitmap.draw(sourceImage);
+				
+				var cropedImage:BitmapData = new BitmapData(oh.width, oh.height, true, 0xFFFFFFFFFF);
+				var posPoint:Point = new Point(0,0);
+				cropedImage.copyPixels(bitmap, new Rectangle(oh.x, oh.y, oh.width, oh.height), posPoint);
+				
+				var png:PNGEncoder = new PNGEncoder();
+				var byteArray:ByteArray = png.encode(cropedImage);
+				//byteArray.compress();
+				
+				var reqUrl:String = site_url + "cropImage.php?dirname="+sessionId+"&fileName="+fileName;
+				var urlRequest:URLRequest = new URLRequest();
+				urlRequest.url = reqUrl;	
+				urlRequest.data = byteArray;
+				urlRequest.method = URLRequestMethod.POST;
+				urlRequest.contentType = 'image/jpg';
+				var urlLoader:URLLoader = new URLLoader();
+				urlLoader.load(urlRequest);
+				cropedImage.dispose();
+				PopUpManager.removePopUp(this);
+				Application.application.myObj.getSessionImage();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HBox height="25">
+		<mx:Label text="Use the object points" />
+		<mx:Button id="saveImage" label="Crop" click="imageSave()"  width="57" fontSize="11" fontFamily="Arial"/>
+	</mx:HBox>
+	
+	<mx:Canvas id="imageHolder" y="25" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+		<mx:Image id="sourceImage"/>
+	</mx:Canvas>
+</mx:TitleWindow>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" resizeEffect="Resize" creationComplete="init();" showCloseButton="true" close="titleWin_close(event);" layout="absolute" width="338" height="134" title="SendMail " >
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			
+			public var email:String = null;
+			public function get userMail():String
+			{
+				return email; 
+			}
+			public function set userMail( value:String):void
+			{
+				email = value;
+			}
+			
+			private function init():void
+			{
+				emailId.text = email;
+			}
+			
+			private function titleWin_close(evt:Event):void {
+              PopUpManager.removePopUp(evt.target as IFlexDisplayObject);
+            }
+           
+     		
+		]]>
+	</mx:Script>
+	
+	<mx:Label text="Email :" top="17" left="11" id="label1" fontWeight="bold" fontSize="14"/>
+	<mx:TextInput right="12" top="16" id="emailId" width="239" fontSize="14" borderStyle="solid"/>
+	<mx:Button y="56" label="Send" width="91" id="send" fontSize="14" x="82" />
+</mx:TitleWindow>

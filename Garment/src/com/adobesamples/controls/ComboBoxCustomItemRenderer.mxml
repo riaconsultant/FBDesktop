@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml" dataChange="handleCreationComplete(event)" width="100%" height="100%">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import mx.core.UITextField;
+			
+	
+			private function handleCreationComplete(event:Event):void{
+
+				textField.styleName = this.text;
+				textField.styleChanged("fontFamily");
+				
+			}
+
+			
+		]]>
+	</mx:Script>
+	
+	
+</mx:Label>

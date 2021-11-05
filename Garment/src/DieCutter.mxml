@@ -1,0 +1,4159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" preloader="iamjosh.samples.preloader.CustomPreloader"
+	width="100%"
+	height="520"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+ 	creationComplete="initapps();"
+ 	verticalAlign="middle"
+ 	horizontalAlign="center"
+ 	backgroundGradientColors="[#ffffff, #ffffff]"
+ 	xmlns:controls="com.adobesamples.controls.*" 
+	xmlns:resize="flex.utils.ui.resize.*" 
+	xmlns:oh="com.roguedevelopment.objecthandles.*" 
+	xmlns:be="com.redrock.be.*" 
+	xmlns:canvasPaint="canvasPaint.*"
+ 	xmlns:flash.filters="flash.filters.*" 
+    xmlns:degrafa="com.degrafa.*"
+    xmlns:paint="com.degrafa.paint.*"
+    xmlns:geometry="com.degrafa.geometry.*"
+    xmlns:shapes="com.roguedevelopment.flowchart.shapes.*" 
+	xmlns:flowchart="com.roguedevelopment.flowchart.*"
+	xmlns:degrafa1="http://www.degrafa.com/2007"
+    xmlns:grid="com.degrafa.geometry.repeaters.*"
+    xmlns:example="com.roguedevelopment_new.objecthandles_new.example.*"
+    xmlns:fileupload="com.flashdev.file.*"
+ 	xmlns:ns1="compnent.*"
+ 	xmlns:fabulousFlex="fabulousFlex.*"
+    applicationComplete="registerGlobalKeyHandler()"
+	click="if(event.target == genericDiecutter)
+	{
+		if(selectedObject !=null)
+		{ 
+			selectedObject.deselect();
+			 
+		}else if (selectedObjectShp !=null)
+		{
+			 selectedObjectShp.deselect();
+		}
+	}">
+ 	 
+ 	 <mx:Style>
+	    .myStyle {
+	        swatchWidth:25;
+	        swatchHeight:25;
+	        textFieldWidth:95;
+	    } 
+	    Application
+		{
+			 /* background-image: Embed("images/grid.jpg");
+			background-repeat: repeat;
+			borderSkin: ClassReference("com.degrafa.skins.CSSSkin");  */
+		}
+		
+		.invalid{
+		   color:#990000;
+		}
+		
+		
+		.myStyle {
+            swatchWidth:25;
+            swatchHeight:25;
+            textFieldWidth:95;
+            columnCount:10;
+            swatchGridBackgroundColor:#ffffff; 
+        }    
+
+		.mystyle1 {
+        fontFamily:COOPBL;
+        fontSize: 32pt;
+       
+     }
+
+	</mx:Style>
+ 	 
+	<mx:Script>
+		<![CDATA[
+			import com.zavoo.svg.SVGViewer;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.components.TextView;
+			import mx.components.TextView;
+			import mx.components.TextView;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.components.TextView;
+			import mx.components.TextView;
+			import com.roguedevelopment.flowchart.shapes.line;
+			import com.roguedevelopment.flowchart.shapes.ellipticalarcnew;
+			import com.degrafa.geometry.Ellipse;
+			import com.degrafa.Surface;
+			import com.roguedevelopment.objecthandles.Shapes;
+			import mx.formatters.NumberBaseRoundType;
+			import mx.formatters.DateFormatter;
+			import flash.sampler.Sample;
+			
+			// pixle calculate to this site =http://www.translatorscafe.com/cafe/units-converter/typography/calculator/pixel-(X)-to-centimeter-[cm]/
+		
+			import com.*;
+			import com.roguedevelopment.objecthandles.ShapesFactory;
+			import com.roguedevelopment.objecthandles.ObjectHandlesCanvas;
+			import com.roguedevelopment.objecthandles.ObjectHandles;
+			import com.roguedevelopment.objecthandles.ObjectHandleEvent;
+			import com.roguedevelopment.objecthandles.ObjectHandlesMouseCursors;
+			import com.roguedevelopment.objecthandles.SelectionManager;
+		    import com.roguedevelopment.objecthandles.SelectionManager;
+			
+			import com.degrafa.geometry.Circle;
+			import com.degrafa.utilities.swf.SWFFontReader;
+			import com.degrafa.geometry.Polygon;
+			import com.degrafa.Graphic;
+			import com.degrafa.GeometryGroup;
+			import com.degrafa.geometry.Geometry;
+			import com.degrafa.core.IGraphicsStroke;
+			import com.degrafa.core.IGraphicsFill;	
+			import com.redrock.be.TextPath;
+			import com.abdulqabiz.utils.QueryString;
+			
+      		import com.zavoo.svg.nodes.SVGRoot;
+			import com.zavoo.svg.SVGViewer;
+			
+			import com.zavoo.svg.SvgPaths;
+			import com.zavoo.svg.SvgPath;
+	
+			import mx.graphics.*;
+			import mx.graphics.RoundedRectangle;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.graphics.BitmapFill;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.graphics.ImageSnapshot;
+			
+			import mx.rpc.*;
+			import mx.rpc.xml.SimpleXMLDecoder;
+			import mx.rpc.remoting.RemoteObject;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.ResultEvent;
+            import mx.rpc.events.FaultEvent;
+            
+            
+			import mx.accessibility.AlertAccImpl;
+			import mx.preloaders.Preloader;
+			
+			import mx.utils.*;
+			import mx.utils.StringUtil;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			import mx.utils.ObjectUtil;
+			
+			import mx.collections.*;
+			import mx.collections.ArrayCollection;
+			import mx.collections.IViewCursor;
+			import mx.collections.ArrayCollection;
+			
+			import mx.effects.*;
+			import mx.effects.Tween;
+			import mx.effects.Move;
+			
+			
+			import mx.events.*;
+			import mx.events.DropdownEvent;
+	     	import mx.events.SliderEvent;
+	        import mx.events.SliderEvent;
+			import mx.events.CloseEvent;
+			import mx.events.ItemClickEvent;
+			import mx.events.ValidationResultEvent;
+			
+			import mx.controls.*;
+			import mx.controls.Image;
+	     	import mx.controls.Alert;
+	     	
+	     	
+	     	import mx.containers.*;
+	     	import mx.containers.TitleWindow;
+	     	import mx.containers.HBox;
+	     	
+			
+			import flash.display.*;
+ 			import flash.net.URLRequest;
+ 			import flash.net.URLLoader;
+			import flash.net.URLRequest;
+			import flash.events.Event;
+ 			import flash.filters.DropShadowFilter;
+ 			import flash.display.Graphics;
+			
+			import mx.core.*;
+	       	import mx.core.IUIComponent;
+	       
+	       
+	        import mx.messaging.management.ObjectInstance;
+	        import mx.managers.PopUpManager;
+	        
+			import mx.styles.StyleManager;
+	        import mx.preloaders.Preloader;
+			
+			
+			import fabulousFlex.PreloadingImage;
+			import fabulousFlex.SquaresSpinnerPreloadingWindow;
+			import fabulousFlex.ProgressPreloadingWindow;
+			import fabulousFlex.SquaresPreloadingWindow;
+			import fabulousFlex.WheelPreloadingWindow;
+		 	
+			import popups.Loading;
+			import popups.Loadingfont;
+			import popups.LoadingCart;
+			
+			
+			//=========Variables=======// 
+			
+			//[Bindable] private var myUrlpaht:String = ExternalInterface.call('eval', 'window.location.host');
+			//[Bindable] private var myUrl:String="http://"+myUrlpaht+"/signimal/";
+			//private var myUrl:String="http://www.octalsoftware.com/signimal/";
+			
+			[Bindable] private var myUrl:String = new UrlString().myString;
+			
+			
+			[Bindable] private var VARIABLES_URL:String = myUrl+"params.txt";
+			[Bindable] private var VARIABLES_URL_TEXT:String = myUrl+"txteditor.txt";
+			[Bindable] private var VARIABLES_URL_BANNER:String = myUrl+"banner.txt";
+			[Bindable] private var VARIABLES_URL_DIE:String = myUrl+"die.txt";
+            [Bindable] private var arrColl:ArrayCollection;
+            [Bindable] private var paramColl:ArrayCollection;
+
+            private var urlReq:URLRequest;
+            private var urlLdr:URLLoader;
+			
+			
+			private const _strDomain:String = new String(myUrl+"signimal_flex_php/");
+			private const _strUploadScript:String = new String(_strDomain + "upload.php");
+			
+			[Bindable] private var myApiUrl:String=myUrl+"media/catalog/product";
+			[Bindable] private var myApiWsdlUrl:String=myUrl+"index.php/api/?wsdl";
+			
+			
+			
+		   	[Bindable] private var curSize:int = 10;
+			[Bindable] private var curFont:String = "";
+			[Bindable] private var selectedObject:ObjectHandles = null;
+			[Bindable] private var selectedObjectShp:ObjectHandles = null;
+			[Bindable] private var cnvsParent:Canvas = new Canvas();
+			
+	        [Bindable] private var myColor:String = new String();
+	        [Bindable] private var textCurSize:Number=12;
+           	[Bindable] private var _data:ArrayCollection;
+            [Bindable] private var leftSide:String;
+			[Bindable] private var rightSide:String;
+			[Bindable] private var topSide:String;
+			[Bindable] private var bottomSide:String;
+			[Bindable] private var mainPhoto:String;
+			
+			[Bindable] private var assetsUrl:String;
+			[Bindable] private var myxml:String;
+			
+			[Bindable] private var request:URLRequest;
+			[Bindable] private var xmlListColls:XMLListCollection = new XMLListCollection();
+			[Bindable] private var arrProductInfo:ArrayCollection;
+			[Bindable] private var arrBannerProductInfo:ArrayCollection;
+  			[Bindable] private var arrProductDieInfo:ArrayCollection;
+  			[Bindable] private var arrProductTexteditorInfo:ArrayCollection;
+  			[Bindable] private var arrProductDDInfo:ArrayCollection;
+  			[Bindable] private var arrImageInfo:ArrayCollection;
+  			[Bindable] private var productId:String;
+  			
+  			
+  			[Bindable] private var arrPriceInfo:ArrayCollection;
+  			[Bindable] private var arrPriceLessInfo:ArrayCollection;
+			[Bindable] private var dataArrayApi:ArrayCollection;
+			[Bindable] private var dataDisplayArray:ArrayCollection;
+			[Bindable] private var textareaColor:String =  new String();
+			[Bindable] private var selectedObjectBanner:ObjectHandles = null;
+			
+			[Bindable] public var myName:String;
+	        [Bindable] public var myHometown:String;
+			[Bindable] public var playlistsDataProvider:Array;
+	        [Bindable] public var playlistsComboBoxDataProvider:ArrayCollection;
+			[Bindable] public var font_dir:String;
+			[Bindable] public var myx:Number = 0;
+			[Bindable] public var circelColor:Number;
+			[Bindable] public var dieColor:Number;
+			[Bindable] public var galleries:ArrayCollection;
+			[Bindable] public var randomNum:Number = new Number (Math.floor(Math.random()* (100000 - 1 + 1)) + 1);
+			[Bindable] public var randomNum1:Number = new Number (Math.floor(Math.random()* (100000 - 1 + 1)) + 1);
+	  		[Bindable] public var dropShacolor:uint;
+			[Bindable] public var selectedItem:Object;
+			[Bindable] public var myComSide:String;
+			
+			
+			
+			
+			public var myObjHand:ObjectHandles;
+			public var totalHeight:Number;
+		   	public var totalWidth:Number;
+		   	
+			public var mySku:String;
+			public var paths:SvgPaths;
+			public var canvas:Sprite;
+			
+			public var assignedProductsDieCat:Number = 45;
+			public var assignedProductsTshirtCat:Number = 35;
+			public var comboCat:Number=56;
+			
+			public var totalPrice:int=0;
+			public var proPrice:int=0;
+			
+			public var newWidth:Number;
+			public var newHeight:Number;
+	    	
+			public var _SESSIONID:String;
+			public var _S_ID:String; 
+			
+			public var bannerImg:String;
+			public var bannerPrice:Number;
+			public var bannerP_id:Number;
+			
+			public var textBasePrice:Number;
+			public var textP_id:Number;
+			public var DDBasePrice:Number;
+			public var DDP_id:Number;
+			
+			
+			private var loading:Loading = new Loading();
+			private var loadingFont:Loadingfont = new Loadingfont();
+			private var loadingCart:LoadingCart = new LoadingCart();
+			private var dX:int = 10;
+			private var dY:int = 10;
+			
+			private var qs:QueryString;
+			private var mystyle:String;
+			
+			private var alert:Alert;
+			private var loadRequests:int = 0;
+			
+			private var cat_ids:Number;
+			
+			private var index:int = 0;
+			private var localX:int = 10;
+			private var localY:int = 10;
+			
+			private var X:int = 10;
+			private var Y:int = 10;
+			
+			
+			private var myRectangle:Shape;
+			private var myRectSp:Sprite;
+			private var beginX:Number; // top left x position
+			private var beginY:Number; // top left y position
+			private var endX:Number; // bottom right x position
+			private var endY:Number; // bottom right y position
+			private var btnX:Number; // button position
+			private var btnY:Number; // button position
+			private var copyBeginX:Number;
+			private var copyBeginY:Number;
+			private var copyEndX:Number; // bottom right x position
+			private var copyEndY:Number; // bottom right y position
+			
+			private var imgLoader:Loader;
+			private var holder:MovieClip;
+			private var imageBMP:BitmapData;
+			private var bmpWidth:int;
+			private var bmpHeight:int;
+			private var _name:String;
+			private var _priceDie:Number;
+			private var _proDie_id:Number;
+
+			private var  newObjectWidth:Number=0;
+			private var  newObjectHeight:Number=0;
+			private var fontArr:Array;
+            
+            private var fade:Effect = new Fade();
+			private var iris:Effect = new Iris();
+			private var blur:Blur = new Blur();
+			private var bool:Boolean = true;
+			private var titleWindow:TitleWindow;
+            
+            
+            protected var resize_handle:Class;
+			protected var rotate_handle:Class;
+           [Bindable] public var cards: Array = [ {label:"arial", data:1}, 
+	            {label:"arial black", data:2}, {label:"verdana", data:3} ];
+			
+			[Bindable] private var svgimage:ArrayCollection = 
+	     	new ArrayCollection([
+	     	 {img:"assets/coloredtoucan.svg"},
+	     	 {img:"assets/eleven_below_single.svg"}
+			]);
+			
+			[Embed(source='images/tools/circle.png')]
+			private var circle:Class;
+			[Embed(source='images/tools/rectangle.png')]
+			private var rectangle:Class;
+			[Embed(source='images/tools/icon-04.png')]
+			private var roundrectcon4:Class;
+			[Embed(source='images/tools/line.png')]
+			private var line:Class;
+			[Embed(source='images/tools/icon-07.png')]
+			private var hline:Class;
+			[Embed(source='images/tools/icon-08.png')]
+			private var vline:Class;
+			[Embed(source='images/tools/icon-04.png')]
+			private var roundrect:Class;
+			[Embed(source='images/tools/icon-05.png')]
+			private var roundrectcon:Class;
+			[Embed(source='images/tools/icon-010.png')]
+			private var polyline:Class;
+			[Embed(source='images/tools/wedge.png')]
+			private var wedge:Class;
+			
+			[Embed(source='images/tools/ellipticalarc.png')]
+			private var ellipticalarcnew:Class;
+			
+			[Embed(source='images/tools/ellipticalarc1.png')]
+			private var ellipticalarc1:Class;
+			
+			[Embed(source='images/tools/ellipticalarc2.png')]
+			private var ellipticalarc2:Class;
+			
+			[Embed(source='images/tools/icon-13.png')]
+			private var ellipse:Class;
+			
+			[Embed(source='images/tools/plus.png')]
+			private var cross:Class;
+			
+			
+	     	[Bindable]
+	     	private var dp:Array = [{icon:circle, label:"circle"}, 
+	     	{icon:rectangle, label:"rectangle"},
+	     	{icon:roundrectcon4, label:"roundrectcon4"},
+	     	{icon:vline, label:"vline"},
+	     	{icon:hline, label:"hline"},
+	     	{icon:roundrect, label:"roundrect"},
+	     	{icon:roundrectcon, label:"roundrectcon"},
+	     	{icon:polyline, label:"polyline"},
+	     	{icon:wedge, label:"wedge"},
+	     	{icon:ellipticalarcnew, label:"ellipticalarcnew"},
+	     	{icon:ellipticalarc1, label:"ellipticalarc1"},
+	     	{icon:ellipticalarc2, label:"ellipticalarc2"},
+	     	{icon:ellipse, label:"ellipse"},
+	     	{icon:cross, label:"cross"},
+	     	];
+     	
+	     	
+        	[Bindable]
+            public var simpleDP:Array = [0x000066, 0x000000, 0xFFFFFF];
+        	
+        	[Bindable]
+            public var ColorDP:Array = ['0x000000', '0xFFFFFF', '0x266ED9', '0x00661F', '0x2B293D', '0x221782', '0x293D2D', '0x99000F', '0x4D1933', '0xFFB200',
+			'0x7F7F7F', '0x144552', '0x330A5C', '0xCC3D00', '0x422D24', '0xFAF2D1', '0xFFCC00', '0xF2DB0D', '0x85BCE0', '0x89EB47',
+			'0xB87A93', '0xEBADC0', '0x1A8AD2', '0x31AA9D', '0x494C1A', '0x9A3558', '0xCCFF00', '0x1AFF00', '0xFF4D00', '0xFF006E'];
+        
+        	
+        
+        	
+        
+            public function openEvt(event:DropdownEvent):void {
+              
+            }       
+
+            public function changeEvt(event:ColorPickerEvent):void {
+               /*  forChange.text="Selected Item: "
+                   + event.currentTarget.selectedItem + " Selected Index: "
+                   + event.currentTarget.selectedIndex; */
+            }
+
+        	
+	        /*
+	        * Strat font chagne styel 
+	        */
+        	
+	        private function onCmbFontChange(event:ListEvent):void
+	        {
+	          	if(selectedObject != null)
+		        {
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			var font:TextFormat = new TextFormat();
+						font.font = new String(combobox.selectedItem);
+						txt.mx_internal::getTextField().setTextFormat(font);
+	        			//txt.setStyle("fontFamily", combobox.selectedLabel);
+	        		}
+		        }
+		        
+		        /* var arr:Array = cnvsParent.getChildren();
+		  		for(var l:int=0; l < arr.length; l++)
+		      	{
+		      		var child:TextView = arr[l] as TextView;
+		      		if(child !=null)
+		      		{
+		      			//Alert.show(''+combobox.selectedLabel);
+		      			child.setStyle("fontFamily", combobox.selectedLabel);					
+		      		}
+		      	} */
+	        }
+
+			private var currentTheme:String = "blue";
+			[Bindable] private var fontf:String;
+		
+			private function onFontChange(event:ListEvent):void
+	        {
+	          	showLoadingFont();		
+	          	fontf = mycombobox.selectedLabel;
+	          	var loader:URLLoader = new URLLoader();
+	          	loader.load(new URLRequest(myUrl+"signimal_flex_php/compilecss.php?rand="+randomNum));
+				loader.addEventListener(Event.COMPLETE,cssLoaded);
+	        }
+		    
+		    private function cssLoaded(e:Event):void
+			{
+				hideLoadingFont();
+				StyleManager.loadStyleDeclarations(myUrl+"signimal_flex_php/uploads/font/"+randomNum+"/style.swf");
+				if(selectedObject != null)
+			    {
+		        	var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        	if(txt != null)
+		        	{
+	        			txt.setStyle("fontFamily", fontf);
+	        			
+	        		}
+			    }
+			}
+	        private function loadStyle():void
+	        {
+	            var eventDispatcher:IEventDispatcher = 
+	                StyleManager.loadStyleDeclarations(myUrl+"signimal_flex_php/uploads/font/"+currentTheme + ".css", true);
+	            eventDispatcher.addEventListener(StyleEvent.COMPLETE, completeHandler);
+	            
+	        }
+	
+	        private function completeHandler(event:StyleEvent):void
+	        {
+	            super.initialized = true;
+	        }
+	        
+			/*
+	        * End font chagne styel 
+	        * Start text align
+	        */
+	        public function setTextAlign(event:MouseEvent):void 
+		    {
+		       	var align:String = event.currentTarget.id;
+		       	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle("textAlign",align);
+	        		}
+	        	}
+		    }
+		      
+	     	/*
+	        * End text align 
+	        * Statr bold italic under line 
+	        */
+     	
+	     	private function checkbold ():void
+			{
+				if(boldtext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("fontWeight","normal");
+		        		}
+		        	}
+				}
+				if(boldtext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt1 != null)
+		        		{
+		        			txt1.setStyle("fontWeight","bold");
+		        		}
+		        	}
+				}
+			}
+			
+			private function checkitalic ():void
+			{
+				if(italictext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("fontStyle","normal");
+		        		}
+		        	}
+				}
+				if(italictext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt1 != null)
+		        		{
+		        			txt1.setStyle("fontStyle","italic");
+		        		}
+		        	}
+				}
+			}
+			private function checkunderline ():void
+			{
+				var txt:TextArea;
+				if(underlinetext.selected==true)
+				{
+					if(selectedObject != null)
+		        	{
+		        		txt = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("textDecoration","normal");
+		        		}
+		        	}
+				}
+				if(underlinetext.selected==false)
+				{
+					if(selectedObject != null)
+		        	{
+		        		txt = selectedObject.getChildAt(0) as TextArea;
+		        		if(txt != null)
+		        		{
+		        			txt.setStyle("textDecoration","underline");
+		        		}
+		        	}
+				}
+			}
+     	
+	     	/*
+	        * End bold italic under line 
+	        * Start Font color Change  
+	        */
+	     	
+	     	private function intToHex(color:int = 0):String {
+	            var mask:String = "000000";
+	            var str:String = mask + color.toString(16).toUpperCase();
+	            //return "#" + str.substr(str.length - 6);
+	            return "#" + str.substr(str.length - 6);
+	        }
+	        private function intToHexs(color:int = 0):String {
+	            var mask:String = "000000";
+	            var str:String = mask + color.toString(16).toUpperCase();
+	            //return "#" + str.substr(str.length - 6);
+	            return  str.substr(str.length - 6);
+	        }
+        	
+        	
+           private var copyColor:uint;
+           private var getColor:uint;	
+           private function OnColorChange(event:ColorPickerEvent):void
+	       {
+	        	
+	        	copyColor = event.color;
+	        	getColor = event.color;
+	        	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		var img:Image = selectedObject.getChildAt(0) as Image;
+	        		if(txt != null)
+	        		{
+	        			txt.setStyle('color', event.color);
+	        			
+	        		}else if(img !=null){
+	        			
+	        			
+	        			var colorTrans:ColorTransform = new ColorTransform();
+						colorTrans.color = event.color;
+					    img.transform.colorTransform=colorTrans;
+			        }
+	        	}
+	        	
+	       }
+	       private function OnShadowcolor():void
+           { 
+	        	if(selectedObject != null)
+	        	{
+	        		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt != null)
+	        		{
+	        			if(bordercheckBox.selected==false)
+	        			{
+	        				txt.setStyle("borderStyle", 'none');
+	        				
+	        			}else{
+	        				txt.setStyle("borderStyle", 'Solid');
+	        				txt.setStyle("borderColor", borderColorPicker.selectedColor);
+	        			}
+	        			//dropShaText.distance=shadowSlider.value;
+	        			//dropShaText.angle=45;
+	        			//dropShaText.blurX=0;
+	        			//dropShaText.blurY=0;
+	        			//dropShaText.alpha=1;
+	        			//dropShaText.color=dropShacolor;
+	        		}
+	        	}	
+           }
+            
+          	
+			/*
+	        * End Font color Change 
+	        * Start remove object  
+	        */
+			private function removeObject():void
+			{
+				//viewPanel.removeChild(oh);
+			}
+		
+			/*
+	        * End remove object  
+	        * Start create & select Daynamic Object
+	        */ 
+			
+			private function val(ho2id:String):String
+			{
+				return ho2id;
+			}
+		
+			private function OnObjectHandlesSelected(event:ObjectHandleEvent):void
+	   		{
+	   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+	   			myObjHand=oh1;
+	   			if(oh1 != null)
+	   			{
+					selectedObject = oh1;
+				}
+	   		}
+   			
+   			public function getRemoveWidthHeight(e:ObjectHandleEvent):void
+   			{
+				
+   		  	}
+   			public function getWidthHeight():void
+   			{
+   				totalWidth=0;
+   				totalHeight=0;
+   				
+			}
+   		
+   			public function getBannerWidthHeight():void
+   			{
+   				totalWidth=0;
+   				totalHeight=0;
+   				
+			}
+   			
+   			public function getDiecutterWidthHeight():void
+   			{
+   				totalWidth=0;
+   				totalHeight=0;
+   				var children:Array;
+   				if(myViewStack.selectedChild==diecutters)
+   				{
+				
+					children = genericDiecutter.getChildren();
+					var n:int = children.length;
+					for (var i:int = 0; i < n; i++)
+			 		{
+			 		   var child:ObjectHandles = children[i] as ObjectHandles;
+					   if(child != null && child.id!="arcEditorObj")
+					   {
+					     totalWidth += child.width;
+					     totalHeight += child.height;
+					   }
+			 		} 
+			 		diecutterselectwidth.text="Total Width: "+ (totalWidth/15).toFixed(2)+ "cm";
+ 		 			diecutterselectheight.text="Total Height: "+(totalHeight/15).toFixed(2)+ "cm";
+ 		 			showPrice();
+				}	
+			}
+			
+			
+			public function getDecalDesignWidthHeight():void
+   			{
+   				totalWidth=0;
+   				totalHeight=0;
+   				var children:Array;
+   				
+			}
+   			
+   			public function getNewXY(e:ObjectHandleEvent):void{
+			    var newX:int =  (e.currentTarget as ObjectHandles).x;
+			    var newY:int = (e.currentTarget as ObjectHandles).y;
+				//Alert.show(" X "+newX+" Y "+newY)
+			}
+			
+			public function getNewWidthHeight(e:ObjectHandleEvent):void
+			{
+				
+				var newWidth:Number =  (e.currentTarget as ObjectHandles).width;
+			    var newHeight:Number =  (e.currentTarget as ObjectHandles).height;
+			    
+			    
+				totalWidth=0;
+	   			totalHeight=0;
+	   			var children:Array;
+	   			if(myViewStack.selectedChild==diecutters)
+				{
+			    	children = genericDiecutter.getChildren();
+					var nObjcutter:int = children.length;
+					for (var k:int = 0; k < nObjcutter; k++)
+			 		{
+			 		   var childObjcutter:ObjectHandles = children[k] as ObjectHandles;
+					   
+					   if(childObjcutter != null && childObjcutter.id!="arcEditorDie")
+					   {
+					     totalWidth += childObjcutter.width;
+					     totalHeight += childObjcutter.height;
+					     
+					   }
+			 		}
+			
+					diecutterselectwidth.text="Total Width: "+ (totalWidth/15).toFixed(2)+ "cm";
+ 	 				diecutterselectheight.text="Total Height: "+(totalHeight/15).toFixed(2)+ "cm";
+ 	 				showPrice();
+	 	 		}
+	 	 	  
+		   
+			}
+		    public var newWidths:Number =150;
+   			public var newHeights:Number =150;
+		   	public function getNewWidthHeightArc(e:ObjectHandleEvent):void
+			{
+				newWidths =  (e.currentTarget as ObjectHandles).width;
+			    newHeights =  (e.currentTarget as ObjectHandles).height;
+			    drawText();
+			}
+		   
+		    public var Final:Number = 0;
+   			public function getNewWidthHeights(event:SliderEvent):void
+			{
+				
+				
+				//newWidths =  (e.currentTarget as ObjectHandles).width;
+			   // newHeights =  (e.currentTarget as ObjectHandles).height;
+			    
+			    	var myw:Number=0;
+			    	var myh:Number=0;
+					var myNumber:Number=0;
+					var rad:Number = 62;
+					var cur:Number = Final/2 + 62;
+					myNumber =radius.value - cur;
+					Final = myNumber*2;
+					myw =  newWidths  + Final;
+			  		myh =  newHeights + Final;
+			  		newWidths =myw;
+					newHeights=myh;
+					//Alert.show("w" + newWidths + "H" + newHeights);
+			    	
+			    	drawText();
+			    
+			}
+		   
+		   	private function hit(event:MouseEvent):void
+		   	{
+		   		var dd:String = event.currentTarget.id;
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh1.allowRotate=false;
+				oh1.x=158; 
+				oh1.y=94;
+				oh1.height=47; 
+				oh1.width=168;
+				val(oh1.id)
+				//oh1.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT, getNewXY);
+				//oh1.addEventListener(ObjectHandleEvent.OBJECT_DESELECTED,getNewWidthHeight);
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+   				
+   				var txt:TextArea = new TextArea();
+				txt.text="Click here and type your text."
+				
+				if(checkBoxShd.selected == true)
+				{
+					txt.filters=[dropShaText];
+					
+				}else if(checkBoxShd.selected == false)
+				{
+					txt.filters=[];
+				}
+				txt.horizontalScrollPolicy = "off";
+				txt.verticalScrollPolicy = "off";
+				txt.percentWidth=100;
+				txt.percentHeight=100;
+				txt.setStyle("backgroundAlpha","0") 
+				txt.setStyle("fontSize","14");  
+				txt.setStyle("color","#000000");
+				txt.setStyle("fontFamily","Verdana");
+				txt.setStyle("fontWeight","bold");
+				txt.setStyle("textAlign","center");
+				txt.setStyle("length","0");
+				txt.setStyle("borderStyle","none");
+				txt.condenseWhite=true;
+				txt.addEventListener(MouseEvent.CLICK ,	clickDis);
+				//txt.height = txt.textHeight - 1;
+
+				if(dd=="test")
+				{
+					oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=false;
+					oh1.mouseChildren=true;
+					
+					txt.selectable=true;
+					txt.editable=true;
+					oh1.addChild(txt);
+					//var children:Array;
+					
+					if(myViewStack.selectedChild==diecutters)
+					{
+					    genericDiecutter.addChild(oh1);
+					    addtocartdie.visible=true;
+					    dieqty.visible=true;
+						Quantity.visible=true;
+						pricetagdie.visible=true;
+					    //getDiecutterWidthHeight();   
+						
+					}
+				} 
+			}
+			
+	   		private function clickDis(event:MouseEvent):void
+	   		{
+	   			if(selectedObject != null)
+	        	{
+	        		selectedObject.allowHMove=false;
+					selectedObject.allowHResize=false;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=false;
+					selectedObject.allowVResize=false;
+					selectedObject.mouseChildren=true;
+					//selectedObject.visible=true;
+				 }
+				// dropShadow.visible=true;
+	        }
+	   		
+	   		//removeSelection
+	   		private function removeSelection(event:MouseEvent):void
+	   		{
+	   			var remove:String = event.currentTarget.id;
+	   			if(remove=="removeselection")
+	   			{
+		   			if(selectedObject != null)
+		        	{
+		        		//selectedObject.deselect();
+		        		selectedObject.allowHMove=false;
+						selectedObject.allowHResize=false;
+						selectedObject.allowRotate=false;
+						selectedObject.allowVMove=false;
+						selectedObject.allowVResize=false;
+						selectedObject.mouseChildren=true;
+						var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        			if(txt != null)
+	        			{
+	        			  txt.editable=true;
+	        			  txt.setStyle("borderStyle","none");
+	        			 	if(checkBoxShd.selected == true)
+							{
+								txt.filters=[dropShaText];
+								
+							}else if(checkBoxShd.selected == false)
+							{
+								txt.filters=[];
+							}	
+	        			}
+			    	}
+	   			}
+	   		}
+	   		
+	   		private function hits(event:MouseEvent):void
+			{
+				var dd:String = event.currentTarget.id;
+				
+				if(selectedObject != null)
+        		{
+        			
+        			
+        			selectedObject.select();
+					selectedObject.allowHMove=true;
+					selectedObject.allowHResize=true;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=true;
+					selectedObject.allowVResize=true;
+					selectedObject.mouseChildren=false;
+					selectedObject.buttonMode=false;
+					selectedObject._allowKeyboardManipulation=true;
+					
+					var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        			if(txt != null)
+        			{
+        			  txt.editable=false;
+        			}
+        		
+        		}else 
+        		{
+        			if(selectedObjectShp !=null)
+        				selectedObjectShp.select();
+        		}
+	   		 }
+	   		 
+	   		 private function ontxtMouseDoubleClick(event:MouseEvent):void
+	   		 {
+	   			var oh1:ObjectHandles = event.currentTarget as ObjectHandles;
+	   		 }
+   		
+   			/*
+	        * End create & select Daynamic Object  
+	        * Start zoom in or zoom out
+	        */ 
+   			 private function changeZoom(event:SliderEvent) : void
+			 {
+			 	var children:Array;
+			 	var nObj:int;
+        		 var childObj:ObjectHandles;
+ 			 	 var j:int;
+				if(myViewStack.selectedChild==diecutters)
+				{
+					children = genericDiecutter.getChildren();
+ 			 	 	nObj = children.length;
+					for (j = 0; j < nObj; j++)
+			 		{
+			 		   childObj = children[j] as ObjectHandles;
+			 		   if(childObj != null)
+					   {
+					   	childObj.scaleY = event.target.values[0]*2/100;
+						childObj.scaleX = event.target.values[0]*2/100;
+					   }
+			 		}
+				}
+				
+			 }
+			 
+			 private function adjustDefaultZoom() : void
+			 {
+				if(selectedObject!=null)
+				{
+					selectedObject.scaleX = slider.values[0]/100*2;
+					selectedObject.scaleY = slider.values[0]/100*2;
+				} 
+			 }
+			 
+			 private function myDataTipFunc(val:String):String {
+			   return  String(val)+ "%";
+			 }
+			 /*
+	        * End zoom in or zoom out  
+	        * Start Path Text 
+	        */  
+			 
+	         
+	         private function TextShade(value:Number):void
+	         {
+	        	if(selectedObject != null)
+	        	{
+	        		selectedObject.deselect();
+	        		selectedObject.allowHMove=false;
+					selectedObject.allowHResize=false;
+					selectedObject.allowRotate=false;
+					selectedObject.allowVMove=false;
+					selectedObject.allowVResize=false;
+					selectedObject.mouseChildren=true;
+					var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+        			if(txt != null)
+        			{
+        			  txt.editable=true;
+        			  if(checkBoxShd.selected == true)
+					  {
+						txt.filters=[dropShaText];
+						
+					  }else if(checkBoxShd.selected == false){
+					  
+					  	txt.filters=[];
+					  }
+        			  
+        			}
+		    	}
+	        	
+	        	
+	        	colorPickerTextShade.selectedColor=value;
+	         }
+	         
+	         private function TextOnColorChange(event:ColorPickerEvent):void
+	         {
+	        	myColor= intToHexs(event.color);
+	        	var arr:Array = genericDiecutter.getChildren();
+	        	for(var i:int=0; i < arr.length; i++)
+	      		{
+	      			var child:ObjectHandles = arr[i] as ObjectHandles;
+		      		if(child !=null)
+		      		{
+		      			var arrobj:Array = child.getChildren();
+		      			for(var x:int=0; x < arrobj.length; x++)
+				      	{
+				      		var childs:TextView = arrobj[x] as TextView;
+			      			if(childs !=null)
+			      			{
+			      				childs.setStyle("color", "#"+myColor);						
+			      			}
+				      	}
+		      		}
+	        	}
+	        	
+	         }
+	           
+	         public function textOnSizeChange():void
+	         {
+	         	textCurSize = fontsize.value;
+	         }
+	         
+	       	 [Bindable] private var cnvParent:Canvas;
+	         [Bindable] private var myRad:Number;
+	         private var pathx:Number =120;
+	         private var pathy:Number =120;
+	        
+	         public function drawText():void 
+	     	 {
+				 	 var children:Array = genericDiecutter.getChildren();
+					 for (var i:int = 0; i < children.length; i++)
+					 {
+						var t:ObjectHandles = children[i] as ObjectHandles;
+						if(t!=null && t.id=="arcEditorDie")
+						{
+							genericDiecutter.removeChild(t);
+						}
+					 }
+					 
+					 var oh1:ObjectHandles = new ObjectHandles();
+				  	 oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+					 oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+					 oh1.x=100;
+					 oh1.id="arcEditorDie";
+					 oh1.y=60;
+					 oh1.width=newWidths;
+					 oh1.height=newHeights;
+					 oh1.allowHMove=true;
+					 oh1.allowHResize=true;
+					 oh1.allowVMove=true;
+					 oh1.allowVResize=true;
+					 oh1.allowRotate=false;
+					 oh1.mouseChildren=true;
+				  	 oh1.alwaysMaintainAspectRatio=true;
+				  	 oh1.select();	
+					 
+					 var myText:String =String(myActTextRound.text);
+			  	  	 var deff:Number=75-oh1.width/2;
+				  	 var radDiff:Number=62-deff; 
+				  	 var radius:Number = radDiff;
+				  	
+				  	 myRad=radius;
+				  	 var spacing:Number = space.value;
+		          	 var center:Point = new Point(oh1.width/2,oh1.height/2);
+		          	 var angleLeading:Number = angleleading.value;
+		          	 var angularOffset:Number = angularOffset.value;
+					 
+		          	 for (var char:uint=0;char<myText.length;char++) 
+			         {
+		               	var tempText:TextView = new TextView();
+		                tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+		                tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+		                var dx:Number = center.x-tempText.x;
+		                var dy:Number = center.y-tempText.y;
+		                var angle:Number = Math.atan2(dy, dx);
+		                tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+		                tempText.text = myText.charAt(char);
+	              	    oh1.addChild(tempText);
+					   	genericDiecutter.addChild(oh1);
+						
+						addtocartdie.visible=true;
+						dieqty.visible=true;
+						Quantity.visible=true;
+						pricetagdie.visible=true;
+			        }
+				}
+	      	 
+	      	 	public function drawTexts():void 
+		     	{
+					 	 var oh1:ObjectHandles = new ObjectHandles();
+					  	 oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						 oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+						 oh1.x=100;
+						 oh1.id="arcEditorDie";
+						 oh1.y=60;
+						 oh1.width=newWidths;
+						 oh1.height=newHeights;
+						 oh1.allowHMove=true;
+						 oh1.allowHResize=true;
+						 oh1.allowVMove=true;
+						 oh1.allowVResize=true;
+						 oh1.allowRotate=false;
+						 oh1.mouseChildren=true;
+					  	 oh1.alwaysMaintainAspectRatio=true;
+					  	 oh1.select();	
+						 
+						 var myText:String =String(myActTextRound.text);
+				  	  	 var deff:Number=75-oh1.width/2;
+					  	 var radDiff:Number=62-deff; 
+					  	 var radius:Number = radDiff;
+					  	
+					  	 myRad=radius;
+					  	 var spacing:Number = space.value;
+			          	 var center:Point = new Point(oh1.width/2,oh1.height/2);
+			          	 var angleLeading:Number = angleleading.value;
+			          	 var angularOffset:Number = angularOffset.value;
+						 
+			          	 for (var char:uint=0;char<myText.length;char++) 
+				         {
+			               	var tempText:TextView = new TextView();
+			                tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+			                tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+			                var dx:Number = center.x-tempText.x;
+			                var dy:Number = center.y-tempText.y;
+			                var angle:Number = Math.atan2(dy, dx);
+			                tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+			                tempText.text = myText.charAt(char);
+		              	    oh1.addChild(tempText);
+						   	genericDiecutter.addChild(oh1);
+							
+							addtocartdie.visible=true;
+							dieqty.visible=true;
+							Quantity.visible=true;
+							pricetagdie.visible=true;
+				        }
+					}
+	      	 
+				private function drawsChange(event:SliderEvent):void
+				{
+					var children:Array = genericDiecutter.getChildren();
+				 	for (var i:int = 0; i < children.length; i++)
+				 	{
+						var t:ObjectHandles = children[i] as ObjectHandles;
+						if(t!=null && t.id=="arcEditorDie")
+						{
+							genericDiecutter.removeChild(t);
+						}
+					}
+					
+					var oh1:ObjectHandles = new ObjectHandles();
+				  	oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+					oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+					
+					oh1.x=100;
+					oh1.y=60;
+					oh1.id="arcEditorDie";
+					oh1.width=newWidths;
+					oh1.height=newHeights;
+					oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=false;
+					oh1.mouseChildren=true;
+				  	oh1.alwaysMaintainAspectRatio=true;
+				  	
+				  	var myText:String =String(myActTextRound.text);
+				  	var deff:Number=75-oh1.width/2;
+				  	var radDiff:Number=62-deff; 
+				  	var radius:Number = radDiff;
+				  	myRad=radius;
+			        var spacing:Number = space.value;
+			        var center:Point = new Point(oh1.width/2,oh1.height/2);
+			        var angleLeading:Number = angleleading.value;
+			        var angularOffset:Number = angularOffset.value;
+					  
+		          	  for (var char:uint=0;char<myText.length;char++) 
+			          {
+		               	var tempText:TextView = new TextView();
+		                tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+		                tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+		                var dx:Number = center.x-tempText.x;
+		                var dy:Number = center.y-tempText.y;
+		                var angle:Number = Math.atan2(dy, dx);
+		                tempText.setStyle("color", '#'+myColor);
+		                tempText.setStyle("fontSize", fontsize.value);
+		                tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+		                tempText.text = myText.charAt(char);
+		                oh1.addChild(tempText);
+		                
+					   	genericDiecutter.addChild(oh1);
+						addtocartdie.visible=true;
+						dieqty.visible=true;
+						Quantity.visible=true;
+						pricetagdie.visible=true;
+			         }
+			  }
+	      	 
+	      	 private function degrees2radians(deg:Number):Number {
+		          return (2 * Math.PI * deg) / 360; 
+		     }
+		        
+		     private function radians2degrees(rad:Number):Number {            
+		          return rad * 180 / Math.PI; 
+		     }
+	      	  private function orientation():void
+	         {
+	     	
+					var children:Array = genericDiecutter.getChildren();
+					for (var i:int = 0; i < children.length; i++)
+					{
+						var t:ObjectHandles = children[i] as ObjectHandles;
+						
+						if(t!=null && t.id=="arcEditorDie")
+						{
+							genericDiecutter.removeChild(t);
+						}
+					}
+					 
+					var oh1:ObjectHandles = new ObjectHandles();
+					oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+					oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+					oh1.x=100;
+					oh1.y=60;
+					oh1.id="arcEditorDie";
+					oh1.width=newWidths;
+					oh1.height=newHeights;
+					oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=false;
+					oh1.mouseChildren=true;
+					oh1.alwaysMaintainAspectRatio=true;
+					var myText:String =String(myActTextRound.text);
+					var deff:Number=75-oh1.width/2;
+					var radDiff:Number=62-deff; 
+					var radius:Number = -radDiff;
+					myRad=radius;
+					var spacing:Number = space.value;
+					var center:Point = new Point(oh1.width/2,oh1.height/2);
+					
+					var angleLeading:Number = angleleading.value;
+					var angularOffset:Number = angularOffset.value;
+					
+				  	for (var char:uint=0;char<myText.length;char++) 
+		          	{
+		                var tempText:TextView = new TextView();
+		               tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+		               tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+		               var dx:Number = center.x-tempText.x;
+		               var dy:Number = center.y-tempText.y;
+		               var angle:Number = Math.atan2(dy, dx);
+		               tempText.setStyle("color", '#'+myColor);
+		               tempText.setStyle("fontSize", fontsize.value);
+		               
+		               tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+		               tempText.text = myText.charAt(char);
+		               oh1.addChild(tempText);
+		               genericDiecutter.addChild(oh1);
+					   addtocartdie.visible=true;
+					   dieqty.visible=true;
+					   Quantity.visible=true;
+					   pricetagdie.visible=true;
+		           }   	
+	     	 }
+	         
+	         private function orientationNew():void
+		     {
+		     	var children:Array = genericDiecutter.getChildren();
+					for (var i:int = 0; i < children.length; i++)
+					{
+						var t:ObjectHandles = children[i] as ObjectHandles;
+						
+						if(t!=null && t.id=="arcEditorDie")
+						{
+							genericDiecutter.removeChild(t);
+						}
+					}
+					 
+					var oh1:ObjectHandles = new ObjectHandles();
+					oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+					oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+					oh1.x=100;
+					oh1.y=60;
+					oh1.id="arcEditorDie";
+					oh1.width=newWidths;
+					oh1.height=newHeights;
+					oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=false;
+					oh1.mouseChildren=true;
+					oh1.alwaysMaintainAspectRatio=true;
+					var myText:String =String(myActTextRound.text);
+					var deff:Number=75-oh1.width/2;
+					var radDiff:Number=62-deff; 
+					var radius:Number = radDiff;
+					myRad=radius;
+					var spacing:Number = space.value;
+					var center:Point = new Point(oh1.width/2,oh1.height/2);
+					
+					var angleLeading:Number = angleleading.value;
+					var angularOffset:Number = angularOffset.value;
+					
+				  	for (var char:uint=0;char<myText.length;char++) 
+		          	{
+		                var tempText:TextView = new TextView();
+		               tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+		               tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+		               var dx:Number = center.x-tempText.x;
+		               var dy:Number = center.y-tempText.y;
+		               var angle:Number = Math.atan2(dy, dx);
+		               tempText.setStyle("color", '#'+myColor);
+		               tempText.setStyle("fontSize", fontsize.value);
+		               
+		               tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+		               tempText.text = myText.charAt(char);
+		               oh1.addChild(tempText);
+		               genericDiecutter.addChild(oh1);
+					   addtocartdie.visible=true;
+					   dieqty.visible=true;
+					   Quantity.visible=true;
+					   pricetagdie.visible=true;
+		           }
+		     }
+		   	 
+	      	private function moveRight():void
+			{
+			 	var children:Array = genericDiecutter.getChildren();
+				 for (var i:int = 0; i < children.length; i++)
+				 {
+					var t:ObjectHandles = children[i] as ObjectHandles;
+					
+					if(t!=null && t.id=="arcEditorDie")
+					{
+						t.x-=5;
+					}
+				}
+			}
+			 
+		    private function moveLeft():void
+		    { 
+	     	    
+	     	    var children:Array = genericDiecutter.getChildren();
+				 for (var i:int = 0; i < children.length; i++)
+				 {
+					var t:ObjectHandles = children[i] as ObjectHandles;
+					
+					if(t!=null && t.id=="arcEditorDie")
+					{
+						t.x+=5;
+					}
+				}
+		     }
+		     
+	     	private function moveUp():void
+	     	{
+	     		var children:Array = genericDiecutter.getChildren();
+				 for (var i:int = 0; i < children.length; i++)
+				 {
+					var t:ObjectHandles = children[i] as ObjectHandles;
+					
+					if(t!=null && t.id=="arcEditorDie")
+					{
+						t.y-=5;
+					}
+				}
+		      	
+	        }
+	          
+	    	private function moveDown():void
+	    	{
+	    		
+	    		var children:Array = genericDiecutter.getChildren();
+				 for (var i:int = 0; i < children.length; i++)
+				 {
+					var t:ObjectHandles = children[i] as ObjectHandles;
+					
+					if(t!=null && t.id=="arcEditorDie")
+					{
+						t.y+=5;
+					}
+				}
+		    }
+           	//===Strat Image Upload====//
+           	
+           	 private var ticker:Timer;
+			 [Bindable] private var time:String;
+
+ 		    public function showTime():void
+            {
+                var currentTime:Date = new Date();
+                var timeFormat:DateFormatter = new DateFormatter;
+				time = timeFormat.formatString = "HH:NN:SS"
+                ///time = timtimeFormat.format(currentTime);
+                ticker = new Timer(1,1);
+                ticker.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+                ticker.start();
+            }
+
+            public function onTimerComplete(event:TimerEvent):void{
+                  showTime();
+                  
+             } 
+           	import flash.utils.Timer;
+        	import flash.events.TimerEvent;
+			[Bindable]
+			public var formatString:String = "KK:NN:SS";
+			[Bindable]
+			public var curTime:String;
+			private var format:DateFormatter;
+        
+        	[Bindable] private var sessionid:String;
+        	[Bindable] private var pid:String;  
+        
+	       	public function initapps():void
+	    	{
+	    		Security.allowDomain(_strDomain);
+	    		qs = new QueryString();
+	    		pid = qs.parameters.pid;
+	    		sessionid = parameters.p;
+	    		//sessionid = qs.parameters.p;
+	    		//Alert.show(sessionid);
+	    		
+	    		if(qs.parameters.myName == "die-cut-stickers")
+				{
+					myViewStack.selectedChild=diecutters
+					myLogin("dieCutter");
+					
+				}
+				
+				if(myViewStack.selectedChild==diecutters){
+					myRemote.getDieCutterData(sessionid);
+					draws.width=26;
+					draws.visible = true;
+				}
+				
+				var fonts:Array = Font.enumerateFonts(true).sortOn("fontName");
+				var fonts_array:Array = new Array();
+			
+				for (var i:int = 0; i < fonts.length; i++) {
+					fonts_array.push(new String(fonts[i].fontName));
+				}
+				combobox.dataProvider = fonts_array;
+			}
+			
+			private function objectHandlesrezise(event:ResizeEvent):void
+	        {
+	        	var objhandles:ObjectHandles = event.currentTarget as ObjectHandles;
+	        	if(objhandles != null)
+	        	{
+	        		var img:UIComponent = objhandles.getChildAt(0) as UIComponent;
+	        		img.height = objhandles.height;
+	        		img.width = objhandles.width;
+	        	}
+	        }
+	        /*
+	        * 
+	        * Start  font size
+	        */	
+		
+	        private function initApp():void 
+			{
+		 		var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        	if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle('fontSize', curSize);
+	        		}
+	        	}
+ 	 	 	}
+	  	    public function showStyles():void {
+		    
+		        //mx.controls.Alert.show("Font size is " + box1.getStyle("fontSize") + ".");
+		    }
+			
+			public function setNewStyles():void 
+		    {
+	        	curSize = Number (ip2.value);
+	        	var txt:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        	if(selectedObject != null)
+	        	{
+	        		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+	        		if(txt1 != null)
+	        		{
+	        			txt1.setStyle('fontSize', curSize);
+	        		}
+	        	 }
+	        }
+	        /*
+	        * 
+	        * End  font size
+	        */
+	        
+	         public function timeHandle(event:TimerEvent):void { 
+	            curTime=format.format(new Date()).toString();
+	         }
+	        
+	        
+	        public var sendFileName:String;
+	      	private function takeSnapshot(mySide:String, pro_id:String):void 
+			{
+				
+		   		
+		   		procolor.visible=false;
+				DiecolorPickerLeft.visible=false;
+				addtocartdie.visible=false;
+				dieqty.visible=false;
+		   		Quantity.visible=false;
+		   		pricetagdie.visible=false;
+		   		
+		   		var bitmapData:BitmapData;
+		   		
+		   		if(myViewStack.selectedChild==diecutters)
+				{
+			    	bitmapData = new BitmapData(genericDiecutter.width, genericDiecutter.height);
+			    	bitmapData.draw(genericDiecutter);
+			    						    
+				}
+					
+			   	var png:PNGEncoder = new PNGEncoder();
+			  	var byteArray:ByteArray = png.encode(bitmapData);
+			  	var urlRequest:URLRequest = new URLRequest();
+				var myTimer:Timer;
+				
+				if(myViewStack.selectedChild==diecutters)
+				{
+					format = new DateFormatter();
+		    		format.formatString="KKNNSS";
+		    		curTime=format.format(new Date()).toString();
+		            myTimer = new Timer(1000, 0);
+		            myTimer.addEventListener("timer", timeHandle);
+		            myTimer.start();
+		            sendFileName = pro_id+"-"+curTime+"-diecutter";
+					urlRequest.url = myUrl + "signimal_flex_php/filesave.php?dirName="+randomNum+"&fileName="+pro_id+"-"+curTime+"-diecutter";
+					
+				}
+				urlRequest.data = byteArray;
+				urlRequest.method = URLRequestMethod.POST;
+				urlRequest.contentType = 'image/png';
+				var urlLoader:URLLoader = new URLLoader();
+				urlLoader.load(urlRequest);
+			
+			}
+			
+			private function arc(event:MouseEvent):void
+	        {
+	        	var pUp:String = event.currentTarget.id;
+	        	if(pUp=="email")
+	        	{
+        	    	emails.visible=true;
+        	    	takeSnapshot("diecutter", String(_proDie_id));
+        	    	PopUpManager.addPopUp(emails, this, true);
+        	    	
+	        	
+	        	}else if(pUp=="arcTextm"){
+	        		
+	        		window.visible=true;
+	        		PopUpManager.addPopUp(window, this, true);
+
+	        	
+	        	}else if(pUp=="uploadVectorImg"){ 
+	        	
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        	
+	        	}else if(pUp=="uploadVectorImgs"){
+	        	
+	        		//upload.visible=true;
+	        		upload.visible=true;
+	        		PopUpManager.addPopUp(upload, this, true);
+	        	
+	        	}else if(pUp=="uploadFont"){
+	        	
+	        		uploadfont.visible=true;
+	        		PopUpManager.addPopUp(uploadfont, this, true);
+	        	
+	        	} else if (pUp=="draws"){
+	        	
+	        		drawsp.visible=true;
+	        		PopUpManager.addPopUp(drawsp, this, true);
+	        	
+	        	}else if(pUp=="testareaShadow")
+	        	{
+	        		dropShadow.visible=true;
+	        		PopUpManager.addPopUp(dropShadow, this, true);
+	        	}
+	        	else if(pUp=="uploadvector")
+	        	{
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        		
+	        	}else if(pUp=="uploadvectorbanner")
+	        	{
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        	}
+	        	else if(pUp=="uploadDiecutterImgs")
+	        	{
+	        		upload.visible=true;
+	        		PopUpManager.addPopUp(upload, this, true);
+	        		
+	        	}else if(pUp=="uploadFontDiecutter")
+	        	{
+	        		uploadfont.visible=true;
+	        		PopUpManager.addPopUp(uploadfont, this, true);
+	        		
+	        	}else if(pUp=="uploadvectorDiecutter")
+	        	{
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        		
+	        	}else if(pUp=="uploadBannerImgs"){
+	        	
+	        		upload.visible=true;
+	        		PopUpManager.addPopUp(upload, this, true);
+	        	
+	        	}else if(pUp=="uploadFontBanner"){
+	        	
+	        		uploadfont.visible=true;
+	        		PopUpManager.addPopUp(uploadfont, this, true);
+	        	
+	        	}else if(pUp=="uploadvectorbanner"){
+	        	
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        		
+	        	}else if(pUp=="DecalDesignuploadImgs"){
+	        	
+	        		upload.visible=true;
+	        		PopUpManager.addPopUp(upload, this, true);
+	        	
+	        	}else if(pUp=="DecalDesignuploadFont"){
+	        	
+	        		uploadfont.visible=true;
+	        		PopUpManager.addPopUp(uploadfont, this, true);
+	        	
+	        	}else if(pUp=="DecalDesignuploadvector"){
+	        	
+	        		vectorImageUpload.visible=true;
+	        		PopUpManager.addPopUp(vectorImageUpload, this, true);
+	        	}
+	        }
+	        
+	        public function registerGlobalKeyHandler() :void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			}
+			
+			public function handleKeyDown(event:KeyboardEvent) :void
+			{
+				if(event.keyCode==46)
+				{
+					var theSelected:ObjectHandles = SelectionManager.instance.currentlySelected as ObjectHandles; 
+		 			var parentContainer:DisplayObjectContainer;
+		 			
+		        	if(selectedObject != null)
+			        {
+			        	
+			        	var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+					    var img:Image = selectedObject.getChildAt(0) as Image;
+					    var txtView:TextView = selectedObject.getChildAt(0) as TextView;
+					    var svgView:SVGViewer = selectedObject.getChildAt(0) as SVGViewer;
+		        		if(txt1 != null)
+		        		{
+		        			myRemote.deleteFrontData(sessionid,txt1.id);
+		        				
+		        		}else if(img!=null)
+		        		{
+		        			myRemote.deleteFrontData(sessionid,img.id);
+		        			
+		        		}else if(txtView!=null)
+		        		{
+		        			myRemote.deleteFrontData(sessionid,String("arcEditorDie"));
+		        		}else if(svgView !=null)
+	        			{
+	        				myRemote.deleteFrontData(sessionid,svgView.id);
+	        			}   
+			        	
+			        	CallAPIPriceLess.call.send(_SESSIONID, 'product_media.list', selectedObject.id);
+			 			if( theSelected != null && theSelected.parent != null ) {
+	      				
+	      					SelectionManager.instance.selectNone();        // Cosmetical stuff, just deselect.
+	      					parentContainer = theSelected.parent;            // Get the parent container
+	      					parentContainer.removeChild( theSelected );   // Remove the selected OH
+	    				}
+	    				
+	    				if(myViewStack.selectedChild==diecutters)
+						{
+						    getDiecutterWidthHeight();   
+						}  
+			 						
+			 		}
+			 		
+				}
+			}
+	        private function Delete():void
+	        {
+	        	var theSelected:ObjectHandles = SelectionManager.instance.currentlySelected as ObjectHandles; 
+			 	var parentContainer:DisplayObjectContainer;
+			 			
+		        if(selectedObject != null)
+			    {
+			 		
+			 		var txt1:TextArea = selectedObject.getChildAt(0) as TextArea;
+				    var img:Image = selectedObject.getChildAt(0) as Image;
+	        		var txtView:TextView = selectedObject.getChildAt(0) as TextView;
+	        		var svgView:SVGViewer = selectedObject.getChildAt(0) as SVGViewer;
+	        		if(txt1 != null)
+	        		{
+	        			myRemote.deleteFrontData(sessionid,txt1.id);
+	        				
+	        		}else if(img!=null)
+	        		{
+	        			myRemote.deleteFrontData(sessionid,img.id);
+	        			
+	        		}else if(txtView!=null)
+	        		{
+	        			myRemote.deleteFrontData(sessionid,String("arcEditorDie"));
+	        			
+	        		}else if(svgView !=null)
+	        		{
+	        			myRemote.deleteFrontData(sessionid,svgView.id);
+	        		} 
+			 		
+			 		CallAPIPriceLess.call.send(_SESSIONID, 'product_media.list', selectedObject.id);
+		 			if( theSelected != null && theSelected.parent != null ) {
+      				
+      					SelectionManager.instance.selectNone();        // Cosmetical stuff, just deselect.
+      					parentContainer = theSelected.parent;            // Get the parent container
+      					parentContainer.removeChild( theSelected );   // Remove the selected OH
+    				} 
+		 			
+		 			if(myViewStack.selectedChild==diecutters)
+					{
+					    getDiecutterWidthHeight();   
+					}
+		 			
+		 						
+		 		}
+		 		
+	        } 
+	        
+	        //===End Image Upload====//
+	        private var myTextAreacopy:TextArea;
+	        
+	        private var myObjcopy:ObjectHandles;
+	        private var shpHeight:int;
+			private var shpWidth:int;
+			
+        	private function copy(event:MouseEvent):void
+        	{
+        		var ids:String= event.currentTarget.id;
+	        	myl.text=ids;
+	        	
+	        	if(myl.text=="Cut")
+	        	{
+	        		 if(selectedObject !=null)
+	        		 {
+	 			 	 	selectedObject.visible=false;
+	 			 	 	
+	        		 }else{
+	        		 	
+	        		 	Alert.show("Please object select first.");
+	        		 	
+	        		 }
+	        	}
+        		
+        		var children:Array;
+        		
+        		if(myViewStack.selectedChild==diecutters){
+					
+					children = genericDiecutter.getChildren();
+					
+				}   
+        		
+        		
+ 			 	 var nObj:int;
+        		 var childObj:ObjectHandles;
+ 			 	 var j:int;
+ 			 		 	
+        		 if(selectedObject!=null)
+        		 {
+        		 	
+ 			 	 	nObj = children.length;
+					for (j = 0; j < nObj; j++)
+			 		{
+			 		   childObj = children[j] as ObjectHandles;
+			 		   if(childObj != null)
+					   {
+					   		if(childObj == selectedObject)
+					    	{
+					    		myObjcopy = childObj;
+					    		var txt:TextArea = childObj.getChildAt(0) as TextArea;
+					    		if(txt !=null)
+					    		{
+					    			myTextAreacopy = txt;
+					    		}
+					    								    		
+					    	}
+					   }
+			 		}
+					
+ 			 	 }else{
+        		 	
+        		 	Alert.show("Please object select first.");
+        		 }
+	    	} 
+        	
+            private function paste():void
+			{
+				var myText:String=myl.text;
+				
+				
+				if(myText=="Copy")
+				{
+					var txt1:TextArea;
+	   				var oh1:ObjectHandles;
+	   				var txt:TextArea;
+	   				var img:Image;
+	   				var img1:Image;
+	   				var txtview:TextView;
+	   				var txtview1:TextView;
+	   				
+	   				var svgv:SVGViewer;
+	   				var svgv1:SVGViewer;
+	   				
+	   				if(myViewStack.selectedChild==diecutters){
+						
+						if(selectedObject != null && selectedObject.id !="arcEditorDie")
+						{
+							txt1 = selectedObject.getChildAt(0) as TextArea;
+							img1 = selectedObject.getChildAt(0) as Image;
+							svgv1 = selectedObject.getChildAt(0) as SVGViewer;
+							
+							oh1 = new ObjectHandles();
+							oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+							oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+							oh1.x=myObjcopy.x; 
+							oh1.y=myObjcopy.y + 20;
+							oh1.height=myObjcopy.height; 
+							oh1.width=myObjcopy.width;
+							oh1.allowHMove=true;
+							oh1.allowHResize=true;
+							oh1.allowVMove=true;
+							oh1.allowVResize=true;
+							oh1.allowRotate=false;
+							oh1.mouseChildren=true;
+							
+							if(txt1 != null)
+							{
+							 	txt = new TextArea();
+								txt.text=txt1.text
+								txt.horizontalScrollPolicy = "off";
+								txt.verticalScrollPolicy = "off";
+								txt.percentWidth=100;
+								txt.percentHeight=100;
+								txt.setStyle("backgroundAlpha","0") 
+								txt.setStyle("fontSize","14");  
+								txt.setStyle("color", copyColor);
+								txt.setStyle("fontFamily","Verdana");
+								txt.setStyle("fontWeight","bold");
+								txt.setStyle("textAlign","center");
+								txt.setStyle("length","0");
+								txt.setStyle("borderStyle","none");
+								txt.condenseWhite=true;
+								txt.addEventListener(MouseEvent.CLICK ,	clickDis);
+								oh1.addChild(txt);
+							 	
+							 	
+							}else if(img1 != null){
+							
+								img = new Image();
+								img.percentWidth=100;
+								img.percentHeight=100;
+								img.source = img1.source;
+								
+								var colorTrans:ColorTransform = new ColorTransform();
+								if(copyColor == 0)
+								{
+								
+									colorTrans.color = 16446161;
+										
+								}else{
+								
+									colorTrans.color = copyColor;
+								}
+				   	 			img.transform.colorTransform=colorTrans;
+								oh1.addChild(img);
+							
+							}else if(svgv1 !=null){
+							
+								svgv = new SVGViewer();
+			     				svgv.xml = new XML(svgv1.xml);
+			    				svgv.myWidth(150);
+				 				svgv.myHeight(150);
+	    	 	 				if(svgv != null)
+				 				{
+				 					oh1.addChild(svgv);	
+				 				}
+							}
+							
+							genericDiecutter.addChild(oh1);
+							getWidthHeight();
+							
+						}else if(selectedObject != null && selectedObject.id =="arcEditorDie")
+						{
+							newWidths= selectedObject.width;
+							newHeights= selectedObject.height;
+							drawTexts();
+						}
+					}
+											
+				}else if(myText=="Cut"){
+				
+					if(selectedObject !=null)
+					{
+						selectedObject.visible = true;
+						
+					}
+				
+				}else if(myText=="")
+				{
+					Alert.show("Please copy or cut object and then click on paste.");
+				} 	
+				
+			}
+			private function bannerGetImage(id:String, front:String, back:String):void
+			{
+				//write your code. 
+			}
+			
+			
+			private function mySideBanner(id:String, side:String):void
+			{
+				if(side=="front")
+				{
+					//bannerpreviewImg.source = id;
+					
+				}else if(side=="back")
+				{
+					//bannerpreviewImg.source = id;
+				}
+			}
+			
+			private function getImages(id:String, sku:String):void
+			{
+				
+				mySku = sku;
+				
+				LoginAPIcat.call.send(_SESSIONID, "category.assignedProducts", cat_ids);
+				
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.width=50;
+				oh1.height=50;
+				oh1.x=150;
+				oh1.y=150;
+				oh1.id=sku;
+				oh1.allowRotate=true;
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+				var image:Image = new Image();
+				
+				if(myViewStack.selectedChild==diecutters)
+				{
+				    addtocartdie.visible=true;
+				    dieqty.visible=true;
+					Quantity.visible=true;
+					pricetagdie.visible=true;
+				    image.source = myApiUrl+'/'+id;
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+					genericDiecutter.addChild(oh1);
+					CallAPIPrice.call.send(_SESSIONID, 'product_media.list', sku);
+					//getDiecutterWidthHeight();
+					
+				}
+			}
+	
+			public function getImageDie_result(event:ResultEvent):void
+			{
+				//mx.controls.Alert.show(ObjectUtil.toString(event.result));
+			}
+			private function getDieCutterImage(imgName:String, price:Number, pro_id:Number):void
+			{
+				if(myViewStack.selectedChild==diecutters)
+				{
+					addtocartdie.visible=true;
+					dieqty.visible=true;
+					Quantity.visible=true;
+					pricetagdie.visible=true;
+					_name=imgName;
+					_priceDie=price;
+					_proDie_id=pro_id;
+					
+					
+					var oh1:ObjectHandles = new ObjectHandles();
+		        	oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+		        	oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewObject);
+		        	oh1.allowRotate=false;
+					oh1.x=158; 
+					oh1.y=94;
+					
+					if(newObjectWidth==0 && newObjectHeight==0)
+					{
+						oh1.height=150; 
+						oh1.width=150;
+						
+					}else{
+					
+						oh1.height=newObjectWidth; 
+						oh1.width=newObjectWidth;
+					}	
+					oh1.setStyle("backgroundAlpha","0");
+					oh1.setStyle("borderThickness","0");
+		     		oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=true;
+					oh1.mouseChildren=true;
+		     		
+					var myShapes:ShapesFactory= new ShapesFactory();
+					var img:Image = new Image();
+					img.id="die";
+					img.source=_name;
+	        		img.percentHeight = 100;
+					img.percentWidth = 100;
+					img.maintainAspectRatio = false;
+    				oh1.addChild(img);
+					genericDiecutter.addChild(oh1);
+					getDiecutterWidthHeight();
+					if(selectedObject!=null)
+					{
+						var theSelected:ObjectHandles = SelectionManager.instance.currentlySelected as ObjectHandles; 
+				 		var parentContainer:DisplayObjectContainer;
+					 	if( theSelected != null && theSelected.parent != null ) 
+					 	{
+	      						SelectionManager.instance.selectNone();        // Cosmetical stuff, just deselect.
+	      						parentContainer = theSelected.parent;            // Get the parent container
+	      						parentContainer.removeChild( theSelected );   // Remove the selected OH
+		    			}
+					}
+				}
+			}
+			private function rectStartingPoint(m:MouseEvent):void
+			{
+				beginX = mouseX;
+				beginY = mouseY;
+				genericDiecutter.removeEventListener(MouseEvent.MOUSE_DOWN, rectStartingPoint);
+				genericDiecutter.addEventListener(MouseEvent.MOUSE_MOVE, rectDraw);
+			}
+	
+			private function rectDraw(m:MouseEvent):void
+			{
+				endX = mouseX;
+				endY = mouseY;
+				genericDiecutter.addEventListener(MouseEvent.MOUSE_UP, stopRectDraw);
+			}
+	
+			private function stopRectDraw(m:MouseEvent):void
+			{
+				var oh1:ObjectHandles = new ObjectHandles();
+	        	oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+	        	oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewObject);
+	        	oh1.allowRotate=false;
+				oh1.x=158; 
+				oh1.y=94;
+				
+				if(newObjectWidth==0 && newObjectHeight==0)
+				{
+					oh1.height=150; 
+					oh1.width=150;
+					
+				}else{
+				
+					oh1.height=newObjectWidth; 
+					oh1.width=newObjectWidth;
+				}	
+				oh1.setStyle("backgroundAlpha","0");
+				oh1.setStyle("borderThickness","0");
+	     		oh1.allowHMove=true;
+				oh1.allowHResize=true;
+				oh1.allowVMove=true;
+				oh1.allowVResize=true;
+				oh1.allowRotate=true;
+				oh1.mouseChildren=true;
+	     		
+				if(myViewStack.selectedChild==diecutters)
+				{
+					var myShapes:ShapesFactory= new ShapesFactory();
+					var img:Image = new Image();
+					img.source=_name;
+	        		img.percentHeight = 100;
+					img.percentWidth = 100;
+					img.maintainAspectRatio = false;
+    				oh1.addChild(img);
+					genericDiecutter.addChild(oh1);
+					getDiecutterWidthHeight();
+				}
+				
+				genericDiecutter.removeEventListener(MouseEvent.MOUSE_MOVE, rectDraw);
+				genericDiecutter.removeEventListener(MouseEvent.MOUSE_UP, stopRectDraw);
+				if(selectedObject!=null)
+				{
+					var theSelected:ObjectHandles = SelectionManager.instance.currentlySelected as ObjectHandles; 
+			 		var parentContainer:DisplayObjectContainer;
+				 	if( theSelected != null && theSelected.parent != null ) 
+				 	{
+      						SelectionManager.instance.selectNone();        // Cosmetical stuff, just deselect.
+      						parentContainer = theSelected.parent;            // Get the parent container
+      						parentContainer.removeChild( theSelected );   // Remove the selected OH
+	    			}
+				}
+			}
+
+			public function getNewObject(e:ObjectHandleEvent):void
+			{
+				totalWidth=0;
+				totalHeight=0;
+				newObjectWidth =  (e.currentTarget as ObjectHandles).width;
+		    	newObjectHeight =  (e.currentTarget as ObjectHandles).height;
+		    	
+    			var children:Array = genericDiecutter.getChildren();
+				var nObjcutter:int = children.length;
+				for (var k:int = 0; k < nObjcutter; k++)
+		 		{
+		 		   var childObjcutter:ObjectHandles = children[k] as ObjectHandles;
+				   
+				   if(childObjcutter != null)
+				   {
+				     totalWidth += childObjcutter.width;
+				     totalHeight += childObjcutter.height;
+				     
+				   }
+		 		}
+		
+				diecutterselectwidth.text="Total Width: "+ (totalWidth/15).toFixed(2)+ "cm";
+  				diecutterselectheight.text="Total Height: "+ (totalHeight/15).toFixed(2)+ "cm";
+  				showPrice();
+		    }
+			private function getImageAssets(event:Event):void
+			{
+				
+				
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.width=50;
+				oh1.height=50;
+				oh1.x=150;
+				oh1.y=150;
+				oh1.allowRotate=true;
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				var image:Image = new Image();
+				
+				if(myViewStack.selectedChild==diecutters)
+				{
+				    addtocartdie.visible=true;
+				    dieqty.visible=true;
+					Quantity.visible=true;
+					pricetagdie.visible=true;
+				    image.source = event.currentTarget.getRepeaterItem();
+					image.percentHeight=100;
+					image.percentWidth=100;
+					image.maintainAspectRatio = false;
+					oh1.addChild(image);
+			    	genericDiecutter.addChild(oh1);
+					//getDiecutterWidthHeight();
+				}
+			}
+			
+			// end for gallery//
+			//banner end//
+		 	// mail function start.//
+		 	
+		 	private function sendMail():void
+			{
+				
+				var _senderName:String = senderName.text;
+		        var _senderEmail:String = senderEmail.text;
+		        var _emailMessage:String = emailMessage.text;
+		        var _emailSubject:String = emailSubject.text;
+		       	var evValidMail:ValidationResultEvent = mailValidator.validate();
+				var evValidName:ValidationResultEvent = nameValidator.validate();
+				var evValidMessage : ValidationResultEvent = mailValidator.validate();
+				
+				if (evValidMail.type == ValidationResultEvent.VALID 
+				&& evValidName.type == ValidationResultEvent.VALID
+				&& evValidMessage.type == ValidationResultEvent.VALID)
+				{
+					var fileName:String = sendFileName;
+					myRemote.sendMail(_senderName, _senderEmail, _emailSubject, _emailMessage, randomNum, fileName); 
+				}
+				else{
+					
+					resultLabel.text="There are Form errors";
+					resultLabel.setStyle("styleName", "invalid");
+				}
+			}
+		
+			private function emailResult():void
+			{
+	            Alert.show("Thank you for your submission ");
+	            clearForm();
+	            emails.visible=false;
+	     	}
+			private function clearForm():void
+			{
+				resultLabel.text="";
+				emailSubject.text="";
+				emailMessage.text="";
+			}
+        	//End mail function  End.//
+			
+			private var _bannerWidth:Number;
+			private var _bannerHeight:Number;
+			
+			
+			
+			
+			
+			private function myXmlList():void
+			{
+				//myRemote.myXml();
+			}
+			
+			private function sendMailListener(event:ResultEvent):void
+			{
+				Alert.show("Thank you for your submission ");
+	            clearForm();
+	            emails.visible=false;
+	            PopUpManager.removePopUp(emails)
+			}
+			private function testListener(event:ResultEvent):void
+			{
+				Alert.show(ObjectUtil.toString(event.result));
+				
+			}
+			
+			private function myXmlListener(event:ResultEvent):void
+            {
+            	Alert.show(ObjectUtil.toString(event.result));
+            }
+            private function faultListener(event:FaultEvent):void {
+                Alert.show(event.fault.message, "Error");
+            }
+            
+            
+            public function newfile():void
+            {
+            	var children:Array;
+            	
+	        	if(myViewStack.selectedChild==diecutters)
+				{
+					children = genericDiecutter.getChildren();
+					var die:int = children.length;
+					
+					for (var z:int = 0; z < die; z++)
+			 		{
+			 		   var childDie:ObjectHandles = children[z] as ObjectHandles;
+					   if(childDie != null)
+					   {
+					      var theSelectedDie:ObjectHandles = childDie;
+					      var parentContainerDie:DisplayObjectContainer;
+					       
+				 		   if( theSelectedDie != null && theSelectedDie.parent != null ) 
+					 	   {	
+			      				SelectionManager.instance.selectNone();        // Cosmetical stuff, just deselect.
+			      				parentContainerDie = theSelectedDie.parent;            // Get the parent container
+			      				parentContainerDie.removeChild( theSelectedDie );   // Remove the selected OH
+			    		   } 
+				 	   }
+			 		} 
+			 		getDiecutterWidthHeight();
+			    	
+				}
+            	
+            }
+            
+            //---------Start redo undo-------// 
+           
+			public function undo(type:String):void
+			{
+				
+				var children:Array;   
+				if(myViewStack.selectedChild==diecutters)
+				{
+				    //getDiecutterunod("unod");
+				    children = genericDiecutter.getChildren();
+					var n6:int = children.length;
+					for (var y:int = 0; y < n6; y++)
+				 	{
+				 	   var child6:ObjectHandles = children[y] as ObjectHandles;	
+					  if(child6 != null && y==(n6-1))
+					   {
+						   	if(type=="undo")
+							{
+						   		 child6.visible = false;
+						   		 
+						 	}else if("redo")
+						 	{
+						 		child6.visible = true;
+						 	}
+					     }
+					 }	
+				 }
+			}
+			
+			//---------End redo undo-------// 
+			
+	        private function myFontListener(event:ResultEvent):void
+			{
+				playlistsDataProvider = new Array(event.result);
+				var playlistsForComboBox:Array = new Array(playlistsDataProvider[0].length);
+				
+				for(var i:int = 0; i < playlistsDataProvider[0].length;i++)
+				{
+					playlistsForComboBox[i] = {label:playlistsDataProvider[0][i].font_name, data:playlistsDataProvider[0][i].id};
+				}
+
+				playlistsComboBoxDataProvider = new ArrayCollection(playlistsForComboBox);
+				mycombobox.dataProvider=playlistsComboBoxDataProvider;		
+			}
+			
+			
+			private function displayAssets(num:Number, type:String):void
+			{
+			
+				assetsUrl = ObjectUtil.toString(num);
+				if(type=="font")
+				{
+					myRemote.myFont(assetsUrl);
+				
+				}else if(type=="image"){
+
+					myxml = myUrl + "signimal_flex_php/uploads/image/" + num + "/assetsXml.xml";
+					fileupload(myxml);
+					
+				}
+				
+			}
+			
+			private function displayAssetssvg(num:Number, type:String):void
+			{
+				 if(type=="vector"){
+				
+					myxml = myUrl + "signimal_flex_php/uploads/image/" + num + "/myassetsXml.xml";
+					svgfileupload(myxml);
+				}
+			}
+			
+			private function svgfileupload(src:String):void
+			{
+				httpServicesvg.url= src;	
+				httpServicesvg.send();
+				httpServicesvg.method="GET";
+				httpServicesvg.addEventListener(ResultEvent.RESULT, httpServicesvg_result);
+			}
+			private function httpServicesvg_result(event:ResultEvent):void
+			{
+			   
+			   	var xml:XMLDocument = new XMLDocument(String(event.result));
+			   	var decoder:SimpleXMLDecoder = new SimpleXMLDecoder();
+   			   	var data:Object = decoder.decodeXML( xml );
+    		   	var array:Array = ArrayUtil.toArray(data.galleries.gallery);
+			   	
+			   	galleries = new ArrayCollection( array );
+				
+				if(myViewStack.selectedChild==diecutters)
+				{
+			    	mySvgImageDiecutter();
+			    	
+			 	}
+			}
+			
+			private function fileupload(src:String):void
+			{
+				httpService.url= src;	
+				httpService.send();
+				httpService.addEventListener(ResultEvent.RESULT, httpService_result);
+			}
+			
+			private function httpService_fault(evt:FaultEvent):void {
+                var title:String = evt.type + " (" + evt.fault.faultCode + ")";
+                var text:String = evt.fault.faultString;
+                xmlListColl.removeAll();
+            }
+			
+			private function httpService_result(event:ResultEvent):void 
+			{
+            	 var xmlList:XMLList = XML(event.result).gallery;
+                 xmlListColls = new XMLListCollection(xmlList);
+               
+                if(myViewStack.selectedChild==diecutters)
+				{
+				   
+				   imageRepeaterDiecutter.dataProvider = xmlListColls;
+				   
+				}
+			}
+			public var myprod:Number = 0;
+			public function colorizeDie(value:Number) :void
+			{
+				myprod = value;
+				var colorTrans:ColorTransform = new ColorTransform();
+				colorTrans.color = value;
+				if(myViewStack.selectedChild == diecutters)
+				{
+					
+					if(selectedObject != null)
+	        		{
+	        			selectedObject.select();
+						selectedObject.allowHMove=true;
+						selectedObject.allowHResize=true;
+						selectedObject.allowRotate=false;
+						selectedObject.allowVMove=true;
+						selectedObject.allowVResize=true;
+						selectedObject.mouseChildren=false;
+						selectedObject.buttonMode=false;
+						selectedObject._allowKeyboardManipulation=true;
+						
+						var img:Image = selectedObject.getChildAt(0) as Image;
+	        			if(img != null)
+	        			{
+	        			  img.transform.colorTransform=colorTrans;
+	        			}
+	        		}
+				}
+			}
+			
+			public var myclipvalue:Number = 0;
+			public function colorizeClipart(value:Number) :void
+			{
+				myclipvalue = value;
+				//Alert.show(''+value);
+				var colorTrans:ColorTransform = new ColorTransform();
+				colorTrans.color = value;
+				if(myViewStack.selectedChild==diecutters)
+				{
+				    if(selectedObject != null)
+	        		{
+	        			selectedObject.select();
+						selectedObject.allowHMove=true;
+						selectedObject.allowHResize=true;
+						selectedObject.allowRotate=false;
+						selectedObject.allowVMove=true;
+						selectedObject.allowVResize=true;
+						selectedObject.mouseChildren=false;
+						selectedObject.buttonMode=false;
+						selectedObject._allowKeyboardManipulation=true;
+						
+						var img2:Image = selectedObject.getChildAt(0) as Image;
+	        			if(img2!= null)
+	        			{
+	        			  img2.transform.colorTransform=colorTrans;
+	        			}
+	        		}
+				}
+			}
+		
+			
+			private function onLoadClipart():void
+			{
+				//leftsidepenalbanner
+				if(myViewStack.selectedChild==diecutters)
+				{
+					if(leftsidepenaldiecutter.selectedIndex==1)
+					{
+					  DiecutterimageRepeater.dataProvider=DiecutterComboBox.selectedItem.description;
+					}
+				}
+			}
+			
+			//Strat svg image code
+			
+			
+			
+			public var svgImage:String;
+			public function mySvgImageDiecutter():void
+			{
+				var n:int = galleries.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					svgImage = galleries.source[i].img;
+					canvas = new Sprite();
+					this.rawChildren.addChild(canvas);
+					var loader:URLLoader = new URLLoader();
+					var request:URLRequest = new URLRequest(galleries[i].img);
+					loader.load(request);
+					loader.addEventListener(Event.COMPLETE, onLoadCompleteDiecutter);
+				}	
+			}
+			
+			private function onLoadCompleteDiecutter(event:Event):void 
+			{
+			   var loader:URLLoader = URLLoader(event.target);
+			   paths = new SvgPaths(loader.data);		    
+			  
+			    var svgv:SVGViewer = new SVGViewer();
+			    svgv.xml = new XML(loader.data);
+			    svgv.myWidth(50);
+				svgv.myHeight(50);
+			   	svgv.addEventListener(MouseEvent.CLICK, onVectorGraphicSelect);
+			    
+			     svgv.x = dX;
+			     svgv.y = dY;
+				
+				dX += 60;
+				
+				if(dX > 180)
+				{
+					Y += 60;
+					X = 10;
+				}
+				mySvgThumbDiecutter.addChild(svgv);
+
+			}
+			
+			
+			
+			private function onVectorGraphicSelect(event:MouseEvent):void 
+			{
+				 var svgv:SVGViewer = new SVGViewer();
+				 svgv.xml = (event.currentTarget as SVGViewer).xml;
+				 svgv.myHeight(150);
+	    	 	 svgv.myWidth(150);
+	    	 	 if(svgv != null)
+				 {
+				    var oh1:ObjectHandles = new ObjectHandles();
+				    oh1.allowHMove=true;
+					oh1.allowHResize=true;
+					oh1.allowVMove=true;
+					oh1.allowVResize=true;
+					oh1.allowRotate=true;
+					oh1.mouseChildren=true;
+				    oh1.width=150;
+				    oh1.height=150;
+				    oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				    oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,svgNewWidthHeight);
+				    
+				    oh1.addChild(svgv);
+				    
+				   if(myViewStack.selectedChild==diecutters)
+					{
+				   		genericDiecutter.addChild(oh1);
+				
+					}
+				 }
+		 	}
+			
+			public function svgNewWidthHeight(e:ObjectHandleEvent):void
+			{
+				var svgv:SVGViewer =  e.currentTarget.getChildAt(0) as SVGViewer;
+				var seleObject:ObjectHandles= e.currentTarget as ObjectHandles;	
+			 	newWidth =  (e.currentTarget as ObjectHandles).width;
+	    	 	newHeight =  (e.currentTarget as ObjectHandles).height;
+	    	 	svgv.myHeight(newHeight);
+	    	 	svgv.myWidth(newWidth);
+			}
+	    	 
+	    	//Start web services code
+	    	 
+	    	public function getLogin():void
+			{
+				var apiUser:String = 'flex';
+				var apiKey:String = 'flex123';
+				//LoginAPI.login.send(apiUser, apiKey);
+				//LoginAPIs.login.send(apiUser, apiKey);
+				//LoginAPIBanners.login.send(apiUser, apiKey);
+				showLoading(); 
+				
+			}
+			
+			
+			private function showLoading():void 
+			{
+				PopUpManager.addPopUp(loading, this, true);
+				PopUpManager.centerPopUp(loading);
+			}
+			
+			private function hideLoading():void 
+			{
+				PopUpManager.removePopUp(loading);
+			}
+			private function showLoadingFont():void 
+			{
+				PopUpManager.addPopUp(loadingFont, this, true);
+				PopUpManager.centerPopUp(loadingFont);
+			}
+			
+			private function hideLoadingFont():void 
+			{
+				PopUpManager.removePopUp(loading);
+			}
+			
+			private function showLoadingCart():void 
+			{
+				PopUpManager.addPopUp(loadingCart, this, true);
+				PopUpManager.centerPopUp(loadingCart);
+			}
+			
+			
+			public function myLogin(tage:String):void
+			{
+				
+				if(myViewStack.selectedChild==diecutters){
+				
+					draws.width=26;
+					draws.visible = true;
+					//uploadVectorImg.width=58;
+					//uploadVectorImg.visible = true;
+					
+				}
+				
+				var apiUser:String = 'flex';
+				var apiKey:String = 'flex123';
+				
+				
+				if(tage == 'dieCutter')
+				{
+					LoginAPIDieCutter.login.send(apiUser, apiKey);
+					LoginAPIs.login.send(apiUser, apiKey);
+					LoginShapeAPIs.login.send(apiUser, apiKey);
+					
+				}
+				showLoading(); 
+			}
+			
+			public var assignedShapeTshirtCat:Number = 61;
+			
+			public function getLogin_result(event:ResultEvent):void
+			{
+				_SESSIONID = event.result as String;
+				LoginAPI.call.send(_SESSIONID, "category.assignedProducts", assignedProductsTshirtCat);
+				LoginAPIs.call.send(_SESSIONID, 'category.level', comboCat);
+				LoginShapeAPIs.call.send(_SESSIONID, 'category.assignedProducts', assignedShapeTshirtCat);
+				hideLoading();
+			}
+			
+			public function getLoginDie_result(event:ResultEvent):void
+			{
+				_S_ID = event.result as String;
+				LoginAPIDieCutter.call.send(_S_ID, "category.assignedProducts", assignedProductsDieCat);
+				hideLoading();
+			}
+			public function getCallDie_result(event:ResultEvent):void
+			{
+				arrProductDieInfo = event.result as ArrayCollection;
+			}
+			
+			public function getLogin_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show(''+event);
+			}
+			
+			public function getCall_result(event:ResultEvent):void
+			{
+				arrProductInfo = event.result as ArrayCollection;
+				//Alert.show(ObjectUtil.toString(arrProductInfo));
+			}
+			public function getCall_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show(''+event);
+			}
+			public function getcombo_result(event:ResultEvent):void
+			{
+				dataArrayApi = event.result as ArrayCollection;
+			}
+			public function getcombo_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show(''+event);
+			}
+			
+			[Bindable] private var shapeArrayApi:ArrayCollection;
+			public function getShape_result(event:ResultEvent):void
+			{
+				shapeArrayApi = event.result as ArrayCollection;
+			}
+			public function getShape_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show(''+event);
+			}
+			
+			
+			public function shape(id:String, sku:String):void
+		    {
+		    	var shape:String=id;
+		    	
+				var oh1:ObjectHandles = new ObjectHandles();
+				oh1.width=50;
+				oh1.height=50;
+				oh1.x=150;
+				oh1.y=150;
+				oh1.id=sku;
+				oh1.allowRotate=true;
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+				var image:Image = new Image();
+				
+				addtocartdie.visible=true;
+				dieqty.visible=true;
+				Quantity.visible=true;
+				pricetagdie.visible=true;
+				image.source = myApiUrl+'/'+id;
+				image.id=sku;
+				image.percentHeight=100;
+				image.percentWidth=100;
+				image.maintainAspectRatio = false;
+				oh1.addChild(image);
+				
+			 	genericDiecutter.addChild(oh1);
+			 }
+			
+			private function getImagesApi(sku:String):void
+			{
+				//CallAPI.call.send(_SESSIONID, "product_media.list", sku);
+			
+			}	
+			
+			public function getPrice_result(event:ResultEvent):void
+			{
+				
+				arrPriceInfo      = event.result as ArrayCollection;
+				var n:int = arrPriceInfo.source.length;
+				
+				totalPrice += parseInt(arrPriceInfo.source[0].price);
+				price.text=ObjectUtil.toString(totalPrice);
+				
+			}
+			
+			
+            
+            private function doEventDie(evt:Event):void {
+                
+              	var url:String;
+				var widthCMArea:Number;
+				var heightCMArea:Number;
+				var totalAreaCm:Number;
+				var fixedPrice1:Number;
+				var leftAreaCm:Number;
+				var priceleftAreaCm:Number;
+				var fixedPrice:Number;
+				switch (evt.type) 
+                {
+                	case Event.COMPLETE:
+	                 	/* If the load was successful, create a URLVariables object from the URLLoader.data property and populate the paramColl ArrayCollection object. */
+	                   var ldr:URLLoader = evt.currentTarget as URLLoader;
+	                   var vars:URLVariables = new URLVariables(ldr.data);
+	                    var key:String;
+						
+						for (key in vars) {
+	                       paramColl.addItem({key:key, value:vars[key]});
+	                    }
+	                    
+					widthCMArea = totalWidth / parseInt(paramColl.source[0].value);
+					heightCMArea = totalHeight / parseInt(paramColl.source[0].value);
+					totalAreaCm = widthCMArea * heightCMArea;
+					//fixedPrice1 = parseInt(paramColl.source[1].value);			
+					
+					if(totalAreaCm == 0)
+					{
+						addtocartdie.visible=false;
+						dieqty.visible=false;
+						Quantity.visible=false;
+						pricetagdie.visible=false;
+					
+					}else{
+						
+						fixedPrice1 = parseInt(paramColl.source[1].value);			
+					}
+					
+					if(totalAreaCm < paramColl.source[2].value)
+					{
+							
+						totalPrice = fixedPrice1;
+						
+					}else{
+						
+						leftAreaCm = totalAreaCm - paramColl.source[2].value;
+						priceleftAreaCm = leftAreaCm * paramColl.source[3].value;
+						totalPrice = fixedPrice1 + priceleftAreaCm;
+						
+					}
+						insertData();
+						if(pid== null)
+						{				
+							url = myUrl+"checkout/cart/add/product/"+_proDie_id+"/price/"+totalPrice+"/dir/"+randomNum+"/img/"+_proDie_id+"-"+curTime+"-diecutter/width/"+widthCMArea.toFixed(2)+"/height/"+heightCMArea.toFixed(2)+"/qty/"+dieqty.text;
+						}else{
+						
+							url = myUrl+"checkout/cart/add/product/"+pid+"/price/"+totalPrice+"/dir/"+randomNum+"/img/"+pid+"-"+curTime+"-diecutter/width/"+widthCMArea.toFixed(2)+"/height/"+heightCMArea.toFixed(2)+"/qty/"+dieqty.text;
+						}	
+						navigateToURL(new URLRequest(url),'_self');
+						price.text=ObjectUtil.toString(totalPrice);
+	                break;
+            	}
+            }
+           
+            
+            private function doEventDie1(evt:Event):void {
+                
+              	var url:String;
+				var widthCMArea:Number;
+				var heightCMArea:Number;
+				var totalAreaCm:Number;
+				var fixedPrice1:Number;
+				var leftAreaCm:Number;
+				var priceleftAreaCm:Number;
+				var fixedPrice:Number;
+				switch (evt.type) 
+                {
+                	case Event.COMPLETE:
+	                 	/* If the load was successful, create a URLVariables object from the URLLoader.data property and populate the paramColl ArrayCollection object. */
+	                   var ldr:URLLoader = evt.currentTarget as URLLoader;
+	                   var vars:URLVariables = new URLVariables(ldr.data);
+	                    var key:String;
+						
+						for (key in vars) {
+	                       paramColl.addItem({key:key, value:vars[key]});
+	                    }
+	                    
+					widthCMArea = totalWidth / parseInt(paramColl.source[0].value);
+					heightCMArea = totalHeight / parseInt(paramColl.source[0].value);
+					totalAreaCm = widthCMArea * heightCMArea;
+					//fixedPrice1 = parseInt(paramColl.source[1].value);			
+					if(totalAreaCm == 0)
+					{
+						addtocartdie.visible=false;
+						dieqty.visible=false;
+						Quantity.visible=false;
+						pricetagdie.visible=false;
+					
+					}else{
+						
+						fixedPrice1 = parseInt(paramColl.source[1].value);			
+					}
+					
+					
+					
+					if(totalAreaCm < paramColl.source[2].value)
+					{
+							
+						totalPrice = fixedPrice1;
+						
+					}else{
+						
+						leftAreaCm = totalAreaCm - paramColl.source[2].value;
+						priceleftAreaCm = leftAreaCm * paramColl.source[3].value;
+						totalPrice = fixedPrice1 + priceleftAreaCm;
+						
+					}	
+						pricetagdie.text='Price: '+ObjectUtil.toString(totalPrice)+'GBP';
+	                break;
+            	}
+            }
+            
+			public function getPriceLess_result(event:ResultEvent):void
+			{
+				arrPriceLessInfo      = event.result as ArrayCollection;
+				var n:int = arrPriceLessInfo.source.length;
+				totalPrice -= parseInt(arrPriceLessInfo.source[0].price);
+				if(totalPrice < 0)
+				{	
+					totalPrice=0;
+					price.text=ObjectUtil.toString(totalPrice);
+					
+				}else{
+					
+					price.text=ObjectUtil.toString(totalPrice);
+				}
+			}
+			public function getImage_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show('failed');
+			}
+			public function getPriceLess_fault(event:FaultEvent):void
+			{
+				//mx.controls.Alert.show('failed');
+			}
+			
+			private function onCategoryApi(cat_id:Number):void
+			{
+				//Alert.show(''+cat_id);
+				cat_ids = cat_id;			
+				if(cat_ids == 58)
+				{
+					Alert.show("Please Select Clipart Category.");
+					
+				}else{
+					
+					LoginAPIcat.call.send(_SESSIONID, "category.assignedProducts", cat_ids);
+					showLoading();
+				}
+			}
+			
+			public function getdisplay_result(event:ResultEvent):void
+			{
+				dataDisplayArray = event.result as ArrayCollection;
+				//Alert.show(ObjectUtil.toString(dataDisplayArray.source));
+			    if(myViewStack.selectedChild==diecutters)
+				{
+					if(leftsidepenaldiecutter.selectedIndex==1)
+					{
+						DiecutterimageRepeater.dataProvider = dataDisplayArray.source;
+						hideLoading();
+					}
+				}
+			}
+			
+			public function getdisplay_fault(event:FaultEvent):void
+			{
+				mx.controls.Alert.show(''+event);
+			}
+			
+			public function cart():void
+			{
+				//showLoadingCart();
+				var url:String;
+				var widthCMArea:Number;
+				var heightCMArea:Number;
+				var totalAreaCm:Number;
+				var fixedPrice1:Number;
+				var leftAreaCm:Number;
+				var priceleftAreaCm:Number;
+				var fixedPrice:Number;
+			
+				if(myViewStack.selectedChild == diecutters)
+				{
+					
+					
+					arrColl = new ArrayCollection();
+	            	paramColl = new ArrayCollection();
+	            	if(pid==null)
+	            	{
+	            		takeSnapshot("diecutter", String(_proDie_id)); 
+	                	urlReq = new URLRequest(myUrl+"txt/"+String(_proDie_id)+".txt");
+	             	}else{
+	             	
+	             		takeSnapshot("diecutter", String(pid)); 
+	                	urlReq = new URLRequest(myUrl+"txt/"+String(pid)+".txt");
+	             	
+	             	}	
+	                urlLdr = new URLLoader();
+	                urlLdr.addEventListener(Event.COMPLETE, doEventDie);
+	                urlLdr.addEventListener(Event.OPEN, doEventDie);
+	                urlLdr.addEventListener(HTTPStatusEvent.HTTP_STATUS, doEventDie);
+	                urlLdr.addEventListener(IOErrorEvent.IO_ERROR, doEventDie);
+	                urlLdr.addEventListener(ProgressEvent.PROGRESS, doEventDie);
+	                urlLdr.addEventListener(SecurityErrorEvent.SECURITY_ERROR, doEventDie);
+	                urlLdr.load(urlReq);
+					cursorManager.setBusyCursor();	
+														
+				}
+			}  
+			
+			public function showPrice():void
+			{
+				var url:String;
+				var widthCMArea:Number;
+				var heightCMArea:Number;
+				var totalAreaCm:Number;
+				var fixedPrice1:Number;
+				var leftAreaCm:Number;
+				var priceleftAreaCm:Number;
+				var fixedPrice:Number;
+			
+				if(myViewStack.selectedChild == diecutters)
+				{
+					arrColl = new ArrayCollection();
+	            	paramColl = new ArrayCollection(); 
+	                urlReq = new URLRequest(myUrl+"txt/"+String(_proDie_id)+".txt");
+	                urlLdr = new URLLoader();
+	                urlLdr.addEventListener(Event.COMPLETE, doEventDie1);
+	                urlLdr.addEventListener(Event.OPEN, doEventDie1);
+	                urlLdr.addEventListener(HTTPStatusEvent.HTTP_STATUS, doEventDie1);
+	                urlLdr.addEventListener(IOErrorEvent.IO_ERROR, doEventDie1);
+	                urlLdr.addEventListener(ProgressEvent.PROGRESS, doEventDie1);
+	                urlLdr.addEventListener(SecurityErrorEvent.SECURITY_ERROR, doEventDie1);
+	                urlLdr.load(urlReq);
+																			
+				}
+			} 
+			
+			public var totalCount:int = 0;
+			public var myXml:String;	
+			public var fileName:String;
+			
+	        private function insertData():void 
+	        {
+	        	
+	        	
+	        	if(myViewStack.selectedChild == diecutters)
+				{
+		        	var children:Array = genericDiecutter.getChildren();
+		        	var n:int = children.length;
+		        	
+		        	
+				    for (var i:int = 0; i < n; i++)
+			 		{
+		 		   		
+		 		   		var pro_id:String;
+			     		var subproduct_id:String;
+						var Obj_id_label:String;
+						var Obj_type_label:String;
+						var Obj_value_label:String;
+						var _x_label:Number;
+						var _y_label:Number;
+						var _width_label:Number;
+						var _height_label:Number;
+						var mynumber:Number;
+						var col_label:String;
+						var font_size_label:String;
+						var font_family_label:String;
+						var font_weight_label:String;
+						var align_label:String;
+						
+						
+						var Obj_id:String;
+						var Obj_type:String;
+						var Obj_value:String;
+						var _x:Number;
+						var _y:Number;
+						var _width:Number;
+						var _height:Number;
+						var col:String;
+						var font_size:String;
+						var font_family:String;
+						var font_weight:String;
+						var align:String;
+						
+						var childObj:ObjectHandles = children[i] as ObjectHandles;
+		 		   		if(childObj != null)
+					    {
+					    	var textView:TextView = childObj.getChildAt(0) as TextView;
+					    	if(textView!=null)
+					    	{
+					    		var radius:Number 			= myRad;
+							 	var spacing:Number 			= space.value;
+							 	var angleLeading:Number 	= angleleading.value;
+							 	var angularOffset:Number 	= angularOffset.value;
+					     	 	var Obj_value_arc:String	= myActTextRound.text;
+								var _x_arc:Number			= childObj.x;
+								var _y_arc:Number			= childObj.y;
+								var _width_arc:Number		= childObj.width;
+								var _height_arc:Number		= childObj.height;
+								
+								var col_arc:String;
+								if(myColor=='')
+							    {
+									col_arc						= '000000';
+								 
+							    }else{
+							 
+							 		col_arc						= myColor;
+							 
+							    }
+							 	
+							    var font_size_arc:String			= String(fontsize.value);
+							    var font_family_arc:String			= String(textView.getStyle('fontFamily'));
+							    var font_weight_arc:String			= "normal";
+							    var align_arc:String				= "center";
+				          	 	var pro_id_arc:String 				= 'diecutters';
+								var subproduct_id_arc:String		= 'diecutters';
+							 	var Obj_id_arc:String 				= 'arcEditorDie';
+							 	var Obj_type_arc:String		    	= 'ArcText';
+									
+								httpServicedata.url= myUrl+"signimal_flex_php/datasave.php?sid="+sessionid+
+								"&pro_id="+pro_id_arc+
+								"&subproduct_id="+subproduct_id_arc+
+								"&obj_id="+Obj_id_arc+
+								"&obj_type="+Obj_type_arc+
+								"&obj_value="+Obj_value_arc+
+								"&x_pos="+_x_arc+
+								"&y_pos="+_y_arc+
+								"&width="+_width_arc+
+								"&height="+_height_arc+
+								"&radius="+radius+
+								"&spacing="+spacing+
+								"&angleLeading="+angleLeading+
+								"&angularOffset="+angularOffset+
+								"&color="+col_arc+
+								"&font_size="+font_size_arc+
+								"&font_family="+font_family_arc+
+								"&font_weight="+font_weight_arc+
+								"&align="+align_arc;
+								 //Alert.show(httpServicedata.url);
+								 httpServicedata.send();
+					    	}
+					    	
+					    	var label:TextArea = childObj.getChildAt(0) as TextArea;
+					    	if(label !=null)
+				    		{
+				    			if(label)
+						     	{
+						     		 pro_id 				= 'diecutters';
+						     		 subproduct_id			= "diecutters";
+									 //Obj_id_label 			= String(label);
+									 if(label.id == null)
+									 {
+										Obj_id_label	= String(label);
+										
+									 }else{
+									
+										Obj_id_label 		= String(label.id);
+									 }
+									 
+									 Obj_type_label			= "TextArea";
+									 Obj_value_label		= String(label.text);
+									 _x_label				= Number(childObj.x);
+									 _y_label				= Number(childObj.y);
+									 _width_label			= Number(label.width);
+									 _height_label			= Number(label.height);
+									 mynumber 				= label.getStyle('color');
+									 col_label				= intToHexs(label.getStyle('color'));
+									 font_size_label		= String(label.getStyle('fontSize'));
+									 font_family_label		= String(label.getStyle('fontFamily'));
+									 font_weight_label		= String(label.getStyle('fontWeight'));
+									 align_label			= String(label.getStyle('textAlign'));
+									
+									
+									
+									httpServicedata.url= myUrl+"signimal_flex_php/datasave.php?sid="+sessionid+
+									"&pro_id="+pro_id+
+									"&subproduct_id="+subproduct_id+
+									"&obj_id="+Obj_id_label+
+									"&obj_type="+Obj_type_label+
+									"&obj_value="+Obj_value_label+
+									"&x_pos="+_x_label+
+									"&y_pos="+_y_label+
+									"&width="+_width_label+
+									"&height="+_height_label+
+									"&radius=&spacing=&angleLeading=&angularOffset=&color="+col_label+
+									"&font_size="+font_size_label+
+									"&font_family="+font_family_label+
+									"&font_weight="+font_weight_label+
+									"&align="+align_label;
+			    					//Alert.show(''+httpServicedata.url);
+			    					httpServicedata.send();
+						     	}
+				    		}
+				    		
+				    		
+				    		var imageDiecutter:Image = childObj.getChildAt(0) as Image;
+					    	if(imageDiecutter !=null)
+				    		{
+				    			if(imageDiecutter)
+						     	{
+						     		 pro_id 				= 'diecutters';
+						     		 subproduct_id			= "diecutters";
+									 if(imageDiecutter.id == null)
+									 {
+										Obj_id_label	= String(imageDiecutter);
+										
+									 }else{
+									
+										Obj_id_label 		= String(imageDiecutter.id);
+									 }
+									 
+									 Obj_type_label			= "Image";
+									 Obj_value_label		= String(imageDiecutter.source);
+									 _x_label				= Number(childObj.x);
+									 _y_label				= Number(childObj.y);
+									 _width_label			= Number(imageDiecutter.width);
+									 _height_label			= Number(imageDiecutter.height);
+									 
+									 //if(imageDiecutter.width >= 150 && imageDiecutter.height >= 150 )
+									 //else if(imageDiecutter.width <= 50 && imageDiecutter.height <=50 && imageDiecutter.width < 150 && imageDiecutter.height < 150)
+									 if(imageDiecutter.id=="die" )	
+									 {
+									  
+									  	if(myprod != 0)
+										{
+											col_label 					= String(myprod);
+											
+										}else{
+										
+											col_label 					= String(3355443);
+										}
+									  	
+									  }else
+									  {
+									  	if(myprod != 0)
+										{
+											col_label 					= String(myclipvalue);
+											
+										}else{
+										
+											col_label 					= String(16777215);
+										}
+									  	
+									  }
+									  
+									
+									httpServicedata.url= myUrl+"signimal_flex_php/datasave.php?sid="+sessionid+
+									"&pro_id="+pro_id+
+									"&subproduct_id="+subproduct_id+
+									"&obj_id="+Obj_id_label+
+									"&obj_type="+Obj_type_label+
+									"&obj_value="+Obj_value_label+
+									"&x_pos="+_x_label+
+									"&y_pos="+_y_label+
+									"&width="+_width_label+
+									"&height="+_height_label+
+									"&color="+col_label;
+			    					//Alert.show(''+httpServicedata.url);
+			    					httpServicedata.send();
+						     	}
+				    		}
+				    		
+				    		var svgDie:SVGViewer = childObj.getChildAt(0) as SVGViewer;
+				    		if(svgDie !=null)
+				    		{
+					    		if(svgDie)
+					    		{
+					    			pro_id 						= 'diecutters';
+						     		subproduct_id				= "diecuttersSvg";
+									if(svgDie.id == null)
+									{
+										 Obj_id_label			= String(svgDie);
+										
+									}else{
+									
+										Obj_id_label 			= String(svgDie.id);
+									}
+									
+									
+									 Obj_type_label				= "svgImageDieCutter";
+									 
+									 Obj_value_label			= String(_strDomain +"uploads/image/"+randomNum+"/svgimage"+i+".xml");
+									 //Obj_value_label			= String(svgImage);
+									 
+									 
+									 
+									 _x_label					= Number(childObj.x);
+									 _y_label					= Number(childObj.y);
+									 _width_label				= Number(childObj.width);
+									 _height_label				= Number(childObj.height);
+							
+									if(myprod != 0)
+									{
+										col_label 				= String(myprod);
+											
+									}else{
+										
+										col_label 				= String(3355443);
+									}
+									
+									httpServicedata.url= myUrl+"signimal_flex_php/datasave.php?sid="+sessionid+
+									"&pro_id="+pro_id+
+									"&subproduct_id="+subproduct_id+
+									"&obj_id="+Obj_id_label+
+									"&obj_type="+Obj_type_label+
+									"&obj_value="+Obj_value_label+
+									"&x_pos="+_x_label+
+									"&y_pos="+_y_label+
+									"&width="+_width_label+
+									"&height="+_height_label+
+									"&color="+col_label;
+			    					//Alert.show(''+httpServicedata.url);
+			    					httpServicedata.send();
+			    					
+			    					fileName = "svgimage"+ i +".xml";
+					    			myRemote.mySvg(randomNum, fileName, String(svgDie.xml)) 
+			    				}
+							}
+				    	}
+		 		     }
+				}
+			}	
+			
+			public function httpServicedata_result(event:ResultEvent):void
+			{
+				//Alert.show("Your data saved!");
+			}
+			
+			public function httpServicedata_fault(event:FaultEvent):void
+			{
+				Alert.show(''+event);
+			}
+			
+			import mx.core.IFlexDisplayObject;
+			private function titleWin_close(evt:Event):void {
+			 	var window:TitleWindow = evt.currentTarget as TitleWindow;
+                PopUpManager.removePopUp(window);
+
+            }
+            
+            private function checkBox_change(evt:Event):void {
+              this.isPopUp = checkBox.selected;
+            }
+			
+			/* public var subid:String;
+			public var objid:String;
+			public var widthsvg:Number;
+			public var heightsvg:Number;
+			public var xsvg:Number;
+			public var ysvg:Number; */
+			
+			public var arrSvg:Array;
+			
+			public function getDieCutterDataListener(event:ResultEvent):void
+			{
+				event.stopImmediatePropagation();
+				var arr:Array = event.result as Array;
+				var n:int = arr.length;
+				arrSvg = new Array();
+				
+				for (var i:int = 0; i < n; i++)
+		 		{	
+		 			var colorTrans:ColorTransform = new ColorTransform();
+		 			var objCnv:ObjectHandles = new ObjectHandles();
+					var oh1:ObjectHandles = new ObjectHandles();
+					
+					if(arr[i].object_id == "arcEditorDie")
+					{
+						
+						 oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						 oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeightArc);
+						 oh1.x=arr[i].x_position;
+						 oh1.id="arcEditorDie";
+						 oh1.y=arr[i].y_position;
+						 oh1.width=arr[i].x_width;
+						 oh1.height=arr[i].x_height;
+						 oh1.allowHMove=true;
+						 oh1.allowHResize=true;
+						 oh1.allowVMove=true;
+						 oh1.allowVResize=true;
+						 oh1.allowRotate=false;
+						 oh1.mouseChildren=true;
+					  	 oh1.alwaysMaintainAspectRatio=true;
+					  	 oh1.select();	
+					 
+						 var myText:String =String(arr[i].object_value);
+				  	  	
+					  	 var radius:Number = arr[i].radius;
+					  	 var spacing:Number = arr[i].spacing;
+			          	 var center:Point = new Point(arr[i].width/2 , arr[i].height/2);
+			          	 var angleLeading:Number =  arr[i].angleleading;
+			          	 var angularOffset:Number =  arr[i].angularOffset;
+						 
+						 for (var char:uint=0;char<myText.length;char++) 
+				         {
+			               	var tempText:TextView = new TextView();
+			                tempText.x = radius * Math.cos(degrees2radians(char*spacing+angularOffset)) + center.x;
+			                tempText.y = radius * Math.sin(degrees2radians(char*spacing+angularOffset)) + center.y;
+			                var dx:Number = center.x-tempText.x;
+			                var dy:Number = center.y-tempText.y;
+			                var angle:Number = Math.atan2(dy, dx);
+			                tempText.rotation = radians2degrees(angle) -90 + angleLeading;
+			                tempText.setStyle("color", "#"+arr[i].color);
+			                tempText.setStyle("fontSize", "#"+arr[i].font_size);
+			                //tempText.setStyle("fontFamily", "#"+arr[i].font_family);	
+			                tempText.text = myText.charAt(char);
+		              	    
+		              	    oh1.addChild(tempText);
+						   	genericDiecutter.addChild(oh1);
+							
+							addtocartdie.visible=true;
+							dieqty.visible=true;
+							Quantity.visible=true;
+							pricetagdie.visible=true;
+				        }
+					}
+					
+					if(arr[i].object_type == "TextArea")
+					{
+						oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						oh1.allowRotate=false;
+						oh1.x=arr[i].x_position; 
+						oh1.y=arr[i].y_position;
+						oh1.height=arr[i].height; 
+						oh1.width=arr[i].width;
+						oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+   						var txt:TextArea = new TextArea();
+						txt.text=arr[i].object_value;
+						txt.horizontalScrollPolicy = "off";
+						txt.verticalScrollPolicy = "off";
+						txt.percentWidth=100;
+						txt.percentHeight=100;
+						txt.setStyle("backgroundAlpha","0") 
+						txt.setStyle("fontSize",arr[i].font_size);  
+						txt.setStyle("color","#"+String(arr[i].color));
+						txt.setStyle("fontFamily",arr[i].font_family);
+						txt.setStyle("fontWeight",arr[i].font_weight );
+						txt.setStyle("textAlign",arr[i].align);
+						txt.setStyle("length","0");
+						txt.setStyle("borderStyle","none");
+						txt.id=arr[i].object_id;
+						txt.condenseWhite=true;
+						txt.addEventListener(MouseEvent.CLICK ,	clickDis);
+						oh1.allowHMove=true;
+						oh1.allowHResize=true;
+						oh1.allowVMove=true;
+						oh1.allowVResize=true;
+						oh1.allowRotate=false;
+						oh1.mouseChildren=true;
+							
+						txt.selectable=true;
+						txt.editable=true;
+						oh1.addChild(txt);
+				
+						if(arr[i].proudct_id == "diecutters")
+						{
+							if(myViewStack.selectedChild==diecutters)
+							{
+								genericDiecutter.addChild(oh1);
+								getWidthHeight();
+								addtocartdie.visible=true;
+								dieqty.visible=true;
+								Quantity.visible=true;
+								pricetagdie.visible=true;
+							}
+						}
+					}
+					
+					if(arr[i].object_type == "Image")
+					{
+						oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						oh1.allowRotate=false;
+						oh1.x=arr[i].x_position; 
+						oh1.y=arr[i].y_position;
+						oh1.height=arr[i].height; 
+						oh1.width=arr[i].width;
+						oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,getNewWidthHeight);
+   						var img:Image = new Image();
+						img.source =arr[i].object_value;
+						img.percentWidth=100;
+						img.percentHeight=100;
+						img.id=arr[i].object_id;
+						
+						if(arr[i].color !='NaN')
+						{
+							colorTrans.color=uint(String(arr[i].color));
+							
+						}else{
+						
+							colorTrans.color=3355443;
+						
+						}
+						
+						img.transform.colorTransform = colorTrans;	
+						oh1.allowHMove=true;
+						oh1.allowHResize=true;
+						oh1.allowVMove=true;
+						oh1.allowVResize=true;
+						oh1.allowRotate=false;
+						oh1.mouseChildren=true;
+							
+						oh1.addChild(img);
+						
+						if(arr[i].proudct_id == "diecutters")
+						{
+							if(myViewStack.selectedChild==diecutters)
+							{
+								genericDiecutter.addChild(oh1);
+								getWidthHeight();
+								addtocartdie.visible=true;
+								dieqty.visible=true;
+								Quantity.visible=true;
+								pricetagdie.visible=true;
+							}	  
+						}
+						
+					}
+					
+					if(arr[i].object_type == "svgImageDieCutter")
+					{
+						arrSvg.push({subid:arr[i].subproduct_id, objid:arr[i].object_id, objvalue:arr[i].object_value, widthsvg:arr[i].width, heightsvg:arr[i].height, xsvg:arr[i].x_position, ysvg:arr[i].y_position});
+						if(arr[i].subproduct_id =="diecuttersSvg")
+						{
+							canvas = new Sprite();
+							this.rawChildren.addChild(canvas);
+							var myXML:XML= new XML();
+							var myXMLURL:URLRequest = new URLRequest(arr[i].object_value);
+					 		var myLoader:URLLoader = new URLLoader(myXMLURL);
+					 		myLoader.addEventListener(Event.COMPLETE, xmlLoaded);
+						}
+					}
+				}
+			}
+			
+			
+			
+			private  var arr:Array = new Array();
+			public function xmlLoaded(event:Event):void
+			{
+				event.stopImmediatePropagation();
+			     var n:int = arrSvg.length;
+				 for (var i:int = 0; i < n; i++)
+		 		 {
+		 		 	var isFound :Boolean = false;
+		 		 	for (var k:int = 0; k < arr.length; k++)
+		 		 	{	
+		 			 	if(arr[k].id == arrSvg[i].objid){
+		 			 		isFound = true;
+		 			 		break;	
+		 			 	}
+		 		 	}
+		 		 	if(!isFound){
+			 			 arr.push({id:arrSvg[i].objid})
+			 			 var subid:String=arrSvg[i].subid;
+						 var objid:String=arrSvg[i].objid;
+						 var objv:Number=arrSvg[i].objvalue;
+						 var widthsvg:Number=arrSvg[i].widthsvg;
+						 var heightsvg:Number=arrSvg[i].heightsvg;
+						 var xsvg:Number=arrSvg[i].xsvg;
+						 var ysvg:Number=arrSvg[i].ysvg;
+			 		
+			 			 var loader:URLLoader = URLLoader(event.target);
+					     //var myLoader:URLLoader = new URLLoader(event.target);
+					     //myXML = XML(event.target);
+					     var svgv:SVGViewer = new SVGViewer();
+					     svgv.xml = new XML(loader.data);
+					     svgv.myWidth(widthsvg);
+						 svgv.myHeight(heightsvg);
+						 svgv.id=objid;
+						 var oh1:ObjectHandles = new ObjectHandles();
+						 oh1.allowHMove=true;
+						 oh1.allowHResize=true;
+						 oh1.allowVMove=true;
+						 oh1.allowVResize=true;
+						 oh1.allowRotate=true;
+						 oh1.mouseChildren=true;
+					     oh1.width=widthsvg;
+				    	 oh1.height=heightsvg;
+				    	 oh1.x=xsvg;
+				    	 oh1.y=ysvg;
+				    	 oh1.id=objid;
+					     oh1.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				    	 oh1.addEventListener(ObjectHandleEvent.OBJECT_RESIZED_EVENT,svgNewWidthHeight); 
+					     oh1.addChild(svgv);
+					     if(subid == "diecuttersSvg")
+						 {
+			    			genericDiecutter.addChild(oh1);
+			    		 }
+		    		}
+		 		}
+			}
+			private function deleteFrontDataListener(event:ResultEvent):void
+		    {
+		    	//Alert.show("Delete");
+		    }
+		    
+		    private function mySvgListener(event:ResultEvent):void
+		    {
+		    	//Alert.show("Delete");
+		    }
+		   
+		]]>
+	</mx:Script>
+	<mx:RemoteObject id="myRemote" destination="zend" source="MyService" showBusyCursor="false" fault="faultListener(event)">
+	   <mx:method name="myXml" result="myXmlListener(event)"/>
+	   <mx:method name="sendMail" result="sendMailListener(event)"/>
+	   <mx:method name="test" result="testListener(event)"/>
+	   <mx:method name="myFont" result="myFontListener(event)"/>
+	    <mx:method name="mySvg" result="mySvgListener(event)"/>
+	   <!--<mx:method name="getData" result="getDataListener(event)"/>-->
+	   <mx:method name="getDieCutterData" result="getDieCutterDataListener(event)"/>
+	   <mx:method name="deleteFrontData" result="deleteFrontDataListener(event)"/>
+	</mx:RemoteObject>
+	<mx:WebService id="LoginAPI" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="login" resultFormat="object" result="getLogin_result(event);" fault="getLogin_fault(event);" />
+         <mx:operation name="call" resultFormat="object" result="getCall_result(event);" fault="getCall_fault(event);" />
+    </mx:WebService>
+  <mx:WebService id="LoginAPIDieCutter" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="login" resultFormat="object" result="getLoginDie_result(event);" fault="getLogin_fault(event);" />
+         <mx:operation name="call" resultFormat="object" result="getCallDie_result(event);" fault="getCall_fault(event);" />
+    </mx:WebService>
+    <mx:WebService id="LoginAPIs" wsdl="{myApiWsdlUrl}">
+		<mx:operation name="login" resultFormat="object" result="getLogin_result(event);" fault="getLogin_fault(event);" />
+        <mx:operation name="call" resultFormat="object" result="getcombo_result(event);" fault="getcombo_fault(event);" />
+     </mx:WebService>
+     <mx:WebService id="LoginAPIcat" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="login" resultFormat="object" result="getLogin_result(event);" fault="getLogin_fault(event);" />
+         <mx:operation name="call" resultFormat="object" result="getdisplay_result(event);" fault="getdisplay_fault(event);" />
+     </mx:WebService>
+	
+  <mx:WebService id="CallAPIPrice" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="call" resultFormat="object" result="getPrice_result(event);" fault="getImage_fault(event);" />
+  </mx:WebService>
+	<mx:WebService id="CallAPIPriceLess" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="call" resultFormat="object" result="getPriceLess_result(event);" fault="getPriceLess_fault(event);" />
+  </mx:WebService>
+  <mx:WebService id="CallAPIDie" wsdl="{myApiWsdlUrl}">
+		 <mx:operation name="call" resultFormat="object" result="getImageDie_result(event);" fault="getImage_fault(event);" />
+  </mx:WebService>
+  <mx:WebService id="LoginShapeAPIs" wsdl="{myApiWsdlUrl}" showBusyCursor="false">
+		<mx:operation name="login" resultFormat="object" result="getLogin_result(event);" fault="getLogin_fault(event);" />
+        <mx:operation name="call" resultFormat="object" result="getShape_result(event);" fault="getShape_fault(event);" />
+  </mx:WebService>
+  <mx:HTTPService id="httpService" resultFormat="e4x" fault="httpService_fault(event);" showBusyCursor="false" result="httpService_result(event)" />
+  <mx:HTTPService id="httpServicesvg" resultFormat="e4x" showBusyCursor="false" fault="httpService_fault(event);"/>
+  <mx:HTTPService id="httpServicedata"  resultFormat="e4x" showBusyCursor="false" fault="httpServicedata_fault(event);" result="httpServicedata_result(event)" />
+    <!--<mx:HTTPService id="httpServicelable"  resultFormat="e4x" fault="httpService_fault(event);" result="httpService_result(event)" />-->
+	
+	
+	<mx:XMLListCollection id="xmlListColl" />
+  	<mx:Canvas width="850" height="520" backgroundAlpha="1.0" styleName="grid" horizontalCenter="-1" verticalCenter="-14" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:Canvas id="mainCanvas" width="830" height="500" backgroundColor="#ffffff" x="10" y="10" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:HBox x="10" y="30" height="60" width="98%" backgroundColor="#ffffff" paddingTop="5" paddingBottom="5" paddingLeft="5" horizontalScrollPolicy="off" verticalScrollPolicy="off" cornerRadius="0">
+				<mx:Image toolTip="Remove Selection" id="removeselection" width="31" height="40" click="removeSelection(event);" source="images/icons/remove.png"/>
+				<mx:Image toolTip="Text tool" id="test" width="27" height="40" click="hit(event);" source="images/icons/text.jpg"/>
+				<mx:Image toolTip="Mouse Move" id="moves" width="25" height="40" click="hits(event);" source="images/icons/mouse.jpg"/>
+				<mx:Image toolTip="Shapes Tool" id="draws" width="26" height="40" click="arc(event);" source="images/icons/shape.jpg"/>
+				<mx:Image toolTip="Arc Text Editor" id="arcTextm" width="48" height="40" click="arc(event);" source="images/icons/text-curve.png"/>
+				<!--<mx:Image toolTip="Upload Vector Image" id="uploadVectorImg" width="58" height="40" click="arc(event)" source="images/icons/upload-vectore.jpg"/>-->
+				<mx:Image toolTip="Email" id="email" width="27" height="40" click="arc(event);" source="images/icons/e-mail.jpg"/>
+				<mx:Image toolTip="Deletes Selection Object" id="deleteselectionobject" width="27" height="40" click="Delete()" source="images/icons/delete.jpg"/>
+				<mx:Image toolTip="New Object File" id="newobjectfile" width="22" height="40" click="newfile()" source="images/icons/new.jpg"/>
+				<mx:Image toolTip="Undo" id="undoobject" width="29" height="40" click="undo('undo')" source="images/icons/undo.png"/>
+				<mx:Image toolTip="Redo" id="redoobject" width="24" height="40" click="undo('redo')" source="images/icons/redo.png"/>
+				<mx:Image toolTip="copy" id="Copy" width="24" height="40" click="copy(event)" source="images/icons/copy.jpg"/>
+				<mx:Image toolTip="cut" id="Cut" width="18" height="40" click="copy(event)" source="images/icons/cut.jpg"/>
+				<mx:Image toolTip="paste" id="Paste" width="24" height="40" click="paste()" source="images/icons/past.jpg"/>
+				<mx:ColorPicker toolTip="Color" openDuration="150"  id="colorPicker" swatchPanelStyleName="myStyle" dataProvider="{ColorDP}" open="openEvt(event);" change="OnColorChange(event);" skin="@Embed(source='images/icons/fill.jpg')" width="27" height="40" themeColor="#FFFFFF"/> 
+				<!--<mx:ColorPicker toolTip="Strock Color" id="colorPickerStrock" colorField="value" editable="false"  swatchPanelStyleName="myStyle" dataProvider="{ColorDP}" open="openEvt(event);" width="31" height="40" skin="@Embed(source='images/icons/strok.jpg')" themeColor="#FFFFFF"/>-->
+				<mx:ColorPicker toolTip="Text Shade Color" id="colorPickerTextShade" colorField="value" editable="false" swatchPanelStyleName="myStyle" dataProvider="{ColorDP}" open="openEvt(event);"  change="TextShade(Number(colorPickerTextShade.selectedColor));" skin="@Embed(source='images/icons/text-shade.png')" width="48" height="40" themeColor="#FFFFFF"/>
+				<mx:CheckBox id="checkBoxShd" toolTip="dropShadow Enabled" selected="false" labelPlacement="left" />
+		        <mx:NumericStepper toolTip="Font Size" id="ip2" minimum="-50" maximum="50" value="{curSize}" stepSize="1" click="setNewStyles();"  cornerRadius="0"/>
+				<mx:Label x="207" y="157" id="myl" text="hi" visible="false"/>
+				<mx:Label x="207" y="157" id="mywidht" text="hi" visible="false"/>
+				<mx:Label x="207" y="157" id="myheight" text="hi" visible="false"/>
+				<mx:Label x="250" y="157" id="price1" text="hi" visible="false"/>
+	            <mx:Label x="350" y="157" id="price" text="hi"  visible="false"/>
+			</mx:HBox>		
+			<mx:HBox x="10" y="75" height="37" width="98%" styleName="innertop" backgroundColor="#FFFFFF" paddingTop="5" paddingLeft="5" paddingBottom="5">
+				 <mx:ComboBox toolTip="Font" id="combobox" dataProvider="{cards}" width="150" change="onCmbFontChange(event)" cornerRadius="0"/>
+		         <mx:Image width="20" height="20" toolTip="Left Align" source="images/justifyleft.gif" id="left" click="setTextAlign(event);"/>
+		         <mx:Image width="20" height="20" toolTip="Center Align" source="images/justifycenter.gif" id="center" click="setTextAlign(event);"/>
+		         <mx:Image width="20" height="20" toolTip="Right Align" source="images/justifyright.gif" id="right" click="setTextAlign(event);"/>
+		         <mx:Button x="137" y="70" toolTip="Bold" label="B" width="33" fontWeight="bold" toggle="true" id="boldtext" mouseUp="checkbold()" cornerRadius="0"/>
+				 <mx:Button x="171" y="70" toolTip="Italic" label="I" width="35" fontStyle="italic" toggle="true" id="italictext" mouseUp="checkitalic()" cornerRadius="0"/>
+				 <mx:Button x="205" y="70" toolTip="Underline" label="U" width="33" textDecoration="underline" toggle="true" id="underlinetext" mouseUp="checkunderline()" cornerRadius="0"/>
+		         <mx:Label text="Zoom :"/>
+		         <mx:HSlider id="slider"
+		         width="145"
+		         minimum="1"
+		         maximum="100"
+		         values="[50]" 
+		         tickInterval="10"
+		         snapInterval="1" 
+		         liveDragging="true" 
+		         change="changeZoom(event)"
+		         dataTipFormatFunction="myDataTipFunc"/>
+			</mx:HBox>
+			<mx:ViewStack id="myViewStack" borderStyle="none" width="824"  height="403.25" y="117" x="6">
+				<!--Strat DieCutter-->
+				<mx:Canvas width="824" id="diecutters" label="diecutters" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="117" x="6">
+					<mx:Label id="diecutterselectwidth" text="Object Width: 00cm" x="200" y="8"/><mx:Label id="diecutterselectheight" text="Object Height: 00cm" x="350" y="8"/>
+					<mx:Panel  width="532" height="373" id="DiecutterviewPanel" title="view panel" cornerRadius="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" x="10" y="2" backgroundColor="#FFFFFF" borderColor="#F3F1F1">
+						<mx:Canvas id="DiecutterContainer" x="100" width="500" borderStyle="none" borderColor="#ff0000" height="317" verticalScrollPolicy="off" horizontalScrollPolicy="off" >
+							<mx:Canvas id="genericDiecutter" x="10" label="Generic" verticalScrollPolicy="off" horizontalScrollPolicy="off" top="10" backgroundColor="0xcccccc" backgroundAlpha="1" width="500"  height="403">
+								<mx:Label text="Select your product Color:" id="procolor" x="239" y="10"/>
+									<mx:ColorPicker x="396" y="10" id="DiecolorPickerLeft" colorField="value" swatchPanelStyleName="myStyle" dataProvider="{ColorDP}" selectedColor="0x000000" change="colorizeDie(Number(DiecolorPickerLeft.selectedColor));"/>
+									<mx:Button id="addtocartdie" x="398" y="284" label="Add To Cart" visible="false" click="cart();"/>
+									<!--<mx:Button id="addtocartdie" x="398" y="284" label="Add To Cart" visible="false" click="insertData();"/>-->
+									<mx:TextInput x="340" y="284" width="50" id="dieqty" visible="false"/>
+									<mx:Label x="277" y="286" text="Quantity : " id="Quantity" visible="false"/>
+									<mx:Label x="340" y="258" id="pricetagdie" fontSize="12" fontWeight="bold" visible="false"/>
+							</mx:Canvas>
+						</mx:Canvas>
+					</mx:Panel>
+	 		 		<mx:TabNavigator id="leftsidepenaldiecutter" width="263" height="375" x="550" y="0" borderColor="#BDB9B9" backgroundColor="#FFFFFF" borderStyle="solid"  click="onLoadClipart();">
+						<mx:Panel label="Products" width="100%" height="342" layout="absolute" id="ThumbsPaneldiecutter" title="Products" x="58" y="60" borderColor="#FFFFFF" themeColor="#FFFFFF">
+						<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF">
+								<mx:Repeater dataProvider="{arrProductDieInfo.source}" id="dieCutter">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="dieCutterImg"
+									  	height="50"
+									  	width="50"
+									  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+									  	source="{myApiUrl+'/'+dieCutter.currentItem.image}"
+									  	horizontalAlign="center" 
+									  	verticalAlign="middle"
+									  	click="getDieCutterImage(myApiUrl+'/'+event.currentTarget.getRepeaterItem().image, event.currentTarget.getRepeaterItem().price , event.currentTarget.getRepeaterItem().product_id)"/>
+									</mx:HBox>
+								</mx:Repeater>	
+							</mx:Tile>
+						</mx:Panel>
+						<mx:Panel label="Designs" width="100%" height="342" borderColor="#FFFFFF" layout="absolute" backgroundColor="#FFFFFF" x="58" y="60" themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="Designs" id="ThumbsPanelDiecutter">
+							 <mx:ComboBox id="DiecutterComboBox" labelField="name"  dataProvider="{dataArrayApi}" selectedItem="Cell Phones"  x="30" y="10" change="onCategoryApi(DiecutterComboBox.selectedItem.category_id)" horizontalCenter="center"/>
+							 <mx:ColorPicker x="200" y="10" id="DiecuttercolorPickerClipArt" colorField="value" editable="false" selectedColor="0x000000" change="colorizeClipart(Number(DiecuttercolorPickerClipArt.selectedColor));"/>
+							 <mx:Tile x="10" y="30" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+								 <mx:Repeater id="DiecutterimageRepeater">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" 
+										verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="Diecutterimg"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{myApiUrl+'/'+DiecutterimageRepeater.currentItem.image}"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	click="getImages(event.currentTarget.getRepeaterItem().image,event.currentTarget.getRepeaterItem().sku)"/>	
+									</mx:HBox>
+								</mx:Repeater>	
+							</mx:Tile>
+						</mx:Panel>
+						<mx:Panel label="My Assets" width="100%" height="100%" borderColor="#FFFFFF" backgroundColor="#FFFFFF" 
+							themeColor="#FFFFFF" backgroundAlpha="1.0" cornerRadius="0" title="My Assets" id="DiecutterThumbsPanel" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+								<mx:HBox width="100%" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+									<mx:Image id="uploadDiecutterImgs" toolTip="Upload Image" width="116" height="29" click="arc(event); myLeftViewStack.selectedChild=myRasPanel;" source='picture/add-image.png'/>
+									<mx:Image id="uploadFontDiecutter" toolTip="Upload Image" width="116" height="29" click="arc(event); myLeftViewStack.selectedChild=myFontPanel;" source='picture/add-font.png'/>  
+								</mx:HBox>
+								
+								<mx:HBox width="100%" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+									<mx:Image id="uploadvectorDiecutter" toolTip="Upload vector" width="116" height="29" click="arc(event); myLeftViewStack.selectedChild=mySvgPanel;" source='picture/add-vector.png'/>  
+								</mx:HBox>
+								
+								<mx:ViewStack id="myLeftViewStack" borderStyle="none" width="100%"  height="100%">
+								<mx:Canvas id="mySvgPanel" width="100%" height="100%" borderColor="#ff00ff" borderStyle="none">
+								<mx:Canvas id="mySvgThumbDiecutter" width="100%"></mx:Canvas>
+								</mx:Canvas>
+								<mx:Canvas id="myFontPanel" width="100%" height="100%" borderColor="#ff00ff" borderStyle="none">
+									<mx:VBox x="20" y="20">
+										<mx:Label x="210" y="157" id="myfont" text="My Font :" visible="true"/>
+									</mx:VBox>
+									<mx:Spacer height="20"/>
+									<mx:VBox x="20" y="40">	
+										<mx:ComboBox id="mycombobox" width="150" change="onFontChange(event)" cornerRadius="0"/>
+									</mx:VBox>
+								</mx:Canvas>
+								<mx:Canvas id="myRasPanel" width="100%" height="100%" borderColor="#880000" borderStyle="none" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+								<mx:Tile x="10" y="10" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" 
+								horizontalAlign="center">
+								<mx:Repeater id="imageRepeaterDiecutter">
+									<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+										<fabulousFlex:PreloadingImage id="myDiecutterimg"
+										  	height="50"
+										  	width="50"
+										  	preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+										  	source="{imageRepeaterDiecutter.currentItem}" 
+										  	click="getImageAssets(event)"
+										  	horizontalAlign="center" 
+										  	verticalAlign="middle"
+										  	
+										  	/>
+									</mx:HBox>
+								</mx:Repeater>
+							</mx:Tile>
+							</mx:Canvas>
+						</mx:ViewStack>
+						</mx:Panel>
+					 </mx:TabNavigator>
+				</mx:Canvas>
+				<!--End DieCutter-->
+			
+		</mx:ViewStack>
+		</mx:Canvas>	
+		
+	</mx:Canvas>	
+	<!--Start Arc Text Editor, Thumbnail Effect & popup window -->		
+	<!-- Start popup windows -->
+	<!--Shapes-->
+	<mx:TitleWindow id="drawsp" 
+	            	x="200" 
+	            	y="100" 
+	            	visible="false" 
+	            	width="370"
+	            	height="250" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Arc Text Editor" 
+					status="Movable too"
+					close="titleWin_close(event);"
+					showCloseButton="true"
+			       titleIcon="@Embed(source='assets/check.png')">
+		        <mx:Tile x="10" y="20" id="drawsp1" width="100%" backgroundColor="#808080"  borderColor="#808080" themeColor="#808080">
+	            <mx:Repeater dataProvider="{shapeArrayApi.source}" id="myShp">
+		            <mx:HBox width="50" height="50" borderColor="#efefef" themeColor="#efefef" verticalAlign="middle" horizontalAlign="center" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		        		<mx:Image
+		        			height="50" 
+		        			width="50" 
+		        			source="{myApiUrl+'/'+myShp.currentItem.image}" 
+		        			click="shape(event.currentTarget.getRepeaterItem().image,event.currentTarget.getRepeaterItem().sku)" />
+		        	</mx:HBox>	
+	            </mx:Repeater>    
+	        </mx:Tile>
+	        <mx:ControlBar>
+	        	<mx:CheckBox id="checkBox" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	        </mx:ControlBar>  
+	</mx:TitleWindow> 
+	<!--Shapes-->
+	<!--ArcText managemant tool-->
+	<mx:TitleWindow id="window" 
+	            	x="300" 
+	            	y="100" 
+	            	visible="false" 
+	            	width="403"
+	            	height="420"
+	            	borderAlpha="1"  
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Arc Text Editor" 
+					status="Movable too"
+					close="titleWin_close(event);"
+					showCloseButton="true"
+			       titleIcon="@Embed(source='assets/check.png')" borderColor="#CCCCCC">
+			    <mx:HBox horizontalGap="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+					<mx:CheckBox label="Movable?" selected="true" id="movableCheckBox" fontWeight="bold"/>
+					<mx:CheckBox label="Resizable?" selected="true" id="resizableCheckBox" fontWeight="bold"/>
+					<mx:ColorPicker id="drawtextcolorPicker" colorField="value" editable="false" selectedColor="#ff0000" change="TextOnColorChange(event);"/>
+				</mx:HBox>
+	            <mx:TextInput id="myActTextRound" text="write your text here."/>
+	        	<mx:Button label="Draw Arc Text" click="drawText()" />
+				<mx:HBox width="329">
+					<mx:Label name="Radius" text="Radius"/>
+					<mx:Spacer width="120"/>
+					<mx:Label name="Charater Space" text="Charater Space"/>	
+				</mx:HBox>
+	            <mx:HBox>
+	           		<mx:HSlider id="radius" x="124" y="529" allowTrackClick="true" values="[62]"  minimum="25" maximum="200" snapInterval="1" enabled="true" change="getNewWidthHeights(event);"/>
+					<mx:HSlider id="space" x="363" y="529" allowTrackClick="true" values="[15]" minimum="0" maximum="25" snapInterval="1" enabled="true" change="drawsChange(event);" />
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label name="Font Size" text="Font Size"/>
+					<mx:Spacer width="80"/>
+					<mx:Label name="Angular Offset" text="Angular Offset"/>	
+				</mx:HBox>
+	            <mx:HBox>
+	            	<mx:HSlider id="fontsize" x="550" y="529" allowTrackClick="true" values="[14]" minimum="14" maximum="50" snapInterval="1" enabled="true" change="drawsChange(event);" />
+	           		<mx:HSlider id="angularOffset" x="550" y="550" allowTrackClick="true" values="[125]" minimum="0.00" maximum="360" snapInterval="1" enabled="true" change="drawsChange(event);" />
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label name="Angle Leading" text="Angle Leading" visible="false"/>
+				</mx:HBox>
+	            <mx:HBox>
+	           		<mx:HSlider id="angleleading" visible="false" x="550" y="680" allowTrackClick="true" values="[10]" minimum="-10" maximum="360" snapInterval="1" enabled="true" change="drawsChange(event);" />
+				</mx:HBox>
+				
+				      
+	          	<mx:HBox>
+	          		<mx:Button label="Change Orient" x="650" id="cirOri" click="orientation()" />
+					<mx:Button label="Change Orient New" x="800" id="cirOriNew" click="orientationNew()"/> 
+	          	</mx:HBox>
+	          	<mx:Canvas width="213" height="136" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	          	  	<mx:Image toolTip="LeftMove" id="Left1" source="picture/blue_left.png" width="28" height="21" x="99" y="50" click="moveLeft()"/>
+		          	<mx:Image toolTip="Up Move" id="up" source="picture/blue_up.png" width="21" height="30" x="90" y="30" click="moveUp()"/>
+		          	<mx:Image toolTip="Down Move" id="down" source="picture/blue_dwn.png" width="21" height="28"   x="90" y="60" click="moveDown()"/>
+		          	<mx:Image toolTip="RightMove" id="Right1" source="picture/blue_right.png" width="28" height="21" x="72" y="50" click="moveRight()"/>
+	          	</mx:Canvas>
+	       <mx:ControlBar>
+	       	<mx:CheckBox id="checkBoxwindow" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	       </mx:ControlBar>   	
+	</mx:TitleWindow>
+	<!--ArcText managemant tool-->
+	<!--Email box-->
+	<mx:TitleWindow id="emails" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="390"
+	            	height="410" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Contact us"  
+					status="Movable too"
+					close="titleWin_close(event);" 
+					showCloseButton="true">
+			<mx:Label text="Contact us"/>		
+			<mx:Spacer width="20"/>		
+			<mx:Label id="resultLabel" width="360"/>
+			<mx:Form width="360">
+				<mx:FormItem label="Name :">
+					<mx:TextInput id="senderName"/>
+				</mx:FormItem>
+			<mx:FormItem label="Email :">
+				<mx:TextInput id="senderEmail"/>
+			</mx:FormItem>
+			<mx:FormItem label="Subject :">
+				<mx:TextInput id="emailSubject"/>
+			</mx:FormItem>
+			<mx:FormItem label="Message :">
+				<mx:TextArea id="emailMessage" height="132" width="213"/>
+			</mx:FormItem>
+		</mx:Form>
+		
+		<mx:Button label="Send" click="sendMail()" x="138" y="274"/>
+		<mx:ControlBar>
+	       	<mx:CheckBox id="checkBoxEmail" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	       	<mx:Button label="Cancel" click="PopUpManager.removePopUp(emails);"/> 
+	    </mx:ControlBar>  
+	</mx:TitleWindow>	
+	<!--Email box-->
+	<!--Fileupolad box-->
+	<mx:TitleWindow id="upload" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Image Upload" 
+					status="Movable too"
+					close="titleWin_close(event);" 
+					showCloseButton="true">
+					
+		<fileupload:FileUpload
+			width="100%" height="100%"  
+			uploadType="image" 
+			randNumber="{randomNum}"
+			uploadUrl="{_strUploadScript}"
+			uploadComplete="{displayAssets(randomNum, 'image')}" 
+			uploadIOError="Alert.show('IO Error in uploading file.', 'Error')" 
+			uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"/>
+		
+		 <mx:ControlBar>
+	       	<mx:CheckBox id="checkBoxupload" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	     </mx:ControlBar> 			
+		</mx:TitleWindow>
+		
+		
+		<mx:TitleWindow id="uploadfont" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Font Upload" 
+					status="Movable too"
+					close="titleWin_close(event);" 
+					showCloseButton="true">
+					
+		<fileupload:FileUpload
+			width="100%" height="100%" uploadType="font" randNumber="{randomNum}"
+			uploadUrl="{_strUploadScript}"
+			uploadComplete="{displayAssets(randomNum, 'font')}" 
+			uploadIOError="Alert.show('IO Error in uploading file.', 'Error')" 
+			uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"/>
+		 <mx:ControlBar>
+	       	<mx:CheckBox id="checkuploadfont" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	       </mx:ControlBar> 			
+		</mx:TitleWindow>
+		
+		<mx:TitleWindow id="vectorImageUpload" 
+	            	x="200" 
+	            	y="100" visible="false" 
+	            	width="350"
+	            	height="350" 
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Upload Vector Image" 
+					status="Movable too"
+					close="titleWin_close(event);" 
+					showCloseButton="true">
+					
+		<fileupload:FileUpload
+			width="100%" height="100%" uploadType="vector" randNumber="{randomNum}"
+			uploadUrl="{_strUploadScript}"
+			uploadComplete="{displayAssetssvg(randomNum, 'vector')}" 
+			uploadIOError="Alert.show('IO Error in uploading file.', 'Error')" 
+			uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"/>
+		<mx:ControlBar>
+	       	<mx:CheckBox id="checkBoxvectorImageUpload" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	       </mx:ControlBar>			
+		</mx:TitleWindow>
+			
+		<!--Fileupolad box-->
+		<mx:TitleWindow id="dropShadow" 
+	            	x="500" 
+	            	y="100" 
+	            	visible="false" 
+	            	width="350"
+	            	height="250" paddingTop="20" paddingLeft="20"
+	            	
+	            	verticalScrollPolicy="off" 
+	            	horizontalScrollPolicy="off"
+	            	title="Set TextArea Shadow" 
+					status="Movable too"
+					close="titleWin_close(event);"
+					showCloseButton="true">
+		
+				
+		
+	       		 <mx:HBox>
+	            	<mx:Label text="dropShadowEnabled:"/>
+	                <mx:CheckBox id="shadowcheckBox" selected="true" click="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="borderEnabled:"/>
+	                <mx:CheckBox id="bordercheckBox" selected="false" click="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	           		 <mx:Label text="Border Color:"/>
+	                 <mx:ColorPicker id="borderColorPicker" change="OnShadowcolor();" />
+	            </mx:HBox>
+	            <mx:HBox>
+	            <mx:Label text="dropShadowColor:"/>
+	                <mx:ColorPicker id="shadowColorPicker" dataProvider="{simpleDP}" change="changeEvt(event);"/>
+	               	</mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="shadowDirection:"/>
+	                <mx:ComboBox id="shadowcomboBox" selectedIndex="1" change="OnShadowcolor();">
+	                    <mx:dataProvider>
+	                        <mx:Array>
+	                            <mx:Object label="left" />
+	                            <mx:Object label="center" />
+	                            <mx:Object label="right" />
+	                        </mx:Array>
+	                    </mx:dataProvider>
+	                </mx:ComboBox>
+	            </mx:HBox>
+	            <mx:HBox>
+	            	<mx:Label text="shadowDistance:"/>
+	                <mx:HSlider id="shadowSlider"
+	                        minimum="-10"
+	                        maximum="10"
+	                        value="0"
+	                        labels="[-10,-5,0,5,10]"
+	                        liveDragging="true"
+	                        snapInterval="1"
+	                        tickInterval="2" change="OnShadowcolor();"/>
+	       		</mx:HBox>
+	       		<mx:ControlBar>
+	       	<mx:CheckBox id="checkBoxdropShadow" label="isMoveable:" labelPlacement="left" selected="true" change="checkBox_change(event);" />
+	       </mx:ControlBar>
+		</mx:TitleWindow>		
+			
+		<!-- End popup windows -->
+		<!-- Start Rollover & rollout effect for thambnail -->
+		<mx:Parallel id="out">
+			<mx:Zoom duration="100" zoomHeightTo="1.0" zoomWidthTo="1.0"/>
+			<mx:Glow id="glowImage" duration="300" alphaFrom="1.0" alphaTo="1.0" blurXFrom="0.0" blurXTo="30." blurYFrom="0.0" blurYTo="30.0" color="0xffffff"/>  	
+		</mx:Parallel>
+		<mx:Parallel id="over">
+			<mx:Zoom duration="100" zoomHeightTo="1.4" zoomWidthTo="1.4"/>
+		</mx:Parallel>
+		<!-- end Rollover & rollout effect for thambnail -->
+		<!--End Arc Text Editor, Thumbnail Effect & popup window -->
+			
+		<mx:EmailValidator id="mailValidator" source="{senderEmail}" property="text" requiredFieldError="Enter your email" required="true" />
+		<mx:StringValidator id="nameValidator"  
+			source="{senderName}" property="text" 
+			requiredFieldError="Enter yourr name" required="true"/>
+		<mx:StringValidator id="emailValidator"  
+			source="{emailMessage}" property="text" 
+			requiredFieldError="Enter your message" required="true"/>
+		<mx:DropShadowFilter id="dropShaText" color="{colorPickerTextShade.selectedColor}"/>
+		<!--<mx:Style source="http://localhost/signimal/signimal_flex_php/uploads/font/style.css"/>-->
+</mx:Application>

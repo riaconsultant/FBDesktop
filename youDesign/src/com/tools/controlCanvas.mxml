@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="270" creationComplete="init()">
+	<mx:Script source="comman.as"/>
+	<mx:Script>
+		<![CDATA[
+			import com.manoj.ControlObject;
+			
+			import mx.core.Application;
+			public var fontSizeData:Array;
+			public var fontColorData:Object;
+			public var textFontData:Object;
+			public var retData:Object;
+			
+			private function init():void{
+				//Alert.show(ObjectUtil.toString(fontColorData));
+				font_size.dataProvider=fontSizeData;
+				font_size.selectedIndex=2;
+				font_color.dataProvider=fontColorData;
+				text_outline_color.dataProvider=fontColorData;
+				text_shadow_color.dataProvider=fontColorData;
+				text_font.dataProvider=textFontData;
+				if(id == "mid_text_controls_tool"){
+					arcTextLabel.visible=false;
+					top_text_arch_yes.visible=false;
+					top_text_arch_no.visible=false;
+				}
+				//Alert.show(ObjectUtil.toString(Application.application.defaultColor));
+				if(Application.application.product_type== "black"){
+					font_color.selectedIndex=1;
+					text_outline_color.selectedIndex=1;
+					text_shadow_color.selectedIndex=1;
+				}else if(Application.application.product_type == "silver"){
+					font_color.selectedIndex=8;
+					text_outline_color.selectedIndex=8;
+					text_shadow_color.selectedIndex=8;
+				}else{}
+				
+				if(Application.application.topTextA == "0"){
+					/* arcTextLabel.visible=false;
+					top_text_arch_yes.visible=false;
+					top_text_arch_no.visible=false; */
+				}
+				if(Application.application.botTextA == "0"){
+					/* arcTextLabel.visible=false;
+					top_text_arch_yes.visible=false;
+					top_text_arch_no.visible=false; */
+				}
+				if(retData){
+					//Alert.show(ObjectUtil.toString(retData));
+					Application.application.setOpenDesignText(retData);
+				}
+			}
+			
+			protected function text_font_changeHandler(event:ListEvent):void
+			{
+				fontFamily=event.currentTarget.selectedItem.fontLabel;
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.setStyle("fontFamily",fontFamily);
+					Application.application.arcTextData(top_text.text,id);
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.setStyle("fontFamily",fontFamily);
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.setStyle("fontFamily",fontFamily);
+					Application.application.arcTextData(top_text.text,id);
+				}
+			}
+			
+			/* private function addColors(arg:String):void{
+				var addColor:int;
+				if(Application.application.product_type== "black"){
+					if(arg!='#FFFFFF'){
+						Application.application.totalColors +=1;
+					}else if(arg=='#FFFFFF'){
+						Application.application.totalColors -=1;
+					}
+				}else if(Application.application.product_type == "silver"){
+					if(arg!='#000000'){
+						Application.application.totalColors +=1;
+					}else if(arg!='#000000'){
+						Application.application.totalColors -=1;
+					}
+				}
+			} */
+
+			protected function font_color_changeHandler(event:ListEvent):void
+			{
+				//Alert.show(event.currentTarget.selectedItem.colorCode.toString());
+				fontColor=event.currentTarget.selectedItem.colorCode.toString();
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.setStyle("color",fontColor);
+					Application.application.arcTextData(top_text.text,id);
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.setStyle("color",fontColor);
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.setStyle("color",fontColor);
+					Application.application.arcTextData(top_text.text,id);
+				}
+				/* var e:Event = new Event("fontChangeEvent");
+				this.dispatchEvent(e); */
+			}
+
+
+			protected function font_size_changeHandler(event:ListEvent):void
+			{
+				fontSize=event.currentTarget.selectedItem.data.toString();
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.setStyle("fontSize",fontSize);
+					Application.application.arcTextData(top_text.text,id);
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.setStyle("fontSize",fontSize);
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.setStyle("fontSize",fontSize);
+					Application.application.arcTextData(top_text.text,id);
+				}
+			}
+
+
+			protected function text_shadow_color_changeHandler(event:ListEvent):void
+			{
+				if(textShadowYes.selected==true){
+					if(text_outline_yes.selected==true){
+						this.setColor(text_shadow_color.selectedItem.colorCode,'outline','shadow',text_outline_color.selectedItem.colorCode);
+					}else{
+						this.setColor(text_shadow_color.selectedItem.colorCode,'','shadow',text_outline_color.selectedItem.colorCode);
+					}
+				}
+			}
+			protected function textShadowYes_clickHandler(event:MouseEvent):void
+			{
+				this.applyTextShadowOutline();
+			}
+			
+			private function applyTextShadowOutline():void{
+				if(text_outline_yes.selected == true && textShadowYes.selected == true){
+					this.setprice('outline','shadow');
+					this.setColor(text_shadow_color.selectedItem.colorCode,'outline','shadow',text_outline_color.selectedItem.colorCode);
+				}else if(text_outline_yes.selected == true && textShadowYes.selected == false){
+					this.setprice('outline','');
+					this.setColor(text_shadow_color.selectedItem.colorCode,'outline','',text_outline_color.selectedItem.colorCode);
+				}else if(text_outline_yes.selected == false && textShadowYes.selected == true){
+					this.setprice('','shadow');
+					this.setColor(text_shadow_color.selectedItem.colorCode,'','shadow',text_outline_color.selectedItem.colorCode);
+				}else if(text_outline_yes.selected == false && textShadowYes.selected== false){
+					this.setprice('','');
+					this.removeFilter(0);
+				}else{
+					
+				}
+			}
+			
+			protected function textShadowNo_clickHandler(event:MouseEvent):void
+			{
+				this.applyTextShadowOutline();
+			}
+			protected function text_outline_yes_clickHandler(event:MouseEvent):void
+			{
+				this.applyTextShadowOutline();
+			}
+			protected function text_outline_no_clickHandler(event:MouseEvent):void
+			{
+				this.applyTextShadowOutline();
+			}
+			
+			protected function text_outline_color_changeHandler(event:ListEvent):void
+			{
+				if(text_outline_yes.selected==true){
+					if(textShadowYes.selected==true){
+						this.setColor(text_shadow_color.selectedItem.colorCode,'outline','shadow',text_outline_color.selectedItem.colorCode);
+					}else{
+						this.setColor(text_shadow_color.selectedItem.colorCode,'outline','',text_outline_color.selectedItem.colorCode);
+					}
+				}
+			}
+
+			protected function text_reset_clickHandler(event:MouseEvent):void
+			{
+				top_text.text = '';
+				if(Application.application.product_type== "black"){
+					font_color.selectedIndex=1;
+					text_outline_color.selectedIndex=1;
+					text_shadow_color.selectedIndex=1;
+				}else if(Application.application.product_type == "silver"){
+					font_color.selectedIndex=8;
+					text_outline_color.selectedIndex=8;
+					text_shadow_color.selectedIndex=8;
+				}else{}
+			}
+
+			protected function top_text_arch_no_clickHandler(event:MouseEvent):void
+			{
+				if(id == "top_text_controls_tool"){
+					if(Application.application.textCanvas.getChildByName('curveText') as Canvas){
+						Application.application.textCanvas.removeChild(Application.application.textCanvas.getChildByName('curveText') as Canvas);
+					}
+					Application.application.top_label.visible=true;
+				}
+				if(id == "bottom_text_controls_tool"){
+					if(Application.application.textCanvas.getChildByName('curveText1') as Canvas){
+						Application.application.textCanvas.removeChild(Application.application.textCanvas.getChildByName('curveText1') as Canvas);
+					}
+					Application.application.bottom_label.visible=true;
+				}
+				
+			}
+
+			protected function top_text_arch_yes_clickHandler(event:MouseEvent):void
+			{
+				if(id == "top_text_controls_tool"){
+					Application.application.arcTextData(top_text.text,id);
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.arcTextData(top_text.text,id);
+				}
+				
+			}
+
+			private function right_side():void{
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.x +=5;
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.x +=5;
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.x +=5;
+				}
+				//mid_image.x=mid_image.x+5;
+			}
+			private function left_side():void{
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.x -=5;
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.x -=5;
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.x -=5;
+				}
+				//mid_image.x=mid_image.x-5;
+			}
+			private function up_side():void{
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.y -=5;
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.y -=5;
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.y -=5;
+				}
+				//mid_image.y=mid_image.y-5;
+				//Alert.show(Application.application.bottom_label.y);
+			}
+			private function down_side():void{
+				if(id == "top_text_controls_tool"){
+					Application.application.top_label.y +=5;
+				}
+				if(id == "mid_text_controls_tool"){
+					Application.application.middle_label.y +=5;
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.bottom_label.y +=5;
+				}
+				//mid_image.y=mid_image.y+5;
+			}
+			private function text_change(evt:Event):void{
+				if(id == "top_text_controls_tool"){
+					Application.application.arcTextData(top_text.text,id);
+				}
+				if(id == "bottom_text_controls_tool"){
+					Application.application.arcTextData(top_text.text,id);
+				}
+				
+			}
+		]]>
+	</mx:Script>
+		
+	<mx:Label x="5" y="0" text="Text :" width="85"/>
+	<mx:TextInput x="95" y="0" width="300" id="top_text" shadowDistance="10" change="text_change(event)" maxChars="35"/>
+	<mx:Label x="5" y="30" text="Font :" width="85" height="22"/>
+	<mx:ComboBox x="95" y="30" id="text_font" itemRenderer="com.tools.customCombo" labelField="fontName" width="300" change="text_font_changeHandler(event)" fontFamily="{text_font.selectedItem.fontLabel}"></mx:ComboBox>
+	<mx:Label x="5" y="64" text="Font Color :" width="85"/>
+	<mx:Label x="5" y="97" text="Font Size:" width="85"/>
+	<mx:ComboBox x="95" y="95" width="300" id="font_size" labelField="fontSize"  selectedIndex="2" change="font_size_changeHandler(event)"></mx:ComboBox>
+	<mx:ComboBox x="95" y="62.5" width="300" id="font_color" labelField="colorName"  selectedIndex="2" change="font_color_changeHandler(event)"></mx:ComboBox>
+	<mx:Label x="6" y="129" text="Arch Text:" width="65" id="arcTextLabel"/>
+	<mx:RadioButton x="102" y="127"  id="top_text_arch_yes" label="Yes" click="top_text_arch_yes_clickHandler(event)"/>
+	<mx:RadioButton x="163" y="127"  id="top_text_arch_no" selected="true" label="No"  click="top_text_arch_no_clickHandler(event)"/>
+	<mx:Label x="5" y="160" text="Text Shadow :" width="85"/>
+	<mx:RadioButton x="102" y="157" label="Yes" id="textShadowYes"  groupName="TextShadow" click="textShadowYes_clickHandler(event)"/>
+	<mx:RadioButton x="162" y="157" label="No" id="textShadowNo" selected="true" groupName="TextShadow" click="textShadowNo_clickHandler(event)"/>
+	<mx:Label x="221" y="159" text="Color:" width="55"/>
+	<mx:Label x="6" y="194" text="Text Outline :" width="85"/>
+	<mx:RadioButton x="102" y="190" label="Yes" id="text_outline_yes" groupName="TopTextOutline" click="text_outline_yes_clickHandler(event)"/>
+	<mx:RadioButton x="162" y="191" label="No" id="text_outline_no"  selected="true" groupName="TopTextOutline"  click="text_outline_no_clickHandler(event)"/>
+	<mx:Label x="220" y="193" text="Color:" width="55"/>
+	<mx:Label   x="6"  y="228" text="Move Text :" width="85"/>
+	<mx:Button id="rightButton" x="142" y="235" width="15" height="15" styleName="rightArrow" click="right_side()"/>
+	<mx:Button id="leftButton" x="102" y="235" width="15" height="15" styleName="leftArrow" click="left_side()"/>
+	<mx:Button id="downButton" x="122" y="255" width="15" height="15" styleName="downArrow" click="down_side();"/>
+	<mx:Button id="upButton" x="122" y="215" width="15" height="15" styleName="upArrow" click="up_side()"/>
+	<mx:Button width="70" id="text_reset" height="24" styleName="setDefault" buttonMode="true" click="text_reset_clickHandler(event)" x="269" y="230"/>
+	<mx:ComboBox x="267" y="157.5" width="128" id="text_shadow_color" labelField="colorName"  selectedIndex="2" change="text_shadow_color_changeHandler(event)"></mx:ComboBox>
+	<mx:ComboBox x="267" y="191.5" width="128" id="text_outline_color" labelField="colorName"  selectedIndex="2" change="text_outline_color_changeHandler(event)"></mx:ComboBox>
+</mx:Canvas>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="init()">
+	
+	 <mx:Script>
+    <![CDATA[
+    	import com.roguedevelopment_new.objecthandles_new.SelectionEvent;
+    import mx.utils.ObjectUtil;
+    import mx.controls.Alert;
+    
+    import mx.collections.ArrayCollection;
+
+    
+    [Bindable]
+	private var dataArray:ArrayCollection = new ArrayCollection
+	([
+	 {
+	   id: 'Latest',description: [{img: 'picture/clipart/clip1.png'},                  
+	                           	  {img: 'picture/clipart/clip2.png'}]
+	 },
+	 {
+	   id: 'Other',description: [{img: 'picture/clipart/clip3.png'},              
+	                         	 {img: 'picture/clipart/clip4.png'}]
+	 }
+	]);
+    
+   private function init():void
+   {
+   		//Alert.show("" + namesComboBox.selectedItem.id);
+   		if(namesComboBox.selectedItem.id)
+   		{
+   			imageRepeaterBanner1.dataProvider=namesComboBox.selectedItem.description;
+   		}
+   }
+   
+    private function onCategory(event:Array):void
+	{
+		imageRepeaterBanner1.dataProvider=event;
+	}
+    
+     ]]>
+    </mx:Script>
+    
+    <!-- ComboBox with list of Names from DataArray.Name -->
+    <mx:ComboBox id="namesComboBox" labelField="id"  dataProvider="{dataArray}" selectedItem="Latest"  x="0" y="0" change="onCategory(namesComboBox.selectedItem.description)"/>
+     <mx:Tile x="0" y="50" width="100%" height="241" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center">
+		 <mx:Repeater id="imageRepeaterBanner1">
+			<mx:HBox width="60" height="60" borderColor="#FFFFFF" themeColor="#FFFFFF" verticalAlign="middle" horizontalAlign="center" 
+				verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image width="50" height="50" horizontalAlign="center" verticalAlign="middle" source="{imageRepeaterBanner1.currentItem.img}" 
+					id="myimgBanner1"/>
+			</mx:HBox>
+		</mx:Repeater>	
+	</mx:Tile>
+</mx:Application>

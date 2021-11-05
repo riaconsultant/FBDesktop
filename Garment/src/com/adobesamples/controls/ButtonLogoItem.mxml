@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:controls="com.adobesamples.controls.*"
+	width="74"
+	height="70"
+	>
+	
+	<!-- 
+	
+		The ButtonLogoItem is a customized button which is diplayed within the TabContentLogo component.
+		The logo image is added when the dataProvider is set.
+	
+	-->
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.events.LogoChosenEvent;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			[Bindable]
+			private var __image:String;
+			
+			private var __imageSource:Object;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable("onDataProviderSet")]
+			/**
+			* The dataProvider sets the image to load into the button.
+			*
+			* <p>When the dataProvider is set, the appropriate image is loaded into the 
+			* image tag below.</p>
+			*
+			* @param i_logoObj The VOLogoItem which indicates the logo to load.
+			* 
+			* @see com.adobesamples.vo.VOLogoItem The VODesignItem class.
+			*/
+			public function set dataProvider(i_logoObj:Object):void{
+				__image = i_logoObj.image;
+				__imageSource = i_logoObj;
+				this.dispatchEvent(new Event("onDataProviderSet"));
+			}
+			
+			public function get dataProvider():Object{
+				return __imageSource;
+			}
+
+
+		]]>
+	</mx:Script>
+	
+	<mx:Image id="backgroundImage" visible="false" source="images/ui/selected_shirt_bg.png" width="74" height="70"/>
+	<mx:VBox width="74" height="70" horizontalAlign="center" verticalAlign="middle">
+		<!-- The source of this image is set in the dataProvider above -->
+		<mx:Image id="radioImage" source="{__image}" width="49" height="55"/>
+	</mx:VBox>
+
+</mx:Canvas>

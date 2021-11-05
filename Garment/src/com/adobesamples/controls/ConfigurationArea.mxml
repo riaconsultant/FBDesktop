@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:controls="com.adobesamples.controls.*" 
+ 	horizontalScrollPolicy="off"
+ 	verticalScrollPolicy="off"
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import flash.display.DisplayObject;
+			import mx.binding.utils.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PUBLIC VARIABLE DECLARATION
+			
+			[Bindable]
+			public var fontSize:Number;
+			
+			[Bindable]
+			public var logo:String;
+			
+			[Bindable]
+			public var playersName:String;
+			
+			[Bindable]
+			public var playersNameFont:String = "Mike";
+			
+			[Bindable]
+			public var playersNameColor:Number = 0xffffff;
+
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			private var __designItem:DesignItem;
+			private var __designLookup:String;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable("onDesignsSet")]
+			/**
+			* This propery retreives and displays the design within this component.
+			*
+			* <p>When the dataProvider is set, the appropriate UIMovieClip is added
+			* as a child from the ShirtConfigurator.swc (Which is located in the project's
+			* library path).</p>
+			*
+			* @param i_design The string lookup for the DesignItem located in the DesignItemFactory.
+			* 
+			* @see com.adobesamples.controls.DesignItemFactory The DesignItemFactory class.
+			*/
+			public function set design(i_design:String):void{
+				
+				__designLookup = i_design;
+				
+				this.designItemHBox.removeAllChildren();
+				__designItem = DesignItemFactory.getItem(__designLookup,true)
+
+				var myChild:DisplayObject = this.designItemHBox.addChild(__designItem);
+				myChild.width = this.width / 1.42;
+				myChild.height = this.height / 1.1;
+				this.dispatchEvent(new Event("onDesignsSet"));
+				
+			}
+
+			public function get design():String{
+				return __designLookup;
+			}
+			
+			[Bindable]
+			public function set baseColor(i_base_color:Number):void{
+				__designItem.baseColor = i_base_color;
+			}
+			
+			public function get baseColor():Number{
+				return __designItem.baseColor;
+			}
+			
+			[Bindable]
+			public function set trimColor(i_trim_color:Number):void{
+				__designItem.trimColor = i_trim_color;
+			}
+			
+			public function get trimColor():Number{
+				return __designItem.trimColor;
+			}
+			
+			
+
+		]]>
+	</mx:Script>
+	
+	
+	<mx:HBox id="designItemHBox" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<!-- The DesignItem will be added here via actionscript from the code above. -->
+	</mx:HBox>
+	
+	<!-- 
+		The following components display the name and logo images over top of the shirt design. 
+		The width, height, x, and y positions for these components are divided by a divisor in order
+		to keep the positions relative within the canvas.
+	-->
+	
+	<mx:Image id="frontLogo" source="{logo}" width="{this.width / 18.3}" height="{this.height / 7.83}" x="{this.width / 2.84}" y="{this.height / 2.74}"/>
+	<mx:Label id="playerName" x="{this.width / 1.70}" fontSize="{this.width / 33.68}" y="{this.height / 4}" text="{playersName}" color="{playersNameColor}" fontFamily="{playersNameFont}" styleName="shirtTextStyle" width="{this.width / 5.33}"/>
+	<mx:Image id="backLogo" source="{logo}" width="{this.width / 9.85}" height="{this.height / 3.8}" x="{this.width / 1.58}" y="{this.height / 2.25}"/>
+
+</mx:Canvas>

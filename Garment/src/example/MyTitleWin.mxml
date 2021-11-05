@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2008/08/16/creating-an-undraggable-titlewindow-container-in-flex/ -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        title="TitleWindow"
+        width="350"
+        height="350"
+        creationComplete="init()"
+        close="PopUpManager.removePopUp(this);" 
+        xmlns:fileupload="com.flashdev.file.*">
+
+    <mx:Script>
+        <![CDATA[
+        	
+        	
+        	import mx.managers.PopUpManager;
+            import mx.controls.Text;
+           
+            // A reference to the TextInput control in which to put the result.
+            public var loginName:Text;
+           
+            // Event handler for the OK button.
+            private function returnName():void 
+            {
+               	loginName.text="Name entered:sfg"; 
+               	PopUpManager.removePopUp(this);
+            }
+
+        	
+            private function checkBox_change(evt:Event):void {
+                this.isPopUp = checkBox.selected;
+            }
+            
+            [Bindable] 
+			private var myUrl:String="http://localhost/signimal/";
+            
+            private const _strDomain:String = new String(myUrl+"signimal_flex_php/");
+			private const _strUploadScript:String = new String(_strDomain + "upload.php");
+			
+				
+			import mx.rpc.events.ResultEvent;
+            import mx.rpc.events.FaultEvent;
+            import mx.controls.Alert;
+			private var alert:Alert;
+			
+			public function init():void
+	    	{
+	    		Security.allowDomain(_strDomain);
+	    	}
+	    	
+	    	import mx.controls.Alert;
+			
+        ]]>
+    </mx:Script>
+	
+    <fileupload:FileUpload id="file"
+			width="100%" height="100%"
+			uploadUrl="{_strUploadScript}"
+			uploadComplete="Alert.show('file upload successfully.')" 
+			uploadIOError="Alert.show('IO Error in uploading file.', 'Error')" 
+			uploadSecurityError="Alert.show('Security Error in uploading file.', 'Error')"/>
+					
+	
+
+    <mx:ControlBar>
+        <mx:CheckBox id="checkBox"
+                label="isPopUp:"
+                labelPlacement="left"
+                selected="true"
+                change="checkBox_change(event);" />
+        
+        
+         <mx:Button label="ok" click="returnName();"/>
+        
+            
+    </mx:ControlBar>
+
+</mx:TitleWindow>

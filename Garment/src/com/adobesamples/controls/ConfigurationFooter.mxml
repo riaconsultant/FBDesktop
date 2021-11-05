@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	styleName="footerStyle" 
+	width="640" 
+	height="45" 
+	horizontalAlign="center" 
+	verticalAlign="middle">
+	
+	<mx:Metadata>
+		[Event(name="save_config", type="flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+
+			private function handleClick(event:Event):void{
+				
+				var saveConfigEvent:Event = new Event("save_config");
+				this.dispatchEvent(saveConfigEvent);
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Button buttonMode="true" label="Save Configuration" height="22" click="handleClick(event)"/>
+	
+</mx:HBox>

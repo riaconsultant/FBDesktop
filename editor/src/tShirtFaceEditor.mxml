@@ -1,0 +1,2424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+				backgroundColor="#FFFFFF" creationComplete="init();" width="810" height="550"
+				xmlns:fabulousFlex="fabulousFlex.*" xmlns:fx="com.fusiox.ui.*" 
+				applicationComplete="registerGlobalKeyHandler();" borderStyle="none" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FFFFFF, #FFFFFF]">
+	<mx:Style source="style/comman.css"/>
+	<mx:Style source="style/fonts.css"/>
+	<mx:Script source="com/usercontrols/globalConfig.as"/>
+	
+	<mx:Script>
+		<![CDATA[
+			private var loading:Loading = new Loading();
+			private var _x1:int = 0;
+			private var _x2:int = 0;
+			private var _x3:int = 0; 
+			public var product_id:int;
+			public var libImage:Object=null;
+			public var editorType:String="tshirt";
+			private var userId:String="session";
+			private var resType:String;
+			public var editor_no:Number;
+			public function subControlAction(e:MouseEvent):void{
+				var currentSubId:String=e.currentTarget.id;
+				this.setSubControlAction(currentSubId);
+			}
+			
+			private function setSubControlAction(currentSubId:String):void
+			{
+				if( currentSubId == "libId"){
+					libCanvas.visible=true;
+					uploadCanvas.visible=false;
+					editImageCanvas.visible=false;
+					libId.enabled=false;
+					uploadId.enabled=true;
+					editImageId.enabled=true;
+				}else if(currentSubId == "uploadId"){
+					libCanvas.visible=false;
+					uploadCanvas.visible=true;
+					editImageCanvas.visible=false;
+					libId.enabled=true;
+					uploadId.enabled=false;
+					editImageId.enabled=true;
+				}else if(currentSubId == "editImageId"){
+					libCanvas.visible=false;
+					uploadCanvas.visible=false;
+					editImageCanvas.visible=true;
+					libId.enabled=true;
+					uploadId.enabled=true;
+					editImageId.enabled=false;
+				}else if(currentSubId == "editTextId"){
+					editTextCanvas.visible=true;
+					addTextCanvas.visible=false;
+					editTextId.enabled=false;
+					addTextId.enabled=true;
+				}else if(currentSubId == "addTextId"){
+					addTextCanvas.visible=true;
+					editTextCanvas.visible=false;
+					addTextId.enabled=false;
+					editTextId.enabled=true;
+				}else if(currentSubId == "welcome"){
+					welcomeCanvas.visible=true;
+				}else{
+					var imageTypes:FileFilter = new FileFilter("Images (*.jpg, *.jpeg, *.gif, *.png)", "*.jpg; *.jpeg; *.gif; *.png");
+					var allTypes:Array = new Array(imageTypes);
+					refAddFiles = new FileReference();
+					refAddFiles.addEventListener(Event.SELECT, onSelectFile);
+					refAddFiles.browse(allTypes);
+				}
+			}
+			private var refAddFiles:FileReference;
+			private var UploadId:int = 300;
+			private function onSelectFile(event:Event):void {
+				
+				event.target.removeEventListener(event.type,onSelectFile);
+				UploadId = UploadId+1;
+				var sendVars:URLVariables = new URLVariables();
+				sendVars.imgname = randomNum+"_"+UploadId;
+				sendVars.dirname = sessionId;
+				var request:URLRequest = new URLRequest();
+				request.url = site_url+"filesave.php";
+				request.data = sendVars;
+				request.method = URLRequestMethod.POST;
+				refAddFiles.addEventListener(Event.COMPLETE, onUploadComplete);
+				refAddFiles.upload(request, "file", false);
+				this.showLoading();
+			}
+			
+			// Called on upload complete
+			private function onUploadComplete(e:Event):void {
+				this.hideLoading(); 
+				e.target.removeEventListener(e.type,onUploadComplete);
+				var img:String = site_url+"temp_data/"+sessionId+"/"+randomNum+"_"+UploadId+e.target.type.toString();
+				
+				/* var _cropImage:CropImage= new CropImage();
+				_cropImage.image_path = img;
+				_cropImage.site_url = site_url;
+				_cropImage.sessionId = sessionId;
+				_cropImage.random_no = randomNum;
+				_cropImage.uploadId = UploadId;
+				_cropImage.imageType = e.target.type.toString();
+				PopUpManager.addPopUp(_cropImage,this,true);
+				PopUpManager.centerPopUp(_cropImage);
+				_cropImage['saveImage'].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+					addCropedUploadedImage(e,img);
+					e.target.removeEventListener(e.type,arguments.callee);
+				}); */
+				userUploadedImage.push({img:img});
+				userUploadImages.dataProvider = userUploadedImage;
+			}
+			
+			/* private function addCropedUploadedImage(e:MouseEvent,img:String):void{
+				userUploadedImage.push({img:img});
+				userUploadImages.dataProvider = userUploadedImage;
+			} */
+			
+			private function addUploadImage(e:Event):void{
+				UploadId = UploadId+1;
+				var img:String = e.currentTarget.source;
+				var x1:Number = _x+(_w/2)-50;
+				var y1:Number = _y+(_h/2)-50;
+				var x2:Number = _x+_w-50;
+				var x3:Number = _x-50;
+				if(tShirtEditorFront.visible==true){
+					this.drawImage(genericFront,img,x1,y1,"upload"+String(UploadId));
+				}else{
+					this.drawImage(genericBack,img,x1,y1,"upload"+String(UploadId));
+				}
+			} 
+			
+			public function controlAction(evt:MouseEvent):void{
+				var currentId:String=evt.currentTarget.id;
+				this.setControlAction(currentId);
+			}
+			
+			private function setControlAction(currentId:String):void{
+				if(currentId == "imageId"){
+					imageId.enabled=false;
+					textId.enabled=true;
+					//fillId.enabled=true;
+					imageIdCanvas.visible=true;
+					textIdCanvas.visible=false;
+					fillIdCanvas.visible=false;
+					welcomeCanvas.visible=false;
+					if(libImage == null){
+						myObj.getCatgoryLibrary();
+					}
+				}else if(currentId == "textId"){
+					textId.enabled=false;
+					imageId.enabled=true;
+					//fillId.enabled=true;
+					imageIdCanvas.visible=false;
+					textIdCanvas.visible=true;
+					fillIdCanvas.visible=false;
+					welcomeCanvas.visible=false;
+				}else if(currentId == "fillId"){
+					//fillId.enabled=false;
+					imageId.enabled=true;
+					textId.enabled=true;
+					imageIdCanvas.visible=false;
+					textIdCanvas.visible=false;
+					fillIdCanvas.visible=true;
+					welcomeCanvas.visible=false;
+				}else{
+					imageIdCanvas.visible=false;
+					textIdCanvas.visible=false;
+					fillIdCanvas.visible=false;
+					welcomeCanvas.visible=true;
+				}
+				
+			}
+			
+			public function faultError(e:FaultEvent):void{
+				Alert.show(e.fault.faultString,site_title);
+			}
+			
+			private var productLength:int=1;
+			public function productListener(e:ResultEvent):void{
+				//Alert.show(e.result[0]['products']['name'].toString(),site_title);
+				product_id=e.result[0]['products']['id'];
+				product_label.text=e.result[0]['products']['name'];
+				product_label.toolTip=e.result[0]['products']['description'];
+				var product_image:Object=e.result[1][0]['product_images'];
+				previewImg.source=site_url+"img/product_images/"+product_image['image'];
+				productLength=e.result[1].length;
+				if(productLength == 2){
+					tShirtOption.visible=true;
+					tShirtOption.styleName="tshirtBack";
+					tShirtOption.addEventListener(MouseEvent.CLICK,tShirtOptionClick);
+					previewImg2.source=site_url+"img/product_images/"+e.result[1][1]['product_images']['image'];
+				}
+				_x = parseInt(product_image['x1']);
+				_y = parseInt(product_image['y1']);
+				_w= parseInt(product_image['width']);
+				_h = parseInt(product_image['height']);
+				heightSlider.maximum = _h;
+				widthSlider.maximum = _w;
+			}
+			
+			public function tShirtOptionClick(evt:MouseEvent):void{
+				if(tShirtOption.styleName=="tshirtBack"){
+					tShirtOption.styleName="tshirtFront";
+					tShirtEditorFront.visible=false;
+					tShirtEditorBack.visible=true;
+				}else{
+					tShirtOption.styleName="tshirtBack";
+					tShirtEditorFront.visible=true;
+					tShirtEditorBack.visible=false;
+				}
+			}
+			
+			public function getCategory(e:ResultEvent):void{
+				var rsArray:Object = e.result;
+				var rsLength:int = e.result.length;
+				var categoryArr:Array = new Array();
+				var cat:Object=new Object();
+				cat['id']="all";
+				cat['name']="Please select";
+				categoryArr[0]=cat;
+				var k:int=0;
+				for(var i:int=1;i<= rsLength;i++){
+					cat=rsArray[k].DesignCategory;
+					categoryArr[i] =  cat;
+					k++;
+				}
+				categoryId.dataProvider=categoryArr;
+				myObj.getLibraryImage("all");
+			}
+			
+			public function libraryListner(e:ResultEvent):void{
+				//Alert.show(e.result.length,'');
+				var libraryArr:Array=new Array();
+				for(var i:int=0;i < e.result.length;i++){
+					libImage=e.result[i].DesignImage;
+					libImage['image']=site_url+"img/design_images/"+libImage['image'];
+					libraryArr[i] =  libImage;
+				}
+				libTileId.dataProvider=libraryArr;
+			}
+			
+			private var _login:Login = new Login();
+			private var _sendMail:SendMail = new SendMail();
+			private var email:String="";
+			public function loginListner(e:ResultEvent):void{
+				if(e.result.length!=0){
+					email = e.result['email'];
+					userId = e.result['id'];
+					resType = e.result['resType'];
+				}
+				if(email == "")	{
+					PopUpManager.addPopUp(_login, this, true);
+					PopUpManager.centerPopUp(_login);
+					_login["login"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+						var _username:String = _login["username"].text;
+						var _password:String = _login["password"].text;
+						getLogin(e,_username,_password);
+						e.target.removeEventListener(e.type,arguments.callee);
+					});
+					_login["register"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+						if(_login.regArr.length){
+							getRegister(e,_login.regArr);
+							e.target.removeEventListener(e.type,arguments.callee);
+						}
+					});
+				} else {
+					if(resType == "send"){
+						_sendMail.userMail = email;
+						PopUpManager.addPopUp(_sendMail, this, true);
+						PopUpManager.centerPopUp(_sendMail);
+						_sendMail["send"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+							var _email:String = _sendMail["emailId"].text;
+							sendMailrequest(e,_email);
+							e.target.removeEventListener(e.type,arguments.callee);
+						});
+						this.setCurrentFace();
+					}else if(resType == "open"){
+						myObj.openDesign(userId,editorType);
+					}else if(resType == "save"){
+						saveDesign();							
+					}else{
+						Alert.show("Invalid Request",site_title);
+					}
+				}
+			}
+			
+			private function getLogin(e:MouseEvent,username:String,password:String):void{
+				myObj.getloginUser(username,password);
+			}
+			
+			private function getRegister(e:MouseEvent,arr:Array):void{
+				myObj.userSignUp(arr);
+			}
+			
+			public function checkSelect(event:ListEvent):void{
+				Alert.show(categoryId.selectedItem.id,"");
+			}
+			/**
+			 * save design
+			 * */
+			public var designObj:ArrayCollection=new ArrayCollection();
+			public function saveDesign():void{
+				if(productLength==2){
+					this.setDesignObj(genericFront); 
+					this.setDesignObj(genericBack); 
+				}else{
+					this.setDesignObj(genericFront); 
+				}
+				myObj.saveDesign(userId,designObj,editorType);
+			}
+			
+			public function setDesignObj(ObjCanvas:Canvas):ArrayCollection{
+				var children:Array = ObjCanvas.getChildren();
+				for (var i:int = 0; i < children.length; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null;
+					var custObj:CustomObj=new CustomObj();
+					if(childObj != null)
+					{
+						img = childObj.getChildAt(0) as Image;
+						txt = childObj.getChildAt(0) as Text;
+					}
+					
+					if(txt != null)
+					{
+						custObj.id=childObj.id;
+						custObj.name = childObj.name;
+						custObj.type = 'Text';
+						//custObj.align
+						custObj.color = txt.getStyle('color');
+						custObj.family= txt.getStyle('fontFamily');
+						custObj.height = childObj.height;
+						custObj.width = childObj.width;
+						custObj.rotation = childObj.rotation;
+						custObj.size = txt.getStyle('fontSize');
+						custObj.trans = txt.alpha;
+						custObj.value = txt.text;
+						custObj.x = childObj.x;
+						custObj.y = childObj.y;
+						if(txt.filters.length != 0)
+							custObj.shadow=txt.filters[0].color;
+						custObj.objType=ObjCanvas.id;
+						designObj.addItem(custObj);
+					}
+					if(img != null){
+						custObj.id= childObj.id;
+						custObj.name = childObj.name;
+						custObj.type = 'Image';
+						//custObj.align
+						//custObj.color = txt.getStyle('color');
+						//custObj.family= txt.getStyle('fontFamily');
+						custObj.height = childObj.height;
+						custObj.width = childObj.width;
+						custObj.rotation = childObj.rotation;
+						//custObj.size = txt.getStyle('fontSize');
+						custObj.trans = img.alpha;
+						custObj.value = String(img.source);
+						custObj.x = childObj.x;
+						custObj.y = childObj.y;
+						if(img.filters.length != 0)
+							custObj.shadow=img.filters[0].color;
+						custObj.objType=ObjCanvas.id;
+						designObj.addItem(custObj);
+					}
+				}
+				return designObj; 
+			}
+			
+			public function saveDesignCall():void{
+				//designObj=this.saveDesign();
+				//myObj.saveDesign(userId,designObj,editorType);
+			}
+			
+			public function registerGlobalKeyHandler() :void{
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			}
+			
+			public function handleKeyDown(event:KeyboardEvent) :void{
+				if(event.keyCode == 46)
+				{
+					this.forDeleteRequest('Item');
+					event.target.removeEventListener(event.type,handleKeyDown);
+				}
+			}
+			
+			private function showLoading():void{
+				PopUpManager.addPopUp(loading, this, true);
+				PopUpManager.centerPopUp(loading);
+			}
+			
+			private function hideLoading():void{
+				PopUpManager.removePopUp(loading);
+			}
+			
+			protected var rotateEffect:Rotate;
+			private function init():void{
+				rotateEffect = new Rotate();
+				//loader.addEventListener(Event.COMPLETE,eventhandle r);
+				//StyleManager.loadStyleDeclarations("style/fonts.swf")
+				var param_product:String=Application.application.parameters.product_id;
+				//var param_product:String="8";
+				//Alert.show(param_product.toString(),'f');
+				myObj.endpoint=site_url+"cpamf/gateway";
+				myObj.getProductData(param_product);
+				editor_no =new Number (Math.floor(Math.random()* (100000 - 1 + 1)) + 1)
+				/* var fonts:Array = Font.enumerateFonts(true).sortOn("fontName");
+				for (var i:int = 0; i < fonts.length; i++) {
+				cards.push(new String(fonts[i].fontName));
+				} */
+			}
+			
+			private function drawArea(mug:Canvas):Sprite{
+				var ui:UIComponent = new UIComponent();
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.beginFill(0x000000);
+				if(mug == genericFront)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w,_h);
+				}else{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w,_h);
+				}
+				rect.graphics.endFill();
+				ui.addChild(rect);
+				mug.addChild(ui);
+				return rect;
+			}
+			
+			private var mask1:Sprite = new Sprite();
+			private var ohId:Number = 100; // Id for text
+			private function addtext():void	{
+				ohId = ohId+1;
+				var x1:Number = _x+15;
+				var y1:Number = _y+(_h/2)-15;
+				var txtString:String = inputText1.text;
+				if(txtString != "")	{
+					if(tShirtEditorFront.visible==true){
+						this.drawText(genericFront,x1,y1,"txt"+String(ohId),txtString);
+					}else{
+						this.drawText(genericBack,x1,y1,"txt"+String(ohId),txtString);
+					}
+					inputText1.text="";
+				}
+			}
+			
+			private function addHiddenText():void
+			{
+				hiddentext.setStyle("fontSize","25");
+				hiddentext.setStyle("fontFamily","ALGER");
+				hiddentext.setStyle("textAlign","center");
+				hiddentext.text = "A";
+			}
+			
+			private function drawText(mug:Canvas,x1:int,y1:int,oId:String,textString:String):void {
+				mask1 = this.drawArea(mug);
+				var obj:ObjectHandles = new ObjectHandles();
+				obj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				//obj.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewPosition);
+				obj.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+				obj.id = oId;
+				obj.name = oId;
+				obj.x=x1; 
+				obj.y=y1;
+				var w:Number = inputText1.text.length*17.5;
+				if(inputText1.text.length > 12){
+					w = inputText1.text.length*17;
+				}
+				
+				if(w > _w){
+					w = _w;
+					fontSizeVal = 20;
+				}
+				obj.width= w;
+				obj.height=30;
+
+				var txt:Text = new Text();
+				obj.minHeight = txt.textHeight;
+				obj.minWidth = txt.textWidth;
+				txt.text = textString;
+				txt.percentWidth=100;
+				txt.percentHeight=100;
+				txt.setStyle("fontSize","25");  
+				txt.setStyle("color","#000000");
+				txt.setStyle("fontFamily","ALGER");
+				txt.setStyle("textAlign","center");
+				txt.setStyle("length","0");
+				txt.setStyle("borderStyle","none");
+				txt.mask = mask1;
+				obj.addChild(txt);
+				mug.addChild(obj);
+				fontSizeTextVal.text="25";
+			}
+			
+			// when object is selected -->
+			private function OnObjectHandlesSelected(event:ObjectHandleEvent):void{
+				var objHandle:ObjectHandles = event.currentTarget as ObjectHandles;
+				if(objHandle != null){
+					selectedObject = objHandle;
+					selectedObject.xInt = _x;
+					selectedObject.yInt = _y;
+					selectedObject.xparent = _w;
+					selectedObject.yparent = _h;
+					selectedObject.xpos = selectedObject.width;
+					selectedObject.ypos = selectedObject.height;
+					
+					if(selectedObject.getChildAt(0) as Text){
+						var txt:Text = selectedObject.getChildAt(0) as Text;
+						if(txt != null){
+							selectedObject.allowHResize= true;
+							selectedObject.allowVResize= true;
+							
+							this.setControlAction("textId");
+							this.setSubControlAction("editTextId");
+							insertText.text = txt.text;
+							
+							textRotationSlider.value = selectedObject.rotation;
+							txtTransSlider.value = txt.alpha;
+							
+							fontColor.selectedColor = txt.getStyle("color");
+							fontSizeSlider.value = txt.getStyle("fontSize"); 
+							for(var i:int=0; i<cards.length; i++){
+								if(cards[i].label == txt.getStyle("fontFamily"))
+								{
+									combobox.selectedIndex = i;
+									break;
+								}
+							}
+						}
+					}
+					if(selectedObject.getChildAt(0) as Image){
+						var img:Image= selectedObject.getChildAt(0) as Image;
+						if(img != null){
+							this.setControlAction("imageId");
+							this.setSubControlAction("editImageId");
+							imageRotationSlider.value = selectedObject.rotation;
+							widthSlider.value = selectedObject.width;
+							heightSlider.value = selectedObject.height;
+							transSlider.value = img.alpha;
+							
+							if(lockImgDimensions.selected){
+								selectedObject.allowHResize= false;
+								selectedObject.allowVResize= false;
+							}
+						}
+					}
+					selectedObject.allowRotate = true;
+					selectedObject.allowVMove = true;
+					selectedObject.allowHMove = true;
+					selectedObject.mouseChildren=false;
+					selectedObject.allowBottom=false; 
+				}
+			}
+			
+			private function getDifference(mug:Canvas,x1:int):int{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var diff:int = 0;
+				for (var i:int = 0; i < n; i++)	{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image = null;
+					if(childObj != null){
+						txt= childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							//if(mug == genericFront)
+							diff = x1-_x1;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							//if(mug == genericFront)
+							diff = x1-_x1;
+						}
+					}
+				}
+				return diff;
+			}
+			
+			// set new postion to text and image on mug -->
+			private function setNewPosition(mug:Canvas,x1:int,y1:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image= null;
+					if(childObj != null)
+					{
+						txt= childObj.getChildAt(0) as Text;
+						img= childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							//if(mug == genericFront){
+							childObj.x = _x1 + x1;
+							//}
+							childObj.y = y1;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							//if(mug == genericFront){
+							childObj.x = _x1 + x1;
+							//}
+							childObj.y = y1;
+						}
+					}
+				}
+				
+			} 
+			// <-- set new postion to text and image on mug 
+			
+			// get new rotation postion of text on mug 
+			private function getNewRotationText(rotation:Number):void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.setNewRotationText(genericFront,rotation);
+				}else{
+					this.setNewRotationText(genericBack,rotation);
+				}
+				//rotationTextVal.text=rotation.toString();
+				//rotationTextVal1.text=rotation.toString();
+			}
+			
+			private var txtpre:int=0;
+			private var imgpre:int=0;
+			private function setNewRotationText(mug:Canvas,rotation:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text= null;
+					var img:Image = null;
+					
+					if(childObj != null)
+					{
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(selectedObject != null)
+						{
+							if(childObj.id == selectedObject.id)
+							{
+								txtpre = childObj.rotation;
+								rotationTextVal1.text=rotation.toString();
+								this.setRotation('text',txtpre,rotation,childObj);
+							}
+						}
+					}
+					
+					if(img != null)
+					{
+						if(selectedObject != null)
+						{							
+							if(childObj.id == selectedObject.id)
+							{
+								imgpre = childObj.rotation;
+								rotationTextVal.text=rotation.toString();
+								this.setRotation('image',imgpre,rotation,childObj);
+							}
+						}
+					}
+				}
+			}
+			
+			private function setRotation(type:String,from:int,rotation:int,childObj:ObjectHandles):void
+			{
+				if(rotateEffect.isPlaying){
+					rotateEffect.end();
+				}
+				rotateEffect = new Rotate();
+				rotateEffect.target	   = childObj;
+				rotateEffect.duration  = 1;
+				rotateEffect.angleFrom = from;
+				rotateEffect.angleTo   = rotation;
+				rotateEffect.originX   = childObj.width/2;
+				rotateEffect.originY   = childObj.height/2;
+				rotateEffect.play();
+				
+				if(type == 'text'){
+					txtpre = rotation;
+				}
+				else if(type == 'image'){
+					imgpre = rotation;
+				}
+			}
+			
+			private function degreesToRadians(degrees:Number):Number {
+				var radians:Number = degrees * (Math.PI / 180);
+				return radians;
+			}
+			
+			// get new height width for text object handle -->
+			private function getNewHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				selectedObject.xpos = w;
+				selectedObject.ypos = h;
+				
+				if(tShirtEditorFront.visible==true){
+					this.setNewHeightWidth(genericFront,h,w);
+				}else{
+					this.setNewHeightWidth(genericBack,h,w);
+				}
+			}
+			// <-- get new height width for text object handle
+			
+			// set new height width of text and image -->
+			private function setNewHeightWidth(mug:Canvas,h:int,w:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image= null;
+					if(childObj != null)
+					{
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.height = h;
+							childObj.width = w;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.height = h;
+							childObj.width = w;
+						}
+					}
+				}
+			}
+			
+			// Draw image on mug -->
+			private var ImageId:int = 500;  // for image object handle Id
+			private function getImages(event:Event):void
+			{
+				var imageSource:String = libTileId.selectedItem.image;
+				ImageId = ImageId+1;
+				var x1:Number = _x+(_w/2)-50;
+				var y1:Number = _y+(_h/2)-50;
+				var x2:Number = _x+_w-50;
+				var x3:Number = _x-50;
+				
+				// get Image on all mug faces
+				if(tShirtEditorFront.visible==true){
+					this.drawImage(genericFront,imageSource,x1,y1,"img"+String(ImageId));
+				}else{
+					this.drawImage(genericBack,imageSource,x1,y1,"img"+String(ImageId));
+				}
+			}
+			
+			private function drawImage(mug:Canvas,img:String,x1:int,y1:int,imgId:String):void{
+				mask1 = this.drawArea(mug);
+				
+				var oh:ObjectHandles = new ObjectHandles();
+				oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewImageHeightWidth);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_ROTATING_EVENT,getNewImageRotation);
+				oh.id = imgId;
+				oh.name = imgId;
+				oh.width=100;
+				oh.height=100;
+				oh.x=x1;
+				oh.y=y1;
+				
+				
+				oh.allowRotate = true;
+				
+				var image:Image = new Image();
+				image.width	= 182;
+				image.height= 150; 
+				image.source = img;
+				image.percentHeight=100;
+				image.percentWidth=100;
+				//image.maintainAspectRatio = false;
+				image.mask = mask1;
+				oh.addChild(image);
+				
+				mug.addChild(oh);
+			}
+			// <-- Draw image on mug 
+			
+			// get new position for image after moving image -->
+			private function getNewImagePosition(e:ObjectHandleEvent):void
+			{
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				selectedObject.xpos = selectedObject.width;
+				selectedObject.ypos = selectedObject.height;
+				
+				var x1:int = 0;
+				if(tShirtEditorFront.visible==true){
+					if(mySubViewStack.selectedChild == genericFront)
+					{
+						x1 = this.getDifference(genericFront,x);
+					}
+					
+					this.setNewPosition(genericFront,x1,y);
+					
+				}else{
+					x1 = this.getDifference(genericBack,x);
+					
+					this.setNewPosition(genericBack,x1,y);
+					
+				}
+			}
+			// <-- get new position for image after moving image
+			
+			// get new height width for image -->
+			private function getNewImageHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				heightSlider.value = h;
+				widthSlider.value = w;
+				if(tShirtEditorFront.visible==true){
+					this.setNewHeightWidth(genericFront,h,w);
+				}else{
+					this.setNewHeightWidth(genericBack,h,w);
+					
+				}
+			}
+			
+			// get new rotation position of image -->
+			private function getNewImageRotation(e:ObjectHandleEvent):void
+			{
+				var rotation:int = (e.currentTarget as ObjectHandles).rotation;
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				rotationTextVal.text = rotation.toString();
+				imageRotationSlider.value = rotation;
+				
+				var arr:Array;
+				if(tShirtEditorFront.visible==true){
+					if(mySubViewStack.selectedChild == genericFront)
+					{
+						arr = this.getRotationDifference(genericFront,x,y);
+					}
+				}else{
+					arr = this.getRotationDifference(genericBack,x,y);
+					
+				}
+			}
+			
+			private function getRotationDifference(mug:Canvas,x:int,y:int):Array
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var diff:Array = new Array;
+				var x1:int;
+				var y1:int;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					if(childObj != null){
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericFront){
+								x1 = (x-_x1);
+								y1 = (y-_y);
+							}
+						}
+					}
+				}
+				diff.push({x:x1,y:y1});
+				return diff;
+			}
+			
+			private function setNewImageRotation(mug:Canvas,rotation:int,x1:int,y1:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image= null;
+					
+					if(childObj != null)
+					{
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.rotation = rotation;
+							if(mug == genericFront){
+								childObj.x = _x1 + x1;
+							}else{
+								childObj.x = _x1 + x1;
+								
+							}
+							childObj.y = _y + y1;
+						}
+					}
+				}
+			}
+			
+			// alignment -->    
+			public function setTextAlign(align:String):void 
+			{
+				if(selectedObject != null)
+				{
+					var x1:int = 0;
+					
+					if(align == "left"){
+						if(tShirtEditorFront.visible==true){
+							x1 = getDifference(genericFront,_x);
+							this.setNewPosition(genericFront,x1,selectedObject.y);	
+						}else{
+							x1 = getDifference(genericBack,_x);
+							this.setNewPosition(genericBack,x1,selectedObject.y);	
+							
+						}
+					}
+					if(align == "center"){
+						if(tShirtEditorFront.visible==true){
+							x1 = getDifference(genericFront,_x+(_w/2)-(selectedObject.width/2));
+							this.setNewPosition(genericFront,x1,selectedObject.y);	
+						}else{
+							x1 = getDifference(genericBack,_x+(_w/2)-(selectedObject.width/2));
+							this.setNewPosition(genericBack,x1,selectedObject.y);	
+							
+						}
+					}
+					if(align == "right"){
+						if(tShirtEditorFront.visible==true){
+							x1 = getDifference(genericFront,_x+_w-selectedObject.width);
+							this.setNewPosition(genericFront,x1,selectedObject.y);	
+						}else{
+							x1 = getDifference(genericBack,_x+_w-selectedObject.width);
+							this.setNewPosition(genericBack,x1,selectedObject.y);
+						}
+						
+					}
+				}
+				
+				
+			}
+			
+			// Edit text on mug -->
+			private function EditText():void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.editTextOnMug(genericFront);
+				}else{
+					this.editTextOnMug(genericBack);
+				}
+				hiddentext.setStyle("fontSize",fontSizeVal);
+			}
+			
+			private function editTextOnMug(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					if(childObj != null)
+						txt= childObj.getChildAt(0) as Text;
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.text = insertText.text;
+							//selectedObject.width= 2*(insertText.textWidth + fontSizeVal);
+							var w:Number = insertText.text.length * hiddentext.textWidth;
+							/* if(w>_w && fontSizeVal >= fontSizeSlider.minimum){
+								fontSizeVal = fontSizeVal-1;
+								//hiddentext.setStyle("fontSize",fontSizeVal);
+								txt.setStyle("fontSize",fontSizeVal);
+							}
+							
+							if(w<=_w && fontSizeVal < 25){
+								fontSizeVal = fontSizeVal+1;
+								//hiddentext.setStyle("fontSize",fontSizeVal);
+								txt.setStyle("fontSize",fontSizeVal);
+							}
+							fontSizeSlider.value = fontSizeVal;
+							fontSizeTextVal.text = fontSizeVal.toString();
+							selectedObject.width= insertText.text.length * hiddentext.textWidth;
+							selectedObject.height= hiddentext.textHeight+10;
+							textVal=insertText.textWidth; */
+							/***
+							 * @author : Manoj
+							 * 
+							 * **/
+							if(selectedObject.width < _w){
+								if(insertText.length > textlength){
+									if(insertText.length < 10){
+										selectedObject.width = insertText.text.length * hiddentext.textWidth;
+									}else if(insertText.length > 10 && insertText.length < 22){
+										selectedObject.width = insertText.text.length * (hiddentext.textWidth-2);
+									}else if(insertText.length > 22){
+										selectedObject.width = insertText.text.length * (hiddentext.textWidth-3);
+									}
+								}else if(insertText.length < textlength){
+									selectedObject.width = insertText.text.length * hiddentext.textWidth;
+								}else{}
+							}else if(selectedObject.width > _w){
+								if(insertText.length < textlength){
+									selectedObject.width = insertText.text.length * (hiddentext.textWidth-3);
+								}else if(insertText.length > 10 && insertText.length < 22){
+									selectedObject.width = insertText.text.length * (hiddentext.textWidth-2);
+								}else{
+									if(fontSizeVal <= 150 && fontSizeVal >90){
+										fontSizeVal=fontSizeVal-25;
+										selectedObject.width = selectedObject.width - (hiddentext.textWidth-3);
+									}else if(fontSizeVal <= 90 && fontSizeVal >40){
+										fontSizeVal=fontSizeVal-15;
+										selectedObject.width = selectedObject.width - (hiddentext.textWidth-2);
+									}else{
+										fontSizeVal=fontSizeVal-1;
+										selectedObject.width = selectedObject.width - (hiddentext.textWidth);
+									}
+								}
+								//Alert.show("Invaild Data");
+							}							
+							//fontSizeSlider.value = 150 - fontSizeVal;
+							fontSizeTextVal.text = fontSizeVal.toString();
+							txt.setStyle("fontSize",fontSizeVal);
+							textVal=insertText.textWidth;
+							textlength=insertText.length;
+							fontSizeSlider.value=fontSizeVal;
+						}
+					}
+				}
+			}
+			
+			//--** Delete the selected object from mug--**//
+			private function forDeleteRequest(str:String):void
+			{
+				if(SelectionManager.instance.currentlySelected != null)
+				{
+					Alert.show("Click the 'Yes' button to delete this "+str+".","Delete this item?",Alert.YES|Alert.NO,this,deleteHandler);
+				}
+			}
+			
+			private function deleteHandler(e:CloseEvent):void
+			{
+				if(e.detail == 1){
+					this.Delete();
+				}
+			}
+			
+			public function Delete():void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.deleteObject(genericFront);
+					}else{
+						this.deleteObject(genericBack);
+					}
+				}
+			}
+			
+			private function deleteObject(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							insertText.text = "";
+							SelectionManager.instance.selectNone();
+							parentContainer = childObj.parent;            // Get the parent container
+							parentContainer.removeChild( childObj );   // Remove the selected OH
+							this.setSubControlAction('addTextId');
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							SelectionManager.instance.selectNone();
+							parentContainer = childObj.parent;            // Get the parent container
+							parentContainer.removeChild( childObj );   // Remove the selected OH
+							this.setSubControlAction('libId');
+						}
+					}
+				}
+			}
+			// reset all canvas
+			private function forResetRequest():void
+			{
+				Alert.show("Click the 'Yes' button to reset design.","Delete this item?",Alert.YES|Alert.NO,this,resetHandler);
+			}
+			
+			private function resetHandler(e:CloseEvent):void
+			{
+				if(e.detail == 1){
+					this.resetAllCanvas();
+					this.setSubControlAction('welcome');
+				}
+			}
+			
+			private function resetAllCanvas():void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.resetCanvas(genericFront);
+				}else{
+					this.resetCanvas(genericBack);		
+				}
+			}
+			
+			private function resetCanvas(mug:Canvas):void
+			{
+				insertText.text = "";
+				mug.removeAllChildren();
+				this.setSubControlAction("welcome");
+			}
+			// change font of text on mug -->
+			private function onFontChange():void
+			{
+				var fontS:String = combobox.selectedLabel;
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setTextFontOnMug(genericFront,fontS);
+					}else{
+						this.setTextFontOnMug(genericBack,fontS);
+						
+					}
+				}
+			}
+			
+			private function setTextFontOnMug(mug:Canvas,fontS:String):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.setStyle("fontFamily",fontS);
+						}
+					}
+				}
+			}
+			
+			// change fontSize of text on mug -->
+			private function onChangeFontSize(fontSize:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setTextFontSizeOnObject(genericFront,fontSize);
+					}else{
+						this.setTextFontSizeOnObject(genericBack,fontSize);
+					}
+				}
+				//fontSizeSlider.value=fontSize;
+				hiddentext.setStyle("fontSize",fontSize);
+				fontSizeSlider.value=fontSizeVal;
+				/* fontSizeTextVal.text=fontSize.toString(); */
+			}
+			
+			private function setTextFontSizeOnObject(mug:Canvas,fontSize:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+					}
+					if(txt != null)
+					{
+						/* if(childObj.id == selectedObject.id && selectedObject.width < _w+4)
+						{
+							//Alert.show(hiddentext.textWidth+'h '+hiddentext.textHeight);
+							txt.setStyle("fontSize",fontSize);
+							fontSizeVal=fontSize;
+							//selectedObject.height=fontSize+10;
+							selectedObject.height=hiddentext.textHeight+10;
+							selectedObject.width = hiddentext.textWidth * insertText.text.length;
+							//selectedObject.width = 2*(fontSizeVal+textVal);
+							this.setTextAlign("center");
+						}
+						else{
+							selectedObject.width = (hiddentext.textWidth * insertText.text.length)-4;
+							this.setTextAlign("center");
+						} */
+						/** 
+						 * @author : manoj
+						 * 
+						 * **/
+						if(childObj.id == selectedObject.id && selectedObject.width < _w+4)
+						{
+							//Alert.show(hiddentext.textWidth+'h '+hiddentext.textHeight);
+							var calculatedWidth:Number=hiddentext.textWidth * insertText.text.length;
+							if(calculatedWidth < _w){
+								txt.setStyle("fontSize",fontSize);
+								fontSizeVal=fontSize;
+								//selectedObject.height=fontSize+10;
+								selectedObject.height=hiddentext.textHeight+10;
+								selectedObject.width = hiddentext.textWidth * insertText.text.length;
+								//selectedObject.width = 2*(fontSizeVal+textVal);
+								//this.setTextAlign("center");
+								fontSizeTextVal.text=fontSize.toString();
+							}
+						}else if(selectedObject.width > _w){
+							selectedObject.select();
+							selectedObject.width=_w-5;
+							//selectedObject.deselect();
+						}
+						else{
+							selectedObject.width = (hiddentext.textWidth * insertText.text.length)-4;
+							//this.setTextAlign("center");
+						}
+					}
+				}
+			}
+			
+			
+			// on color change of text on mug -->
+			private function onColorChange(color:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setTextColorOnObject(genericFront,color,'font');
+					}else{
+						this.setTextColorOnObject(genericBack,color,'font');					
+						
+					}
+				}
+			}
+			
+			private function onShadowColor(shadowColor:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setTextColorOnObject(genericFront,shadowColor,'shade');
+					}else{
+						this.setTextColorOnObject(genericBack,shadowColor,'shade');
+						
+					}
+				}
+			}
+			private function onShadowImg(shadowColor:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setTextColorOnObject(genericFront,shadowColor,'shade');
+						
+					}else{
+						this.setTextColorOnObject(genericBack,shadowColor,'shade');
+						
+					}
+					
+				}
+			}
+			
+			private function setTextColorOnObject(mug:Canvas,color:Number,choice:String):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image=null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(choice == 'font'){
+								txt.setStyle("color",color);
+							}else if (choice == 'shade'){
+								txt.filters = this.setShadow(color);
+							}else{
+								
+							}
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if (choice == 'shade'){
+								img.filters = this.setShadow(color);
+							}else{
+								
+							}
+						}
+					}
+				}
+			}
+			/**
+			 *  sift layer up
+			 * 
+			 * */
+			private function layerUp():void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setLayerUp(genericFront);
+					}else{
+						this.setLayerUp(genericBack);
+						
+					}
+				}
+			}
+			
+			private var layers:Array;
+			private function countOHLayers(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				layers = new Array();
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var pos:Number = mug.getChildIndex(childObj);
+						layers.push({id:childObj.id,pos:pos});
+					}
+				}
+			}
+			
+			private function setLayerUp(mug:Canvas):void
+			{
+				this.countOHLayers(mug);
+				
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var flag:int = 0;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var obj:ObjectHandles = mug.getChildByName(selectedObject.id) as ObjectHandles;
+						var pos:Number = mug.getChildIndex(obj);
+						for(var j:int = 0; j<layers.length; j++)
+						{
+							if(layers[j].pos > pos)
+							{
+								flag = 1;
+								this.setLayerPosition(mug,layers[j].pos,obj);
+							}
+							if(flag == 1 )
+							{
+								break;
+							}
+						} 
+					}
+					if(flag == 1 )
+					{
+						break;
+					}
+				}
+			}
+			
+			private function setLayerPosition(mug:Canvas,newPos:Number,obj:ObjectHandles):void
+			{
+				mug.setChildIndex(obj,newPos);
+			}
+			
+			private function layerDown():void
+			{
+				if(selectedObject != null)
+				{
+					if(tShirtEditorFront.visible==true){
+						this.setLayerDown(genericFront);
+					}else{
+						this.setLayerDown(genericBack);
+					}
+				}
+			}
+			
+			private function setLayerDown(mug:Canvas):void
+			{
+				this.countOHLayers(mug);
+				
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var flag:int = 0;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var obj:ObjectHandles = mug.getChildByName(selectedObject.id) as ObjectHandles;
+						var pos:Number = mug.getChildIndex(obj);
+						for(var j:int = layers.length-1; j >= 0; j--)
+						{
+							if(layers[j].pos < pos)
+							{
+								flag = 1;
+								this.setLayerPosition(mug,layers[j].pos,obj);
+							}
+							if(flag == 1 )
+							{
+								break;
+							}
+						} 
+					}
+					if(flag == 1 )
+					{
+						break;
+					}
+				}
+			}
+			
+			private function setSnap(mug:Canvas):void
+			{
+				if(selectedObject != null)
+					selectedObject.deselect(); 				
+				var timer1:Timer = new Timer(200,1);
+				timer1.start();
+				if(mug == genericFront)
+				{
+					//previewImg.source = centerImage;
+					//mySubViewStack.selectedChild = genericFront;
+					//timer1.addEventListener(TimerEvent.TIMER_COMPLETE,takeCenterSnap);
+					this.takeCenterSnap(genericFront);
+				}else{
+					//previewImg2.source = centerImage;
+					//mySubViewStack.selectedChild = genericBack;
+					//timer1.addEventListener(TimerEvent.TIMER_COMPLETE,takeCenterSnap);
+					this.takeCenterSnap(genericBack);
+				}
+			}
+			
+			/* private function takeLeftSnap(evt:TimerEvent):void
+			{
+			previewImg.source = centerImage;
+			mySubViewStack.selectedChild = genericFront;
+			this.hideLoading();
+			} */
+			
+			private function takeCenterSnap(editorType1:Canvas):void
+			{
+				if(editorType1 == genericFront){
+					myObj.saveDesignImage(userId,"tshirt_front",editor_no,this.takeSnap(tShirtEditorFront));
+				}else{
+					myObj.saveDesignImage(userId,"tshirt_back",editor_no,this.takeSnap(tShirtEditorBack));
+				}
+			}
+			
+			private function takeSnap(snapCanvas:Canvas):ByteArray
+			{
+				if(selectedObject != null)
+					selectedObject.deselect(); 
+				
+				var bitmapdata:BitmapData = new BitmapData(snapCanvas.width,snapCanvas.height);
+				bitmapdata.draw(snapCanvas);
+				var posPoint:Point = new Point(0,0);
+				
+				var bitM:BitmapData = new BitmapData(previewImg.width,previewImg.height,true,0xFFFFFFFF);
+				bitM.copyPixels(bitmapdata, new Rectangle(previewImg.x, previewImg.y, previewImg.width, previewImg.height),posPoint);
+				
+				//var bitmap:Bitmap = new Bitmap(bitM,"auto",true);
+				
+				var png:PNGEncoder = new PNGEncoder();
+				var byteArray:ByteArray = png.encode(bitM);
+				byteArray.compress();
+				
+				return byteArray;
+			}
+			private function setCurrentFace():void
+			{
+				//this.showLoading();
+				this.setSnap(genericFront);
+				this.setSnap(genericBack);
+			}
+			
+			private function drawAreaForBackColor(mug:Canvas,color:uint):void
+			{
+				var ui:UIComponent = new UIComponent();
+				ui.name = "MugBackGroundColor";
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.beginFill(color,1);
+				if(mug == genericFront)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w,_h);
+				}
+				rect.graphics.endFill();
+				ui.addChild(rect);
+				mug.addChildAt(ui,0);
+			}
+			
+			private function setBacgroundColor(mug:Canvas,color:uint):void
+			{
+				var colorT:ColorTransform = new ColorTransform();
+				colorT.color = backColorMug.selectedColor;
+				
+				var ui:UIComponent = mug.getChildByName("MugBackGroundColor") as UIComponent;
+				
+				var sp:Sprite = null
+				
+				if(ui != null)
+					sp = ui.getChildAt(0) as Sprite;
+				
+				if(sp != null)
+				{
+					sp.transform.colorTransform = colorT;
+				}
+				else
+				{
+					this.drawAreaForBackColor(mug,color);
+				}
+			}
+			
+			private function onBackColorChange():void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.setBacgroundColor(genericFront,backColorMug.selectedColor);
+				}else{
+					this.setBacgroundColor(genericBack,backColorMug.selectedColor);
+				}
+			}
+			
+			private function onClickBackColorCB():void
+			{
+				if(!(backColorCB.selected))
+				{
+					if(tShirtEditorFront.visible==true){
+						this.removeColor(genericFront,"BackgroundColor");
+					}else{
+						this.removeColor(genericBack,"BackgroundColor");
+					}
+				}
+			}
+			
+			private function onBorderColorCB():void
+			{
+				if(!(borderColorCB.selected))
+				{
+					if(tShirtEditorFront.visible==true){
+						this.removeColor(genericFront,"BorderColor");
+					}else{
+						this.removeColor(genericBack,"BorderColor");
+					}
+				}
+			}
+			
+			private function removeColor(mug:Canvas,str:String):void
+			{
+				var ui:UIComponent = new UIComponent();
+				if(str == "BorderColor")
+				{
+					ui = mug.getChildByName("MugBorderColor") as UIComponent;
+				}
+				if(str == "BackgroundColor")
+				{
+					ui = mug.getChildByName("MugBackGroundColor") as UIComponent;
+				}
+				
+				if(ui != null)
+				{
+					mug.removeChild(ui);
+				}
+			}
+			
+			private function onBorderColorChange():void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.setMugBorderColor(genericFront,borderColor.selectedColor);
+				}else{
+					this.setMugBorderColor(genericBack,borderColor.selectedColor);
+				}
+			}
+			
+			private function setMugBorderColor(mug:Canvas,color:uint):void
+			{
+				var ui:UIComponent = new UIComponent();
+				ui.name = "MugBorderColor";
+				ui.x = _x;
+				ui.y = _y-3;
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.lineStyle(3,color);
+				if(mug == genericFront)
+				{
+					ui.x = _x;
+					ui.y = _y-3;
+					rect.graphics.moveTo(0,1);
+					rect.graphics.lineTo(_w+2,1);
+					rect.graphics.moveTo(2,_h+4);
+					rect.graphics.lineTo(_w-3,_h+4);
+				}
+				
+				ui.addChild(rect);
+				mug.addChild(ui);	
+			}
+			
+			private function shiftUp():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.y = selectedObject.y - 5;
+					var x1:int = 0;
+					if(tShirtEditorFront.visible==true){
+						x1 = getDifference(genericFront,selectedObject.x);
+						this.setNewPosition(genericFront,x1,selectedObject.y);	
+					}else{
+						x1 = getDifference(genericBack,selectedObject.x);
+						this.setNewPosition(genericBack,x1,selectedObject.y);	
+						
+					}
+				}
+			}
+			
+			private function shiftLeft():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.x = selectedObject.x + 5;
+					var x1:int = 0;
+					if(tShirtEditorFront.visible==true){
+						x1 = getDifference(genericFront,selectedObject.x);
+						this.setNewPosition(genericFront,x1,selectedObject.y);	
+					}else{
+						x1 = getDifference(genericBack,selectedObject.x);
+						this.setNewPosition(genericBack,x1,selectedObject.y);	
+					}
+					
+				}
+			}
+			
+			private function shiftRight():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.x = selectedObject.x - 5;
+					var x1:int = 0;
+					if(tShirtEditorFront.visible==true){
+						x1 = getDifference(genericFront,selectedObject.x);
+						this.setNewPosition(genericFront,x1,selectedObject.y);	
+					}else{
+						x1 = getDifference(genericBack,selectedObject.x);
+						this.setNewPosition(genericBack,x1,selectedObject.y);	
+					}
+					
+				}
+			}
+			
+			private function shiftDown():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.y = selectedObject.y + 5;
+					var x1:int = 0;
+					if(tShirtEditorFront.visible==true){
+						x1 = getDifference(genericFront,selectedObject.x);
+						this.setNewPosition(genericFront,x1,selectedObject.y);	
+					}else{
+						x1 = getDifference(genericBack,selectedObject.x);
+						this.setNewPosition(genericBack,x1,selectedObject.y);	
+					}
+				}
+			}
+			// create duplicate()
+			private var dupId:Number = 100;
+			private function createDuplicate():void{
+				if(selectedObject != null)
+				{
+					dupId = dupId+1;
+					if(tShirtEditorFront.visible==true){
+						this.setDuplicateOnMug(genericFront);
+					}else{
+						this.setDuplicateOnMug(genericBack);
+					}
+				}
+			}
+			
+			
+			private function setDuplicateOnMug(mug:Canvas):void{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++){
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					
+					if(txt != null){
+						if(childObj.id == selectedObject.id){
+							var x2:Number = selectedObject.x;
+							var y2:Number = selectedObject.y + (selectedObject.height/2);
+							
+							var dupTxt:String = txt.text;
+							this.drawDuplicateText(mug,x2,y2,"duplicate"+dupId,txt,childObj);
+						}
+					}
+					
+					if(img != null){
+						if(childObj.id == selectedObject.id){
+							var x1:Number = selectedObject.x;
+							var y1:Number = selectedObject.y + (selectedObject.height/2);
+							
+							var src:String = String(img.source);
+							if(tShirtEditorFront.visible==true){
+								this.drawDuplicateImage(mug,x1,y1,"duplicate"+dupId,img,childObj);
+							}else{
+								this.drawDuplicateImage(mug,x1,y1,"duplicate"+dupId,img,childObj);
+							}
+						}
+					}
+				}
+			}
+			
+			private function drawDuplicateText(mug:Canvas,x1:Number,y1:Number,objId:String,text:Text,childObj:ObjectHandles):void
+			{
+				mask1 = this.drawArea(mug);
+				
+				var obj:ObjectHandles = new ObjectHandles();
+				obj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				//obj.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+				obj.id = objId;
+				obj.name = objId;
+				obj.x=x1; 
+				obj.y=y1;
+				obj.width=childObj.width;
+				obj.height=childObj.height;
+				obj.rotation = childObj.rotation;
+				
+				var txt:Text = new Text();
+				obj.minHeight = childObj.minHeight;
+				obj.minWidth = childObj.minWidth;
+				txt.percentWidth=100;
+				txt.percentHeight=100;
+				txt.text = text.text;
+				txt.setStyle("fontSize",text.getStyle("fontSize"));
+				txt.setStyle("color",text.getStyle("color"));
+				txt.setStyle("fontFamily",text.getStyle("fontFamily"));
+				txt.setStyle("textAlign","center");
+				txt.setStyle("length","0");
+				txt.setStyle("borderStyle","none");
+				txt.alpha = text.alpha;
+				if(text.filters.length != 0)
+					txt.filters = text.filters;
+				txt.mask = mask1;
+				obj.addChild(txt);
+				mug.addChild(obj);
+			}
+			
+			private function drawDuplicateImage(mug:Canvas,x1:Number,y1:Number,objId:String,img:Image,childObj:ObjectHandles):void
+			{
+				mask1 = this.drawArea(mug);
+				
+				var oh:ObjectHandles = new ObjectHandles();
+				oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				//oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+				oh.id = objId;
+				oh.name = objId;
+				oh.width=childObj.width;
+				oh.height=childObj.height;
+				oh.x=x1;
+				oh.y=y1;
+				oh.allowRotate = true;
+				oh.rotation = childObj.rotation;
+				
+				var image:Image = new Image();
+				image.width	= img.width;
+				image.height= img.height; 
+				image.source = img.source;
+				image.percentHeight=100;
+				image.percentWidth=100;
+				image.alpha = img.alpha;
+				if(img.filters.length != 0)
+					image.filters = img.filters;
+				
+				image.mask = mask1;
+				oh.addChild(image);
+				mug.addChild(oh);
+			}
+			
+			// set image width with slider
+			private function setImageWidth(value:Number):void{
+				if(selectedObject != null)
+				{
+					if(lockImgDimensions.selected)
+					{
+						heightSlider.value = value;
+						if(tShirtEditorFront.visible==true){
+							this.setNewHeightWidth(genericFront,value,value);
+						}else{
+							this.setNewHeightWidth(genericBack,value,value);
+						}
+					}
+					else
+					{
+						if(tShirtEditorFront.visible==true){
+							this.setNewHeightWidth(genericFront,selectedObject.height,value);
+						}else{
+							this.setNewHeightWidth(genericBack,selectedObject.height,value);
+						}
+					}
+					
+				}
+			}
+			
+			private function setImageHeight(value:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(lockImgDimensions.selected)
+					{
+						widthSlider.value = value;
+						if(tShirtEditorFront.visible==true){
+							this.setNewHeightWidth(genericFront,value,value);
+						}else{
+							this.setNewHeightWidth(genericBack,value,value);
+						}
+					}
+					else
+					{
+						if(tShirtEditorFront.visible==true){
+							this.setNewHeightWidth(genericFront,value,selectedObject.width);
+							
+						}else{
+							this.setNewHeightWidth(genericBack,value,selectedObject.width);
+							
+						}
+					}
+				}
+			}
+			
+			private function lockDimension():void{
+				//Alert.show(lockImgDimensions.selected.toString());
+				/* if(lockImgDimensions.selected == true){
+					selectedObject.allowHResize= false;
+					selectedObject.allowVResize= false;
+					selectedObject.alwaysMaintainAspectRatio=true;
+				}else{
+					selectedObject.allowHResize= true;
+					selectedObject.allowVResize= true;
+					selectedObject.alwaysMaintainAspectRatio=false;
+				} */
+			}
+			
+			/**
+			 *  set Transparency
+			 * */
+			private function onTransSliderChange(value:Number):void
+			{
+				if(tShirtEditorFront.visible==true){
+					this.setTransOnMug(genericFront,value);
+					
+				}else{
+					this.setTransOnMug(genericBack,value);
+					
+				}
+			}
+			
+			private function setTransOnMug(mug:Canvas,value:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.alpha = value;
+						}
+					}
+					
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							img.alpha = value;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * login user function.
+			 * */
+			public function getloginUser(e:ResultEvent):void{
+				if(e.result[0] == "yes")
+				{
+					PopUpManager.removePopUp(_login);
+					email = e.result['email'];
+					userId = e.result['id'];
+					if(resType=="send"){
+						_sendMail.userMail = email;
+						PopUpManager.addPopUp(_sendMail, this, true);
+						PopUpManager.centerPopUp(_sendMail);
+						
+						_sendMail["send"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+							var _email:String = _sendMail["emailId"].text;
+							sendMailrequest(e,_email); 
+							e.target.removeEventListener(e.type,arguments.callee);
+						});
+						this.setCurrentFace(); // taking snaps
+					}else if(resType == "open"){
+						myObj.openDesign(userId,editorType);
+					}else if(resType == "save"){
+						saveDesign();
+					}else{
+						Alert.show("Invalid Request",site_title);
+					}
+				}
+				else
+				{
+					Alert.show(e.result[0].toString(),"Message");
+				}
+				
+			}
+			
+			public function sendMailrequest(e:MouseEvent,_email:String):void{
+				myObj.sendMail(_email,userId,editor_no,editorType,productLength);
+			}
+			
+			public function getMailresponse(e:ResultEvent):void{
+				if(e.result.toString()== "yes")
+				{
+					Alert.show("Mail Sent","Message",Alert.OK,this,closeHandler);	
+				}
+				else
+				{
+					Alert.show("Some Error","Message",Alert.OK,this,closeHandler);	
+				}
+			}
+			
+			private function closeHandler(e:CloseEvent):void{
+				PopUpManager.removePopUp(_sendMail);
+			}
+			
+			private var openDesignArray:Array;
+			private function openObject(evt:ResultEvent):void{
+				if(evt.result != null){
+					var objArr:Array=evt.result[0].obj as Array;
+					if(objArr.length != 0){
+						openDesignArray = new Array();
+						openDesignArray = objArr;
+						Alert.show("Reset Your Current Design",site_title,Alert.YES|Alert.NO,this,confirmHandler);
+						//this.setOpenDesign(objArr);
+						this.setSubControlAction('welcome');
+					}else{
+						Alert.show("Your Design not Open Successfully May Be Occur an Problem.",site_title);
+					}
+				}else{
+					Alert.show("No Design Found",message_title);
+				}
+				
+				/* function confirmHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES){
+				//this.resetAllCanvas();
+				for(var openI:int=0;openI <= evt.result[0].obj.length ;openI++){
+				var custObj:CustomObj=new CustomObj();
+				custObj=evt.result[0].obj[openI]
+				}
+				}
+				} */
+			}
+			
+			private	function confirmHandler(event:CloseEvent):void 
+			{
+				if (event.detail == Alert.YES){
+					this.resetAllCanvas();
+					this.setOpenDesign(openDesignArray);
+				}
+			}
+			
+			private function setOpenDesign(data:Array):void
+			{
+				var n:int = data.length;
+				for(var i:int=0; i<n; i++)
+				{
+					if(data[i].type == "Text")
+					{
+						if(data[i].objType == "genericFront"){
+							mask1 = this.drawArea(genericFront);
+						}else{
+							mask1 = this.drawArea(genericBack);
+						}
+						
+						var obj:ObjectHandles = new ObjectHandles();
+						obj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						//obj.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewPosition);
+						obj.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+						obj.id = data[i].id;
+						obj.name = data[i].name;
+						obj.x= data[i].x;
+						obj.y= data[i].y;
+						obj.height= data[i].height;
+						obj.width= data[i].width;
+						
+						var txt:Text = new Text();
+						obj.minHeight = txt.textHeight;
+						obj.minWidth = txt.textWidth;
+						
+						txt.text = String(data[i].value);
+						txt.percentWidth=100;
+						txt.percentHeight=100;
+						txt.setStyle("fontSize",data[i].size);  
+						txt.setStyle("color","#"+this.getColorData(data[i].color));
+						txt.setStyle("textAlign","center");
+						txt.setStyle("fontFamily",data[i].family);
+						txt.filters = this.setShadow(data[i].shadow);
+						txt.mask = mask1;
+						obj.addChild(txt);
+						if(data[i].objType == "genericFront"){
+							genericFront.addChild(obj);
+						}else{
+							genericBack.addChild(obj);
+						}
+					}
+					if(data[i].type == "Image")
+					{
+						if(data[i].objType == "genericFront"){
+							mask1 = this.drawArea(genericFront);
+						}else{
+							mask1 = this.drawArea(genericBack);
+						}
+						
+						var oh:ObjectHandles = new ObjectHandles();
+						oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewImageHeightWidth);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_ROTATING_EVENT,getNewImageRotation);
+						oh.id = data[i].id;
+						oh.name = data[i].name;
+						oh.width=data[i].width;
+						oh.height=data[i].height;
+						oh.x=data[i].x;
+						oh.y=data[i].y;
+						
+						oh.allowRotate = true;
+						
+						var image:Image = new Image();
+						image.width	= data[i].width;
+						image.height= data[i].height; 
+						image.source = data[i].value;
+						image.percentHeight=100;
+						image.percentWidth=100;
+						image.mask = mask1;
+						image.filters = this.setShadow(data[i].shadow);
+						oh.addChild(image);
+						if(data[i].objType == "genericFront"){
+							genericFront.addChild(oh);
+						}else{
+							genericBack.addChild(oh);
+						}
+					}
+				}
+			}
+			
+			private function saveObject(evt:ResultEvent):void{
+				if(evt.result == "success"){
+					Alert.show("Your Design Saved Successfully.",site_title);
+				}else{
+					Alert.show("Your Design not Saved Successfully May Be Occur an Problem.",site_title);
+				}
+			}
+			
+			private function saveDesignImageListner(evt:ResultEvent):void{
+				
+			}
+			
+			private function signUpListner(evt:ResultEvent):void{
+				Alert.show(evt.result.toString(),message_title);
+				PopUpManager.removePopUp(_login);
+			}
+			
+			private function addToCart():void{
+				//this.setMugPreview();
+				this.setCurrentFace();
+				if(productLength==2){
+					this.setDesignObj(genericFront); 
+					this.setDesignObj(genericBack); 
+				}else{
+					this.setDesignObj(genericFront); 
+				}
+				//Alert.show(ObjectUtil.toString(designObj));
+				myObj.addCart(userId,designObj,quantity.text,product_id,editor_no,editorType);
+			}
+			
+			private function cartListner(evt:ResultEvent):void{
+				var url:String = site_url+"orders/cart";
+				/* var variables:URLVariables = new URLVariables();
+				variables.exampleSessionId = new Date().getTime();
+				variables.exampleUserLabel = "Your Name"; */
+				var request:URLRequest = new URLRequest(url);
+				//request.data = variables;
+				try {            
+					navigateToURL(request,"_self");
+				}
+				catch (e:Error) {
+					// handle error here
+				}
+				
+			}
+			
+			private function getSessionImages():void{
+				if(sessionId == null)
+					myObj.getSessionImage();
+			}
+			
+			private	var sessionId:String = null;
+			private function sessionImageListner(evt:ResultEvent):void{
+				sessionId =evt.result.session;
+				if(evt.result.images.length!=0){
+					var img:String = site_url+"temp_data/"+sessionId+"/";
+					var sessionImages:Array=evt.result.images as Array;
+					for(var i:int=0; i<sessionImages.length;i++){
+						userUploadedImage.push({img:img+sessionImages[i]});
+					}
+					userUploadImages.dataProvider = userUploadedImage;
+				}
+			}
+			
+			public function showCrop(evt:Event):void{
+				var selImg:int=evt.currentTarget.label;
+				//Alert.show(userUploadedImage[selImg].img.toString());
+				var _cropImage:CropImage= new CropImage();
+				_cropImage.image_path = userUploadedImage[selImg].img;
+				_cropImage.site_url = site_url;
+				_cropImage.sessionId = sessionId;
+				_cropImage.random_no = randomNum;
+				_cropImage.uploadId = UploadId;
+				PopUpManager.addPopUp(_cropImage,this,true);
+				PopUpManager.centerPopUp(_cropImage);
+				userUploadedImage = new Array();
+			}
+		]]>
+	</mx:Script>
+	<mx:RemoteObject id="myObj" showBusyCursor="true" destination="Logins" source="Logins" >
+		<mx:method name="getProductData" result="productListener(event)" fault="faultError(event)" />
+		<mx:method name="getCatgoryLibrary" result="getCategory(event)" fault="faultError(event)"/>
+		<mx:method name="getLibraryImage" result="libraryListner(event)" fault="faultError(event)"/>
+		<mx:method name="checkLoginUser" result="loginListner(event)" fault="faultError(event)"/>
+		<mx:method name="getloginUser" result="getloginUser(event)" fault="faultError(event)"/>
+		<mx:method name="sendMail" result="getMailresponse(event)" fault="faultError(event)"/>		
+		<mx:method name="saveDesign" result="saveObject(event)" fault="faultError(event)"/>		
+		<mx:method name="openDesign" result="openObject(event)" fault="faultError(event)"/>
+		<mx:method name="saveDesignImage" result="saveDesignImageListner(event)" fault="faultError(event)"/>
+		<mx:method name="userSignUp" result="signUpListner(event)" fault="faultError(event)"/>
+		<mx:method name="addCart" result="cartListner(event)" fault="faultError(event)"/>
+		<mx:method name="getSessionImage" result="sessionImageListner(event)" fault="faultError(event)"/>
+	</mx:RemoteObject>
+	
+	<mx:Canvas width="800" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="5">
+		<!--<mx:Canvas width="98%" height="100%" cornerRadius="5" alpha="1.0" borderStyle="solid" borderThickness="1" y="0" x="8">-->
+		<mx:Canvas id="topcontrol" width="98%" height="10%" horizontalCenter="0" top="0" backgroundColor="#60C0CE" verticalScrollPolicy="off" horizontalScrollPolicy="off" cornerRadius="5" borderStyle="solid">
+			<mx:Label text="product name" width="580" height="90%" id="product_label" styleName="titleLabel"/>
+			<mx:Button x="684" y="14" id="addCart_button" click="addToCart()" styleName="cartView"  width="88" />
+			<mx:TextInput x="643" y="15" width="33" maxChars="3" id="quantity" borderStyle="none" fontSize="15" fontFamily="Times New Roman" textAlign="center" color="#070707" text="1" restrict="0-9"/>
+		</mx:Canvas>
+		<mx:Canvas id="MidControl" width="100%" height="100%" backgroundColor="#FFFFFF" borderStyle="solid" borderThickness="2" cornerRadius="8" shadowDirection="right" shadowDistance="13" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="1" y="47">
+			
+			<mx:Canvas width="450" id="tShirtEditorFront" horizontalScrollPolicy="off" verticalScrollPolicy="off" borderColor="#F3F3F3" borderStyle="none" right="5" top="15" height="450">
+				<fabulousFlex:PreloadingImage id="previewImg" source="" height="450" width="450" horizontalCenter="0" top="0"/>
+				<mx:ViewStack id="mySubViewStack" width="450" height="450" borderColor="#111BDA" borderStyle="none" borderThickness="0" top="0" horizontalCenter="0">
+					<mx:Canvas id="genericFront" width="450" height="450"  verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1">
+					</mx:Canvas>
+					<!--<mx:Canvas id="genericBack" width="450" height="450"  verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1" visible="false">
+					</mx:Canvas>-->
+				</mx:ViewStack>
+			</mx:Canvas>
+			<mx:Canvas width="450" id="tShirtEditorBack" horizontalScrollPolicy="off" verticalScrollPolicy="off" borderColor="#F3F3F3" borderStyle="none" right="5" top="15" height="450" visible="false">
+				<fabulousFlex:PreloadingImage id="previewImg2" source="" height="450" width="450" horizontalCenter="0" top="0"/>
+				<mx:Canvas id="genericBack" width="450" height="450"  verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1">
+				</mx:Canvas>
+			</mx:Canvas>
+			<mx:Canvas width="36%" borderStyle="solid" borderThickness="1" id="toolsBar" backgroundColor="#FFFFFF" cornerRadius="4" left="5" top="7" bottom="7" backgroundAlpha="0.8">
+				<mx:Canvas x="0" y="0" width="100%" height="45" id="opertaion" backgroundColor="#B5BABD" cornerRadius="2">
+					<mx:Button styleName="openButton" id="open" useHandCursor="true" buttonMode="true" click="myObj.checkLoginUser('open');resType='open';" x="5" y="5"/>
+					<mx:Button x="193" styleName="sendButton" id="send" useHandCursor="true" buttonMode="true" click="myObj.checkLoginUser('send');resType='send';" y="5"/>
+					<mx:Button x="100" styleName="saveButton" id="save" useHandCursor="true" buttonMode="true" click="myObj.checkLoginUser('save');resType='save';" y="5"/>
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="60" verticalScrollPolicy="off" horizontalScrollPolicy="off" top="44">
+					<mx:Button id="imageId" name="imageId" styleName="imageControls"  width="50%" height="60" useHandCursor="true" buttonMode="true" click="controlAction(event)" y="0" left="0"/>
+					<mx:Button id="textId" styleName="textControls"  width="50%" height="60" y="0" useHandCursor="true" buttonMode="true" click="controlAction(event)" right="0"/>
+					<!--<mx:Button id="fillId" styleName="fillControls"  width="100" height="60" x="187" y="0" useHandCursor="true" buttonMode="true" click="controlAction(event)"/>-->
+					
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="380" id="imageIdCanvas" visible="false" borderStyle="none" bottom="0">
+					<mx:Canvas width="100%" height="100%" horizontalCenter="0" top="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+						<mx:Canvas width="100%" height="7%" top="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+							<mx:Button id="libId" styleName="libControls" useHandCursor="true" buttonMode="true" click="subControlAction(event)" left="0" top="4" enabled="false" />
+							<mx:Button id="uploadId" styleName="uploadControls" useHandCursor="true" buttonMode="true" click="subControlAction(event);getSessionImages();" horizontalCenter="0" top="5"/>
+							<mx:Button id="editImageId" styleName="editImageControls" useHandCursor="true" buttonMode="true" click="subControlAction(event)" right="0" top="5"/>
+						</mx:Canvas>
+						<mx:Canvas label="Library" width="100%" height="93%" bottom="0" id="libCanvas" visible="true" creationPolicy="queued">
+							<mx:ComboBox right="10" width="154" top="7" id="categoryId" labelField="name" change="myObj.getLibraryImage(categoryId.selectedItem.id)"></mx:ComboBox>
+							<mx:Label text="Select Category :" width="113" top="9" left="5"/>
+							<mx:TileList id="libTileId" width="95%" height="90%" bottom="4" itemRenderer="com.usercontrols.libImages" itemClick="getImages(event);" horizontalCenter="0" borderStyle="none" themeColor="#60C0CE">
+								
+							</mx:TileList>
+						</mx:Canvas>
+						<mx:Canvas label="Upload" width="100%" height="93%" bottom="0" id="uploadCanvas" visible="false">
+							<mx:Tile width="95%" height="310" id="userImages" horizontalCenter="0" visible="true">
+								<mx:Repeater id="userUploadImages">
+									<mx:HBox width="100" height="100">
+										<mx:Canvas width="100" height="100">
+											<mx:Image id="uploadImg" width="100" height="100" source="{userUploadImages.currentItem.img}" horizontalAlign="center" verticalAlign="middle" click="addUploadImage(event);" top="0" buttonMode="true"/>
+											<mx:Button id="cropId" width="49" height="23" bottom="0" horizontalCenter="0" styleName="cropImageStyle" buttonMode="true" click="showCrop(event)" label="{userUploadImages.currentIndex}"/>
+										</mx:Canvas>	
+									</mx:HBox>
+								</mx:Repeater>
+							</mx:Tile>
+							<!--<mx:ProgressBar id="progBar" mode="manual" label="" labelPlacement="center" width="100%"/>-->
+							
+							<mx:Button id="chooseFileId" styleName="chooseFile" useHandCursor="true" buttonMode="true" bottom="14" x="22" click="subControlAction(event)"/>
+						</mx:Canvas>
+						<mx:Canvas label="Edit" width="100%" height="93%" bottom="0" id="editImageCanvas" visible="false">
+							<mx:HRule y="28" horizontalCenter="0" width="80%"/>
+							<mx:HRule y="125" horizontalCenter="0" width="80%"/>
+							<mx:HRule y="312" horizontalCenter="0" width="80%"/>
+							<mx:Button y="322" left="15" styleName="duplicate" click="createDuplicate();" />
+							<mx:Button y="322" right="15" styleName="removeImage" click="forDeleteRequest('Image');"/>
+							<mx:Label x="16" y="45" text="Width :"  width="50"/>
+							<mx:Label x="17" y="74" text="Height :"/>
+							<mx:Label x="18" y="139" text="Align : "/>
+							<mx:Label x="169" y="139" text="Layer :"/>
+							<mx:Label x="18" y="172" text="Rotate :"/>
+							<mx:Label x="18" y="200" text="Rotate by value :"/>
+							<mx:HSlider id="imageRotationSlider" x="97" y="170" width="116" minimum="-180" maximum="180" value="0" snapInterval="1" liveDragging="true" change="getNewRotationText(imageRotationSlider.value);" />
+							<mx:Button x="76" y="170" styleName="rotate1" id="imageRotate1" width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(imageRotationSlider.value+1);imageRotationSlider.value=(imageRotationSlider.value+1);" autoRepeat="true" buttonDown="getNewRotationText(imageRotationSlider.value+1);imageRotationSlider.value=(imageRotationSlider.value+1);"/>
+							<mx:Button x="64" y="139" styleName="leftAlign" id="imageRotate0" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('left');"/>
+							<mx:Button x="89" y="139" styleName="centerAlign" id="imageRotate3" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('center');"/>
+							<mx:Button x="114" y="139" styleName="rightAlign" id="imageRotate4" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('right');" />
+							<mx:Button x="239" y="138" styleName="downLayer" width="20" height="20" useHandCursor="true" buttonMode="true" click="layerDown();"/>
+							<mx:Button x="219" y="138" styleName="upLayer" id="imageRotate6" width="20" height="20" useHandCursor="true" buttonMode="true" click="layerUp();"/>
+							<mx:Button y="170" right="45" styleName="rotate2" id="imageRotate2" width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(imageRotationSlider.value-1);imageRotationSlider.value=(imageRotationSlider.value-1);" change="getNewRotationText(imageRotationSlider.value);" autoRepeat="true" buttonDown="getNewRotationText(imageRotationSlider.value-1);imageRotationSlider.value=(imageRotationSlider.value-1);"/>
+							<mx:Button x="74" y="43"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageWidth(widthSlider.value-1);widthSlider.value = (widthSlider.value-1);"/>
+							<mx:Button x="75" y="73"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageHeight(heightSlider.value-1);heightSlider.value=(heightSlider.value-1);"/>
+							<mx:Button x="219" y="73"  styleName="maxStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageHeight(heightSlider.value+1);heightSlider.value=(heightSlider.value+1);"/>
+							<mx:Button x="220" y="43"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="setImageWidth(widthSlider.value+1);widthSlider.value = (widthSlider.value+1);"/>
+							<mx:HSlider id="widthSlider" x="102" y="41" width="108" minimum="20" maximum="150" snapInterval="1" liveDragging="true" change="setImageWidth(widthSlider.value);"/>
+							<mx:Label x="14" y="229" text="Transparency :" />
+							<mx:Button x="110" y="227"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onTransSliderChange(transSlider.value-0.1);transSlider.value=(transSlider.value-0.1);"/>
+							<mx:Button x="243" y="228"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onTransSliderChange(transSlider.value+0.1);transSlider.value=(transSlider.value+0.1);"/>
+							<mx:HSlider id="transSlider" x="133" y="227" width="108" minimum="0.1" maximum="1" snapInterval=".1" liveDragging="true" change="onTransSliderChange(transSlider.value);" />
+							<mx:HSlider id="heightSlider" x="101" y="71" width="108" minimum="20" maximum="150" snapInterval="1" liveDragging="true" change="setImageHeight(heightSlider.value)"/>
+							<mx:Button x="103" y="273" width="15" height="15" styleName="rightArrow" click="shiftLeft()"/>
+							<mx:Button x="75" y="273" width="15" height="15" styleName="leftArrow" click="shiftRight()"/>
+							<mx:Button x="89" y="291" width="15" height="15" styleName="downArrow" click="shiftDown()"/>
+							<mx:Button x="89" y="257" width="15" height="15" styleName="upArrow" click="shiftUp()"/>
+							<!--<mx:ColorPicker x="201" y="234"/>-->
+							<mx:Label x="20" y="273" text="Nudge:"/>
+							<!--<mx:Label x="151" y="235" text="Color:"/>-->
+							<mx:Label x="40" y="4" text="Edit Current Selected Artwork" styleName="boldLabel"/>
+							<mx:CheckBox x="147" y="100" label="Lock Dimensions" cornerRadius="0" id="lockImgDimensions" styleName="boldLabel" fontSize="12" click="lockDimension();"/>
+							<mx:TextInput x="124" y="200" maxChars="3" width="35" id="rotationTextVal" keyUp="getNewRotationText(new Number (rotationTextVal.text));imageRotationSlider.value=(new Number(rotationTextVal.text));" borderStyle="solid"/>
+							<mx:Label x="137" y="272" text="Shadow Color :"/>
+							<mx:ColorPicker x="234" y="272" id="shadowImg" change="onShadowImg(Number(shadowImg.selectedColor));"/>
+						</mx:Canvas>
+					</mx:Canvas>
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="380" id="textIdCanvas" visible="false" bottom="0">
+					<mx:Canvas width="100%" height="100%" horizontalCenter="0" top="0">
+						<mx:Canvas width="100%" height="7%" top="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+							<mx:Button id="editTextId" styleName="editText" useHandCursor="true" buttonMode="true" click="subControlAction(event)" right="85" top="5"/>
+							<mx:Button id="addTextId" styleName="addText" useHandCursor="true" buttonMode="true" click="subControlAction(event)" right="0" top="5" enabled="false" />
+						</mx:Canvas>
+						<mx:Canvas label="Add Text" width="100%" height="93%" id="addTextCanvas" visible="true" bottom="0">
+							<mx:Label x="20" y="23" text="Add text into product " styleName="boldLabel"/>
+							<mx:Label x="10" y="85" text="Enter Your Text"/>
+							<mx:TextInput id="inputText1" x="20" y="120"  width="243" borderStyle="solid" keyUp="addHiddenText()"/>
+							<mx:Text id="hiddentext" width="{_w}" visible="false"/>
+							<mx:Button x="180" y="160" styleName="addNewText" click="addtext();"/>
+							<mx:HRule y="64" horizontalCenter="0" width="80%"/>
+						</mx:Canvas>
+						<mx:Canvas label="Edit Text" width="100%" height="93%" id="editTextCanvas" visible="false" bottom="0">
+							
+							<mx:HRule y="111" horizontalCenter="0" width="80%"/>
+							<mx:HRule y="307" horizontalCenter="-1" width="80%"/>
+							<mx:Button y="318" left="15" styleName="duplicate" click="createDuplicate();" />
+							<mx:Button y="318" right="15" styleName="removeImage" click="forDeleteRequest('Text');"/>
+							<mx:Label x="16" y="125" text="Align :"/>
+							<mx:Label x="185" y="124" text="Layer :"/>
+							<mx:Label x="18" y="155" text="Rotate :"/>
+							<mx:Label x="18" y="191" text="Rotate by value :"/>
+							<mx:HSlider id="textRotationSlider" x="92" y="154" width="108" minimum="-180" maximum="180" value="0" snapInterval="1" liveDragging="true" change="getNewRotationText(textRotationSlider.value);" />
+							<mx:Button x="72" y="154" styleName="rotate1"  width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(textRotationSlider.value+1);textRotationSlider.value = (textRotationSlider.value+1);" autoRepeat="true" buttonDown="getNewRotationText(textRotationSlider.value+1);textRotationSlider.value = (textRotationSlider.value+1);"/>
+							<mx:Button x="62" y="125" styleName="leftAlign"  width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('left');" />
+							<mx:Button x="87" y="125" styleName="centerAlign"  width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('center');" />
+							<mx:Button x="112" y="125" styleName="rightAlign" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('right');" />
+							<mx:Button x="250" y="124" styleName="downLayer"  width="20" height="20" useHandCursor="true" buttonMode="true" click="layerDown();" />
+							<mx:Button x="230" y="124" styleName="upLayer"  width="20" height="20" useHandCursor="true" buttonMode="true" click="layerUp()" />
+							<mx:Button y="154" right="61" styleName="rotate2"  width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(textRotationSlider.value-1);textRotationSlider.value = (textRotationSlider.value-1);" autoRepeat="true" buttonDown="getNewRotationText(textRotationSlider.value-1);textRotationSlider.value = (textRotationSlider.value-1);" />
+							<mx:Button x="66" y="52"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onChangeFontSize((fontSizeSlider.value)-1);fontSizeSlider.value = (fontSizeSlider.value-1);"/>
+							<mx:Button x="211" y="52"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onChangeFontSize((fontSizeSlider.value)+1);fontSizeSlider.value = (fontSizeSlider.value+1);" change="onChangeFontSize(fontSizeSlider.value);"/>
+							<mx:Button x="108" y="222"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onTransSliderChange(txtTransSlider.value-0.1);txtTransSlider.value=(txtTransSlider.value-0.1);"/>
+							<mx:Button x="241" y="222"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onTransSliderChange(txtTransSlider.value+0.1);txtTransSlider.value=(txtTransSlider.value+0.1);" />
+							<mx:HSlider x="131" y="221" width="108" id="txtTransSlider" minimum="0.1" maximum="1" snapInterval="0.1" liveDragging="true" change="onTransSliderChange(txtTransSlider.value);" />
+							<mx:Label x="12" y="224" text="Transparency :"/>
+							<mx:HSlider x="96" y="51" width="108" id="fontSizeSlider" minimum="9" maximum="150" snapInterval="1" liveDragging="true" change="onChangeFontSize(fontSizeSlider.value);" showDataTip="false"/>
+							<mx:Button x="100" y="270" width="15" height="15" styleName="rightArrow" click="shiftLeft()"/>
+							<mx:Button x="72" y="270" width="15" height="15" styleName="leftArrow" click="shiftRight()"/>
+							<mx:Button x="86" y="288" width="15" height="15" styleName="downArrow" click="shiftDown()"/>
+							<mx:Button x="86" y="254" width="15" height="15" styleName="upArrow" click="shiftUp();" />
+							<mx:Label x="17" y="270" text="Nudge:"/>
+							<mx:Label x="193" y="249" text="Color :"/>
+							<mx:ColorPicker x="243" y="248" id="fontColor" colorField="value" editable="false" selectedColor="0x000000" change="onColorChange(Number(fontColor.selectedColor));" />
+							
+							<mx:Label x="21" y="22" text="Text :"/>
+							<mx:TextInput id="insertText" x="68" y="20" keyUp="EditText()"  width="189" borderStyle="solid"/>
+							<mx:Label x="21" y="54" text="Size :"/>
+							<mx:ComboBox toolTip="Font" id="combobox" width="155" dataProvider="{cards}" x="69" y="80" change="onFontChange()" cornerRadius="3"/>
+							<mx:Label x="19" y="83" text="Font :"/>
+							<mx:TextInput x="128" y="190" width="27" maxChars="3" id="rotationTextVal1" keyUp="getNewRotationText(new Number (rotationTextVal1.text));imageRotationSlider.value=(new Number(rotationTextVal1.text));" borderStyle="solid" restrict="0-9"/>
+							<mx:TextInput x="237" y="51" width="27" maxChars="2" id="fontSizeTextVal" borderStyle="solid" keyUp="onChangeFontSize(Number(fontSizeTextVal.text));" restrict="0-9"/>
+							<mx:Label x="139" y="276.55" text="Shadow Color :"/>
+							<mx:ColorPicker x="243" y="276" id="shadowColor" change="onShadowColor(Number(shadowColor.selectedColor));"/>
+						</mx:Canvas>
+					</mx:Canvas>
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="380" id="fillIdCanvas" visible="false" bottom="0">
+					<mx:ColorPicker toolTip="BackGround Color" id="backColorMug" change="onBackColorChange();" x="168" y="30" visible="{backColorCB.selected}" />
+					<mx:ColorPicker toolTip="Border Color" id="borderColor" change="onBorderColorChange();" visible="{borderColorCB.selected}" x="168" y="71"/>
+					<mx:CheckBox id="backColorCB" x="10" y="28" label="Background color" click="onClickBackColorCB();"  styleName="boldLabel"/>
+					<mx:CheckBox id="borderColorCB" x="10" y="71" label="Border Color" click="onBorderColorCB();" styleName="boldLabel"/>
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="380" id="welcomeCanvas" visible="true" backgroundColor="#FFFFFF" bottom="0">
+					<mx:Image x="26" y="217"  buttonMode="true" useHandCursor="true" click="setControlAction('textId');"  source="@Embed(source='assets/images/welcome_text.jpg')" />
+					<mx:Image x="30" y="147"  buttonMode="true" useHandCursor="true" click="setControlAction('imageId');"  source="@Embed(source='assets/images/welcome_image.jpg')"/>
+					<!--<mx:Image x="24" y="290"  buttonMode="true" useHandCursor="true" click="setControlAction('fillId');" source="@Embed(source='assets/images/welcome_fill.jpg')"/>-->
+					<mx:Image x="26" y="34" source="@Embed(source='assets/images/welcome.jpg')" width="231" height="78"/>
+				</mx:Canvas>
+			</mx:Canvas>
+			
+			<mx:Button x="300" y="7" id="tShirtOption" visible="false" styleName="tshirtFront"/>
+			<mx:Button styleName="resetButton" id="reset" useHandCursor="true" buttonMode="true" click="forResetRequest();" right="7" y="7"/>
+		</mx:Canvas>
+		<!--</mx:Canvas>-->
+	</mx:Canvas>
+</mx:Application>

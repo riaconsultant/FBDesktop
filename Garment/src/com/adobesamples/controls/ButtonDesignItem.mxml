@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:controls="com.adobesamples.controls.*" 
+	>
+	
+	<!-- 
+	
+		The ButtonDesignItem is a customized button which is diplayed within the TabContentDesign component.
+		The proper designItem is added via the DesignItemFactory class using ActionScript.
+	
+	-->
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS 
+			import com.adobesamples.events.*;
+			import com.adobesamples.controls.*;
+			import com.adobesamples.vo.*;
+			
+			import mx.flash.UIMovieClip;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION 
+			
+			private var __configurationItem:DesignItem;
+			private var __designItemLookup:Object;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			/**
+			* The dataProvider sets design to add into the ButtonDesignItem.
+			*
+			* <p>When the dataProvider is set, the appropriate UIMovieClip is added
+			* as a child from the ShirtConfigurator.swc (Which is located in the project's
+			* library path).</p>
+			*
+			* @param i_designObj The VODesignItem which indicates the style of shirt to render.
+			* 
+			* @see com.adobesamples.vo.VODesignItem The VODesignItem class.
+			* @see com.adobesamples.controls.DesignItemFactory The DesignItemFactory class.
+			*/
+			public function set dataProvider(i_designObj:Object):void{
+				
+				__designItemLookup = i_designObj;
+				__configurationItem = DesignItemFactory.getItem(i_designObj.front);
+
+				var designChild:DisplayObject = designVBox.addChild(__configurationItem);
+				__configurationItem.width = 65;
+				__configurationItem.height = 60;
+			
+			}
+			
+			public function get dataProvider():Object{
+				return __designItemLookup;
+			}
+			
+
+			
+
+		]]>
+	</mx:Script>
+
+	<mx:Image id="backgroundImage" visible="false" source="images/ui/selected_shirt_bg.png" width="74" height="70"/>
+	<mx:VBox id="designVBox" width="74" height="70" horizontalAlign="center" verticalAlign="middle" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<!-- Shirt design from flash swc is placed here via actionscript -->
+	</mx:VBox>
+
+</mx:Canvas>

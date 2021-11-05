@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="25" height="25">
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import mx.core.UIComponent;
+			import flash.filters.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			private var __color:Number;
+			private var __circ:DisplayObject;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			/**
+			* This sets the color for the circle and initiates the drawing process.
+			*
+			* @param i_color The color of the circle.
+			*/
+			public function set color(i_color:Number):void{
+				__color = i_color;
+				this.drawCircle();
+			}
+			public function get color():Number{
+				return __color;
+			}
+			
+			/////////////////////////////////////////////////////
+			//  PRIVATE METHODS
+			
+			/**
+			* This draws a circle and adds it to this component.
+			*/
+			private function drawCircle():void{
+
+	           	var child2:UIComponent = new UIComponent();
+	           	
+	           	// The property is the fill color
+	            child2.graphics.beginFill(__color);
+	            
+	            // The 2 properties are line thickness and line color
+	            child2.graphics.lineStyle(2, 0x000000);
+	            
+	           	// The 3 properties are x position, y position, and radius
+	            child2.graphics.drawCircle(10,10,7.5); 
+	            
+	            child2.graphics.endFill();
+	           __circ = this.addChild(child2);
+
+				this.addShadow();
+				
+			}
+			
+			private function addShadow():void{
+
+				// First four properties are distance, angle, color, and alpha.
+				var filter:GlowFilter = new GlowFilter(0xFFFFFF,0.6,4,4,1,1);
+				var myFilters:Array = new Array();
+				myFilters.push(filter);
+				__circ.filters = myFilters;
+		
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Canvas>

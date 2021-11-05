@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="300" height="300">
+	<mx:Script source="../manoj/comman.as"/>
+	<mx:Script>
+		<![CDATA[
+			
+		]]>
+	</mx:Script>
+	<mx:Image id="blackBG" width="100%" height="100%" visible="true" horizontalCenter="0" verticalCenter="0" source="assets/img/1_black.png"/>
+	<mx:Image id="silverBG" width="100%" height="100%" visible="false" horizontalCenter="0" verticalCenter="0"/>
+	<mx:Label text="{top_text_controls_tool.top_text.text}" width="265" color="#FC0404" id="top_label" visible="true" top="80" left="20" textAlign="center"/>
+	<mx:Label text="{mid_text_controls_tool.top_text.text}" width="280" color="#F80808" id="middle_label" visible="true" horizontalCenter="0" verticalCenter="0" textAlign="center"/>
+	<mx:Label text="{bottom_text_controls_tool.top_text.text}" width="265" color="#F91616" id="bottom_label" visible="true" left="20" bottom="80" textAlign="center"/>
+	<mx:Image horizontalCenter="0" verticalCenter="0" width="120" height="120" id="mid_image" visible="false"/>
+</mx:Canvas>

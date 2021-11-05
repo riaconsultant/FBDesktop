@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<gallery>
+	<images>
+		<category lable="Latest" data="Latest"/>
+		<img>picture/clipart/clip1.png</img>
+		<img>picture/clipart/clip2.png</img>
+		<img>picture/clipart/clip3.png</img>
+		<img>picture/clipart/clip4.png</img>
+	</images>
+	<images>
+		<category lable="Aliens" data="Aliens"/>
+		<img>picture/clipart/clip2.png</img>
+	</images>
+	<images>
+		<category lable="Animals" data="Animals"/>
+		<img>picture/clipart/clip3.png</img>
+	</images>
+	<images>
+		<category lable="Other" data="Other"/>
+		<img>picture/clipart/clip1.png</img>
+		<img>picture/clipart/clip2.png</img>
+		<img>picture/clipart/clip3.png</img>
+		<img>picture/clipart/clip4.png</img>
+	</images>
+</gallery> 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+ <mx:Script>
+  <![CDATA[
+   import mx.core.UITextField;
+   import mx.containers.Canvas;
+   import flash.events.MouseEvent;
+   import flash.text.TextFieldAutoSize;
+  
+   // this will hold the currently selected UITextField
+   private var activeUITextField:UITextField = null;
+
+   private function mouseDownHandler(event:MouseEvent):void {
+    event.currentTarget.startDrag();
+    
+    // we use getChildByName() to access the UITextField inside the canvas
+    var tempUITextField:UITextField = event.currentTarget.getChildByName("tf");
+    
+    // remove border of the active UITextField, show border of new active UITextField
+    activeUITextField.border = false;
+    tempUITextField.border = true;
+    activeUITextField = tempUITextField;
+   }
+   
+   private function mouseUpHandler(event:MouseEvent):void {
+    event.currentTarget.stopDrag();
+   }
+   
+   private function loadUITextField():void {
+    
+    // create a new UITextField, set appropriate values
+    var newUITextField:UITextField = new UITextField();
+    
+    // autoSize is UITextField's main advantage over Text and TextArea
+    // although you can't edit a UITextField
+    newUITextField.autoSize = TextFieldAutoSize.LEFT;
+    newUITextField.multiline = true;
+    newUITextField.text = "New UITextField adfasdfasdfausdfoasdofuaosdfoiasudfiouasodfuaios";
+    newUITextField.type =TextFieldType.INPUT;
+    newUITextField.wordWrap=true;
+     
+     
+    
+    // set the UITextField's name to tf, will be used later for child access
+    newUITextField.name = "tf";
+
+    // create the Canvas container that will hold the UITextField,
+    // this will be the one that will handle the dragging
+    var UITextFieldHolder:Canvas = new Canvas();
+    UITextFieldHolder.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+    UITextFieldHolder.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+
+    // we must add the Canvas to the main application FIRST before adding
+    // the UITextField to the Canvas, doing otherwise will cause errors
+    addChild(UITextFieldHolder);
+    UITextFieldHolder.addChild(newUITextField);
+
+    // set current UITextField as the active one
+    if (activeUITextField != null) activeUITextField.border = false;
+    newUITextField.border = true;
+    activeUITextField = newUITextField;
+   }
+  ]]>
+ </mx:Script>
+ <mx:Button label="Load UITextField" horizontalCenter="0" verticalCenter="0" id="btnLoad" click="loadUITextField()"/>
+</mx:Application>

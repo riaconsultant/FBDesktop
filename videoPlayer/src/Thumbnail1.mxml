@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="200" height="208"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+	useHandCursor="true" buttonMode="true">
+	<mx:Image id="img" 
+		height="86" 
+		source="{data.media.thumbnails.first().url}" 
+		scaleContent="false"
+		creationCompleteEffect="Fade" top="10" left="10" right="10"/>
+	<mx:Text text="{data.title}"
+		height="68"
+		fontWeight="bold" 
+		textAlign="left" 
+		fontSize="11"
+		creationCompleteEffect="Fade" 
+		color="#c46200" 
+		themeColor="#fc8010"
+		selectable="false" top="130" left="10" right="10"/>
+	<mx:Text text="{data.authors.first().name}" 
+		color="#6a665b" 
+		textAlign="left"
+		selectable="false" left="10" right="10" top="104"/> 
+</mx:Canvas>

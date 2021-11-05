@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="100%" 
+				xmlns:tools="com.tools.*" creationComplete="init()" preloader="preload.CustomPreloader">
+	<mx:Style source="style/default.css" />
+	<mx:Style source="style/fonts.css" />
+	<mx:Script source="com/tools/globalFunctions.as"/> 
+	<mx:Script source="com/tools/comman.as"/>
+	<!--<mx:Metadata>
+		[Event(name="fontChangeEvent", type="flash.events.Event")]
+	</mx:Metadata>-->
+	<mx:RemoteObject id="myObj" destination="FlexController" source="FlexController" showBusyCursor="true">
+		<mx:method name="sayHello" result="sayHelloListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getTemplate" result="getTemplateListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getColor" result="getColorListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getFont" result="getFontListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getCatgoryLibrary" result="getCatgoryLibraryListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getCatgoryLibraryImage" result="getCatgoryLibraryImageListner(event);" fault="faultListner(event);"/>
+		<mx:method name="saveDesignImage" result="saveDesignImageListner(event);" fault="faultListner(event);"/>
+		<mx:method name="saveDesign" result="saveDesignListner(event);" fault="faultListner(event);"/>
+		<mx:method name="openDesign" result="openDesignListner(event);" fault="faultListner(event);"/>
+		<mx:method name="saveSession" result="saveSessionListner(event);" fault="faultListner(event);"/>
+	</mx:RemoteObject>
+	<mx:Canvas right="0" left="0" top="0" bottom="0">
+		<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" width="900" height="600" x="0" bottom="0">
+			<mx:Panel width="49%" layout="absolute" left="2" top="0" title="Design Preview" id="designPreview" bottom="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+				<mx:Canvas id="designCanvas" width="300" height="300" verticalScrollPolicy="off" horizontalScrollPolicy="off" y="40" x="60">
+					<mx:Image id="blackBG" width="100%" height="100%" visible="true" horizontalCenter="0" verticalCenter="0" />
+					<mx:Image id="silverBG" width="100%" height="100%" visible="false" horizontalCenter="0" verticalCenter="0"/>
+					<mx:Canvas id="imgCanvas" width="100" height="100" visible="false" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalCenter="0" verticalCenter="0">
+						<mx:Image width="100%" height="100%" id="mid_image" maintainAspectRatio="false" horizontalCenter="0" verticalCenter="0"/>
+					</mx:Canvas>
+					<mx:Canvas id="drawImgCanvas" width="100" height="100" visible="false" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalCenter="0" verticalCenter="0">
+						<mx:Image width="100%" height="100%" id="draw_mid_image" maintainAspectRatio="false" horizontalCenter="0" verticalCenter="0"/>
+					</mx:Canvas>
+					<mx:Canvas id="textCanvas" width="330" height="330" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+						<!--<be:TextPath x="50"	y="200"	id="path" text="{top_text_controls_tool.top_text.text}"	controlPoints="{ [{X:20,Y:10}, {X:120,Y:-40}, {X:300,Y:-20}] }"
+							pathColor="0xFF00CC"	pathThickness="1" showPath="true"/>-->
+						<mx:Label text="{top_text_controls_tool.top_text.text}" width="265" color="{defaultColor}" id="top_label" visible="true" textAlign="center" fontSize="25" x="18" y="80"/>
+						<mx:Label text="{mid_text_controls_tool.top_text.text}" width="280" color="{defaultColor}" id="middle_label" visible="true" textAlign="center" fontSize="25" y="132" x="10"/>
+						<mx:Label text="{bottom_text_controls_tool.top_text.text}" width="265" color="{defaultColor}" id="bottom_label" visible="true" textAlign="center" fontSize="25" y="184" x="18"/>
+					</mx:Canvas>
+				</mx:Canvas>
+				<mx:Panel height="150" layout="absolute" bottom="20" left="0" right="0" title="Application Controls" verticalScrollPolicy="off" horizontalScrollPolicy="off" styleName="myPanel">
+<!--					<mx:Label x="0" y="10" text="Enter an e-mail address:"/>-->
+					<mx:Form>
+						<mx:FormItem label="Enter an e-mail address: ">
+							<!--<mx:TextInput id="email" width="100%"/>-->
+							<mx:TextInput x="0" y="42" width="175" height="25" text="enter email" id="email" click="email.text=''"/>
+						</mx:FormItem>
+						<mx:FormItem >
+							<!--<mx:Button id="myButton" label="Validate" />-->
+							<mx:Button label="Save Design" width="100" verticalCenter="0" x="183" click="saveDesign(email.text);"/>
+							<mx:Button label="Retrieve Design" right="1" verticalCenter="0" click="retrieveDesign(email.text);"/>
+						</mx:FormItem>
+					</mx:Form>	
+
+				</mx:Panel>
+			</mx:Panel>
+			<mx:Canvas width="49%" right="2" top="0" bottom="2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+				<mx:Panel right="2" top="0" title="Design Tool" id="designTool" horizontalScrollPolicy="off" verticalScrollPolicy="off" height="60%" left="5" styleName="myPanel">
+					<mx:TabNavigator width="100%" height="100%" id="toolTab">
+						<mx:Canvas label="TOP TEXT" width="100%" height="100%" id="topTextCanvas" enabled="false" visible="false">
+							<tools:controlCanvas x="0" y="0" id="top_text_controls_tool" fontSizeData="{fontsize}" fontColorData="{fontColors}" textFontData="{fontData}">
+							</tools:controlCanvas>
+						</mx:Canvas>
+						<mx:Canvas label="MIDDLE TEXT" width="100%" height="100%" id="midTextCanvas" enabled="false" visible="false">
+							<tools:controlCanvas x="0" y="0" id="mid_text_controls_tool" fontSizeData="{fontsize}" fontColorData="{fontColors}" textFontData="{fontData}" retData="{retObjectMid}">
+							</tools:controlCanvas>
+						</mx:Canvas>
+						<mx:Canvas label="BOTTOM TEXT" width="100%" height="100%" id="bottomTextCanvas" enabled="false" visible="false">
+							<tools:controlCanvas x="0" y="0" id="bottom_text_controls_tool" fontSizeData="{fontsize}" fontColorData="{fontColors}" textFontData="{fontData}" retData="{retObjectBot}">
+							</tools:controlCanvas>
+						</mx:Canvas>
+						<mx:Canvas label="IMAGE" width="100%" height="100%" id="imgTabCanvas" enabled="false" visible="false" click="setCircleImage();">
+							<mx:ComboBox y="5" dataProvider="{imageColor}" id="imgChoice" labelField="imgColr" change="if(imgChoice.selectedIndex !=0)myObj.getCatgoryLibrary(imgChoice.selectedItem.imgValue);uploadImageCanvas.visible=false;editImageCanvas.visible=false;" left="100"></mx:ComboBox>
+							<mx:Label y="5" text="Choose Library :" left="2"/>
+							<mx:Button y="5" label="Upload Your Image" right="2" click="uploadImageCanvas.visible=true;libraryCategory.visible=false;catImage.visible=false;editImageCanvas.visible=false;"/>
+							<mx:Button x="228" y="5" label="Edit" click="uploadImageCanvas.visible=false;libraryCategory.visible=false;catImage.visible=false;editImageCanvas.visible=true;"/>
+							<mx:List width="160" height="240" left="2" id="libraryCategory" itemClick="myObj.getCatgoryLibraryImage(imgChoice.selectedItem.imgValue,libraryCategory.selectedItem.id);" labelField="name" bottom="2" visible="false"></mx:List>
+							<mx:TileList right="2" bottom="2" width="240" height="240" id="catImage" itemRenderer="com.tools.libImage" itemClick="getlibImage(catImage.selectedItem.image);" visible="false"></mx:TileList>
+							<mx:Canvas left="2" right="2" bottom="2" height="240" id="editImageCanvas" visible="false">
+								<!--<mx:Button id="rightButton" x="170" y="60" width="15" height="15" styleName="rightArrow" click="mid_image.x=mid_image.x+5;"/>
+								<mx:Button id="leftButton" x="130" y="60" width="15" height="15" styleName="leftArrow" click="mid_image.x=mid_image.x-5;"/>
+								<mx:Button id="downButton" x="150" y="80" width="15" height="15" styleName="downArrow" click="mid_image.y=mid_image.y+5;"/>
+								<mx:Button id="upButton" x="150" y="40" width="15" height="15" styleName="upArrow" click="mid_image.y=mid_image.y-5;"/>
+								<mx:Label x="10" y="57" text="Image Nudge:"/>
+								<mx:Label x="10" y="127" text="Image Width :"/>
+								<mx:Label x="10" y="156" text="Image Height :"/>
+								<mx:HSlider x="101" y="132" minimum="50" maximum="250" snapInterval="5" id="imageWidthSilder" change="{mid_image.width=imageWidthSilder.value}" liveDragging="true" value="{mid_image.width}" showDataTip="false"/>
+								<mx:HSlider x="103" y="160" minimum="50" maximum="250" snapInterval="5" id="imageHeightSilder" change="{mid_image.height=imageHeightSilder.value}" liveDragging="true" value="{mid_image.height}" showDataTip="false"/>
+								-->
+								<mx:Button x="270" y="194" width="70" id="image_reset" height="24" styleName="setDefault" buttonMode="true" click="mid_image.width=100;mid_image.height=100;mid_image.x=100;mid_image.y=100;imgStepper.value=100;if(isCircleImage == 'Yes'){setImageMaskWidth(100);}"/>
+								<mx:NumericStepper x="169" y="10" width="77" change="changeImageSize(imgStepper.value)" stepSize="5" id="imgStepper" maximum="200" minimum="50" value="100"/>
+								<mx:Label x="91" y="10" text="Image Size:"/>
+								<mx:RadioButtonGroup id="radioCrop" itemClick="cropImageSelect()"/>
+									<mx:RadioButton id="radioYes" x="174" y="53" label="Yes" groupName="radioCrop" click="{isCircleImage = 'Yes'}" />
+									<mx:RadioButton id="radioNo" x="228" y="53" label="No" groupName="radioCrop" selected="true" click="{isCircleImage='No'}" />
+								<mx:Label x="91" y="55" text="Image Circle:"/>
+							</mx:Canvas>
+							<mx:Canvas left="2" right="2" bottom="2" height="240" id="uploadImageCanvas" visible="false">
+								<mx:Label x="10" y="8" text="Browse Your Image :"/>
+								<mx:Button x="140" y="8" label="Browse" click="imageBrowse();"/>
+								<!--<mx:Label x="128" y="52" text="Under Construction" color="#E91F1F"/>-->
+								<mx:HorizontalList id="uploadImageList" bottom="0" right="0" left="0" height="150" itemRenderer="com.tools.libImage" itemClick="uploadImage(uploadImageList.selectedItem.image);"></mx:HorizontalList>
+							</mx:Canvas>
+						</mx:Canvas>
+					</mx:TabNavigator>
+				</mx:Panel>
+				<mx:Panel height="130" layout="absolute" left="5" title="Pricing" bottom="2" right="2" styleName="myPanel">
+					<mx:Label x="10" y="5" text="Base Price :"/>
+					<mx:Label x="10" y="59" text="Total Charges :"/>
+					<mx:Label x="10" y="33" text="Color Charge for "/>
+					<mx:Label x="107" y="33" id="totalColor" text="1"/>
+					<mx:Label x="119" y="33" text="Colors :"/>
+					<mx:Label x="82" y="5" text="$" width="17" styleName="myLabel"/>
+					<mx:Label x="169" y="33" text="$" width="14" styleName="myLabel"/>
+					<mx:Label x="103" y="59" text="$" width="23" styleName="myLabel"/>
+					<mx:Label x="121" y="59" id="totalCost" text="{Number(basePrice.text) + Number(colorPrice.text)}" width="76"/>
+					<mx:Label x="184" y="33" text="00.00" width="76" id="colorPrice"/>
+					<mx:Label x="107" y="5" width="76" id="basePrice" text="000.00"/>
+				</mx:Panel>
+				<mx:Panel height="100" layout="absolute" left="5" title="Special Instruction:" right="2" bottom="135" styleName="myPanel">
+					<mx:TextArea id="special" left="5" right="5" top="5" bottom="5"/>
+				</mx:Panel>
+			</mx:Canvas>
+		</mx:Canvas>
+		<!--<mx:Button x="10" y="22" label="BACK" id="backId" width="126" height="53" fontSize="30" fontFamily="Arial" buttonMode="true" click="backNav()"/>
+		<mx:Button x="764" y="22" label="NEXT" id="nextId" width="126" height="53" fontSize="30" fontFamily="Arial" fontStyle="normal" fontWeight="bold" buttonMode="true" click="printCanvas(designCanvas)"/>
+		<mx:Label y="28" text="Add Text / Image" horizontalCenter="0" styleName="titleLabel"/>-->
+	</mx:Canvas>
+	<mx:EmailValidator id="mailValidator" source="{email}" property="text" 
+					   requiredFieldError="Enter your email" required="true" />
+</mx:Application>

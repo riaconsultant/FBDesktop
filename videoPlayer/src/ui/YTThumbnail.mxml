@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="354" height="106"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+	useHandCursor="true" buttonMode="true">
+	<mx:Image id="img" 
+		height="93" width="133" 
+		source="{data.thumbnailUrl}" 
+		scaleContent="false"
+		y="6" x="7"
+		creationCompleteEffect="Fade"/>
+	<mx:Label text="{data.title}"
+		width="203" 
+		fontWeight="bold" 
+		y="22" x="141" textAlign="left" fontSize="11"
+		creationCompleteEffect="Fade" 
+		color="#c46200" 
+		themeColor="#fc8010"
+		selectable="false"/>
+	<mx:Text text="{data.author}" 
+		width="199" 
+		color="#6a665b" 
+		y="5" x="141" 
+		textAlign="left"
+		selectable="false"/> 
+	<mx:TextArea selectable="false" 
+		x="142" y="74" 
+		height="27" width="196" 
+		text="{data.tags}" 
+		fontSize="9" 
+		borderStyle="none" 
+		alpha="0.0" 
+		textAlign="left"/>
+	<mx:Text text="{data.ratingAvg}" 
+		width="102" 
+		color="#272727" 
+		y="41" x="234" 
+		textAlign="left" fontSize="10"
+		selectable="false"/>
+	<mx:Text text="{data.viewCount}" 
+		width="109" 
+		color="#272727" 
+		y="58" x="210" 
+		textAlign="left" fontSize="10"
+		selectable="false"/>
+	<mx:Label x="143" y="41" 
+		text="Average Rating:" 
+		color="#4f4f4f"
+		selectable="false"/>
+	<mx:Label x="143" y="58" 
+		text="View Count:" 
+		color="#4f4f4f"
+		selectable="false"/>
+</mx:Canvas>

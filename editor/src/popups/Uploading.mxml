@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="250" height="60" title="Uploading" cornerRadius="18" borderStyle="none" backgroundColor="#91DFF2">
+	<mx:ProgressBar id="progBar" mode="manual" label="Uploading" indeterminate="true" labelPlacement="center" width="100%" height="100%" textAlign="center" enabled="true"/>
+</mx:Panel>

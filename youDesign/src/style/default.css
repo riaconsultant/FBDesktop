@@ -1,0 +1,180 @@
+/* CSS file */
+Application{
+	background-color:#FFF;
+	backgroundGradientAlphas: 0.5, 0.5;
+	backgroundGradientColors: #FFFFFF, #FFFFFF;
+}
+Button.upButton
+{
+	upIcon: Embed(source="../assets/img/up.gif");
+	overIcon: Embed(source="../assets/img/up.gif");
+	cornerRadius: 0;
+	downIcon: Embed(source="../assets/img/up.gif");
+}
+Button.downButton
+{
+	upIcon: Embed(source="../assets/img/down.gif");
+	overIcon: Embed(source="../assets/img/down.gif");
+	cornerRadius: 0;
+	downIcon: Embed(source="../assets/img/down.gif");
+}
+Button.setDefault
+{
+	upIcon: Embed(source="../assets/img/resetBtn.jpg");
+	overIcon: Embed(source="../assets/img/resetBtn.jpg");
+	cornerRadius: 3;
+	downIcon: Embed(source="../assets/img/resetBtn.jpg");
+	themeColor: #FEFFFF;
+}
+
+.leftArrow{
+	upIcon: Embed(source="../assets/img/left_arrow.jpg");
+	downIcon: Embed(source="../assets/img/left_arrow.jpg");
+	overIcon: Embed(source="../assets/img/left_arrow_hover.jpg");
+	disabledIcon: Embed(source="../assets/img/left_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+TextInput
+{
+	borderThickness: 1;
+	borderStyle: solid;
+}
+.rightArrow{
+	upIcon: Embed(source="../assets/img/right_arrow.jpg");
+	downIcon: Embed(source="../assets/img/right_arrow.jpg");
+	overIcon: Embed(source="../assets/img/right_arrow_hover.jpg");
+	disabledIcon: Embed(source="../assets/img/right_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.upArrow{
+	upIcon: Embed(source="../assets/img/up_arrow.jpg");
+	downIcon: Embed(source="../assets/img/up_arrow.jpg");
+	overIcon: Embed(source="../assets/img/up_arrow_hover.gif");
+	disabledIcon: Embed(source="../assets/img/up_arrow_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.downArrow{
+	upIcon: Embed(source="../assets/img/dwn_arrow.jpg");
+	downIcon: Embed(source="../assets/img/dwn_arrow.jpg");
+	overIcon: Embed(source="../assets/img/dwn_arrow_hover.jpg");
+	disabledIcon: Embed(source="../assets/img/dwn_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+TabNavigator
+{
+	borderStyle: outset;
+	horizontalGap: 0;
+	horizontalAlign: left;
+	firstTabStyleName: tabNavigatorFirstTab;
+	tabStyleName: tabNavigatorTab;
+	lastTabStyleName: tabNavigatorLastTab;
+	fontFamily: Arial;
+	fontSize: 11;
+	backgroundSize: auto;
+	selectedTabTextStyleName: tabNavigatorSelectedTabText;
+	font-weight:normal;
+}
+Label
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #000000;
+}
+.myLabel{
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #000000;
+}
+.titleLabel
+{
+	fontFamily: Arial;
+	fontSize: 25;
+	color: #FF7700;
+	fontWeight: bold;
+}
+ComboBox
+{
+	fontSize: 11;
+	dropdownStyleName: comboBoxDropdown;
+	cornerRadius: 1;
+	color: #040404;
+	font-weight:normal;
+}
+RadioButton
+{
+	fontSize: 12;
+	fontFamily: Arial;
+	color: #000000;
+	themeColor: #C3F7F7;
+	cornerRadius: 0;
+}
+
+.tabNavigatorFirstTab
+{
+	horizontalGap: 0;
+	paddingLeft: 10;
+	cornerRadius: 0;
+	leading: 4;	
+}
+.tabNavigatorTab
+{
+	horizontalGap: 0;
+	paddingLeft: 5;
+	cornerRadius: 0;
+	leading: 4;
+}
+.tabNavigatorLastTab
+{
+	horizontalGap: 0;
+	paddingLeft: 5;
+	cornerRadius: 0;
+	leading: 4;
+}
+.tabNavigatorSelectedTabText
+{
+	fontFamily: "Times New Roman";
+	fontSize: 12;
+	disabledColor: #000000;
+}
+.comboBoxDropdown
+{
+	verticalScrollBarStyleName: listBaseVerticalScrollBar;
+	color: #030303;
+	borderStyle: none;
+	rollOverColor: #C3F7F7;
+	selectionColor: #8BFCFD;
+}
+.myPanel
+{
+	color: #202121;
+	fontSize: 12;
+	fontFamily: Arial;
+	fontWeight: normal;
+	cornerRadius: 6;
+	statusStyleName: panelStatus;
+	titleStyleName: panelTitle;
+	controlBarStyleName: panelControlBar;
+}
+.listBaseVerticalScrollBar
+{
+	cornerRadius: 0;
+}
+/*HSlider
+{
+	thumbSkin: Embed(source="../assets/img/thumbN.png");
+	thumbUpSkin: Embed(source="../assets/img/thumbH.png");
+	dataTipOffset: -10;
+	trackSkin: Embed(source="../assets/img/track.png");
+}*/

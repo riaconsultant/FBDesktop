@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#f6f6f6" backgroundGradientColors="[#f6f6f6, #bbbbbb]">
+
+   <mx:Label x="10" y="10" text="File Upload" fontSize="20" fontWeight="bold"/>
+   <mx:HRule x="10" y="49" width="80%"/>
+   
+   <mx:Button x="10" y="59" label="Upload" click="{upload()}"/>
+   
+   <mx:Script>
+      <![CDATA[
+      import flash.events.DataEvent;
+      
+      public var fileRef:FileReference = new FileReference();
+      
+      public function upload():void {
+         // listen for the file selected event
+         // listen for the upload complete event
+         fileRef.addEventListener(Event.SELECT, selectHandler);
+         fileRef.addEventListener(Event.COMPLETE, completeHandler);
+         fileRef.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA   , uploadCompleteHandler);
+         
+         // browse for the file to upload
+         // when user selects a file the select handler is called
+         try {
+             var success:Boolean = fileRef.browse();
+         }
+         catch (error:Error) {
+             trace("Unable to browse for files.");
+         }
+      }
+      
+      // when a file is selected you upload the file to the upload script on the server
+      public function selectHandler(event:Event):void {
+         // var request:URLRequest = new URLRequest("http://jay/flex/upload/file_upload.php")
+          //var request:URLRequest = new URLRequest("http://192.168.2.101/jay/flex/upload/file_upload.php")
+          var request:URLRequest = new URLRequest("http://localhost/jay/flex/upload/file_upload.php")
+          try {
+             // upload file
+              fileRef.upload(request);
+              //textarea1.text = "uploading " + fileRef.name + "...";
+              textarea1.text = fileRef.name;
+          }
+          catch (error:Error) {
+              trace("Unable to upload file.");
+          }
+      }
+      
+      // dispatched when file has been given to the server script. does not receive a response from the server
+      public function completeHandler(event:Event):void {
+          trace("file uploaded complete");
+      }
+      
+      // dispatched when file has been uploaded to the server script and a response is returned from the server
+      // event.data contains the response returned by your server script
+      public function uploadCompleteHandler(event:DataEvent):void {
+          trace("uploaded... response from server: \n" + String(event.data));
+          textarea1.text += event.data as String;
+      }
+      
+      ]]>
+   </mx:Script>
+   
+   <mx:TextArea x="10" y="89" width="327" height="134" id="textarea1"/>
+   <mx:Label x="83" y="61" text=".doc/.txt 5.2kb or 5200 bytes"/>
+
+</mx:Application>

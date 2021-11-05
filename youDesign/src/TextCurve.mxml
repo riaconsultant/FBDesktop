@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Script>
+		<![CDATA[
+			import com.redrock.be.TextPath;
+			import mx.controls.Text;
+			import mx.controls.Alert;
+			import flash.text.TextField;
+			public var nam:Text=new Text();
+			public var a:TextPath=new TextPath();
+			public function init(evt:Event):void{
+				//nam.text=
+				textV.text=evt.currentTarget.text;
+				tWidth.text=evt.currentTarget.textWidth;
+				tHeight.text=evt.currentTarget.textHeight;
+				nam.text=evt.currentTarget.text;
+
+				for (var i:uint=0; i<textV.text.length; i++)
+				{
+					var character :Label = new Label();
+					// Rotation					
+					var radius:Number = 150;
+					var spacing:Number = 10;
+					var angleLeading:Number = 175;//_angle;
+					var angularOffset:Number = 180;//_angular;
+					
+					// points
+					//var p1 :Point = Point.interpolate( cp2, cp1, t );
+					//var p2 :Point = Point.interpolate( cp3, cp2, t );
+					var tPoint :Point = new Point( radius,radius);
+					
+					// location
+					//character.x = tPoint.x;
+					//character.y = tPoint.y;
+					var _x:Number=50;
+					var _y:Number=15;
+					character.x = radius * Math.cos(degrees2radians(i*spacing+angularOffset)) + _x;
+					character.y = radius * Math.sin(degrees2radians(i*spacing+angularOffset)) + _y;
+					
+					character.setStyle('fontFamily','Arial');
+					character.setStyle('fontSize','25');
+					
+					var dx:Number = character.x - _x;
+					var dy:Number = character.y - _y;
+					var angle:Number = Math.atan2(dy, dx);
+					character.rotation = radians2degrees(angle) -90 + angleLeading;
+					// rotation
+					//character.rotation = (Math.atan2( (p2.y - p1.y), (p2.x - p1.x) ) * 180 / Math.PI);
+					/* 
+					graphics.moveTo( tPoint.x,tPoint.y );
+					graphics.lineTo(p2.x, p2.y);
+					graphics.moveTo( tPoint.x,tPoint.y );
+					graphics.lineTo(p1.x, p1.y);
+					 */
+		          myCan.addChild(character);
+				}
+			}
+			
+		 private function degrees2radians(deg:Number):Number {
+    	 return (2 * Math.PI * deg) / 360; 
+	    }
+        private function radians2degrees(rad:Number):Number {            
+          return rad * 180 / Math.PI; 
+     	}
+     	
+     	private function test(evt:Event):void{
+     		tLabel.text=txtId.text;
+     		xl.text=tLabel.x.toString();
+     		yl.text=tLabel.y.toString();
+     	}
+		]]>
+	</mx:Script>
+	<mx:Canvas id="myCan" width="300" height="300" x="289" y="74" borderColor="#00FF5A" borderStyle="none" borderThickness="2">
+		<mx:Image id="img" source="assets/img/1_black.png"/>
+		<mx:Label id="tLabel" y="10" text="A" fontSize="40" fontFamily="Arial" horizontalCenter="0"/>
+	</mx:Canvas>
+	<mx:TextInput id="txtId" keyUp="test(event)" x="73" y="54"/>
+	<mx:Label x="110" y="105" width="123" id="tWidth"/>
+	<mx:Label x="110" y="143" width="123" id="tHeight"/>
+	<mx:Label x="110" y="179" width="123" id="textV"/>
+	<mx:Label x="10" y="179" width="64" id="textV0" text="Text"/>
+	<mx:Label x="10" y="143" width="73" id="textV1" text="Text Height"/>
+	<mx:Label x="10" y="105" width="73" id="textV2" text="Text Width"/>
+	<mx:Label x="110" y="218" text="{tLabel.x.toString()}" width="123" id="xl"/>
+	<mx:Label x="110" y="244" text="{tLabel.y.toString()}" width="123" id="yl"/>
+</mx:Application>

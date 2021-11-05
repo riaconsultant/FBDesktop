@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="272" 
+	height="130"
+	borderThickness="0"
+	horizontalAlign="center"
+	verticalAlign="middle"
+	creationComplete="handleCreationComplete(event)"
+	xmlns:vo="com.adobesamples.vo.*" 
+	xmlns:controls="com.adobesamples.controls.*">
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import mx.events.ColorPickerEvent;
+			import com.adobesamples.events.*;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			[Bindable]
+			private var __playerName:String;
+			
+			[Bindable]
+			private var __fontIndex:uint;
+			
+			[Bindable]
+			private var __nameColor:Number;
+			 
+			private var __dataProvider:ConfigurationItem;
+			private var __nameFont:String;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION		
+			
+			[Bindable("onDataProviderSet")]
+			/**
+			* This propery is a ConfigurationItem with the selected font options.
+			*
+			* @param i_dataProvider A ConfigurationItem populated with the current configuration.
+			* 
+			* @see com.adobesamples.vo.ConfigurationItem The ConfigurationItem class.
+			*/
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+			
+				__playerName = i_dataProvider.name_text;
+				__nameFont = i_dataProvider.name_font;
+				__nameColor = i_dataProvider.name_font_color;
+				
+				this.playerNameInput.text = __playerName;
+				this.selectProperColor();
+				this.fontComboBox.selectedIndex = this.getDataProviderFontIndex();
+				this.dispatchEvent(new Event("onDataProviderSet"));
+				
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __dataProvider;
+			}
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE METHODS			
+			
+			private function fixedInt(value:int, mask:String):String {
+                return String(mask + value.toString(16)).substr(-mask.length).toUpperCase();
+            }
+            
+            private function getDataProviderFontIndex():uint{
+				
+				for(var i:uint=0;i<fontComboBox.dataProvider.length;i++){
+					if(fontComboBox.dataProvider[i].data == __nameFont){
+						return i;
+					}
+				}
+				return 0;
+			}
+			
+			private function selectProperColor():void{
+				this.handleColorChange(new ColorPickerEvent("change",true,false,1.0,__nameColor));	
+			}
+            
+            /////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+
+			private function handleCreationComplete(event:Event):void{
+				this.playerNameColorPicker.addEventListener(ColorPickerEvent.ITEM_ROLL_OVER,handleColorChange);
+				this.playerNameInput.addEventListener(Event.CHANGE,handleNameChange);
+				this.fontComboBox.addEventListener(Event.CHANGE,handleFontChange);
+			}
+			
+			private function handleColorChange(event:ColorPickerEvent):void{
+				var nameColorEvent:ColorChosenEvent = new ColorChosenEvent(ColorChosenEvent.NAME_LABEL_COLOR_CHOSEN,event.color);
+				this.playerNameColorPicker.selectedColor = event.color;
+				this.dispatchEvent(nameColorEvent);
+				this.colorPickerValue.text = "#"+this.fixedInt(event.color,"000000"); 
+			}
+			
+			private function handleNameChange(event:Event):void{
+				var nameChangeEvent:NameTextChosenEvent = new NameTextChosenEvent(NameTextChosenEvent.NAME_CHOSEN,event.currentTarget.text);
+				this.dispatchEvent(nameChangeEvent);
+			}
+			
+			private function handleFontChange(event:Event):void{
+				var fontChangeEvent:FontChosenEvent = new FontChosenEvent(FontChosenEvent.FONT_CHOSEN,event.currentTarget.selectedItem.data);
+				this.dispatchEvent(fontChangeEvent);
+			}
+			
+			private function handleFontComboBoxCreationComplete(event:Event):void{
+				__fontIndex = this.getDataProviderFontIndex();
+			}
+
+
+
+		]]>
+	</mx:Script>
+	
+	<mx:ArrayCollection id="fontArray">
+		<vo:VOFontItem label="Arial" data="Arial"/>
+		<vo:VOFontItem label="Times" data="Times"/>
+		<vo:VOFontItem label="Myriad Pro" data="Myriad Pro"/>
+		<vo:VOFontItem label="Brothers" data="Brothers"/>
+	</mx:ArrayCollection>
+	<mx:VBox width="258" horizontalAlign="left" verticalScrollPolicy="off" verticalAlign="top">
+	       <mx:HBox horizontalAlign="left" width="150">
+				<mx:Label text="Player Name"/>
+			</mx:HBox>
+		<mx:HBox x="50">
+			<mx:TextInput id="playerNameInput" text="{__playerName}" height="20" styleName="textInputStyleName"/>
+			<mx:ColorPicker id="playerNameColorPicker" selectedColor="{dataProvider.name_font_color}" itemRollOver="handleColorChange(event)" change="handleColorChange(event)" creationComplete="this.selectProperColor()"/>
+			<mx:Label id="colorPickerValue"/>
+		</mx:HBox>
+		<mx:HBox horizontalAlign="left" width="150">
+				<mx:Label text="Font Selection"/>
+			</mx:HBox>
+		<mx:HBox>
+			<mx:ComboBox id="fontComboBox" itemRenderer="com.adobesamples.controls.ComboBoxCustomItemRenderer" creationComplete="handleFontComboBoxCreationComplete(event)" dataProvider="{fontArray}" valueCommit="handleFontComboBoxCreationComplete(event)" selectedIndex="{__fontIndex}" styleName="comboBoxStyle" height="20" width="174"/>
+		</mx:HBox>
+	</mx:VBox>
+</mx:VBox>

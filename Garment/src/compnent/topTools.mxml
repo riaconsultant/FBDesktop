@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="850" height="100">
+	<mx:HBox x="10" y="10" height="40" width="98%" backgroundColor="#ffffff" paddingTop="5" paddingBottom="5" paddingLeft="5" horizontalScrollPolicy="off" verticalScrollPolicy="off" cornerRadius="0">
+			<mx:Button label="Remove Selection" id="removeselection" width="31" height="29" click="removeSelection(event);" icon="@Embed(source='images/icons/remove.png')"/>
+			<mx:Button label="Text tool" id="test" width="31" height="31" click="hit(event);" icon="@Embed(source='images/icons/txt.png')"/>
+			<mx:Button label="Mouse Move" id="moves" width="31" height="29" click="hits(event);" icon="@Embed(source='images/icons/mouse.png')"/>
+			<mx:Button click="arc(event);" id="draws" icon="@Embed(source='images/icons/shape.png')" width="31" height="29" label="Shapes Tool"></mx:Button>
+			<mx:Button click="arc(event);" id="arcTextm" icon="@Embed(source='images/icons/curve-text.png')" width="31" height="29" label="Arc Text Editor"  focusAlpha="0"></mx:Button>
+			<mx:Button label="Email" id="email" width="36" height="29" click="arc(event);" icon="@Embed(source='images/icons/e-mail.png')"/>
+			<mx:Button label="Upload Vector Image" id="uploadVectorImg" width="31" height="29" click="arc(event)" icon="@Embed(source='images/icons/upload-vectore.png')"/>
+			<mx:Button label="Deletes Selection Object" id="deleteselectionobject" width="31" height="29" click="Delete()" icon="@Embed(source='images/icons/trash.png')"/>
+			<mx:Button label="copy" id="Copy" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/copy.png')"/>
+			<mx:Button label="cut" id="Cut" width="36" height="29" click="copy(event)" icon="@Embed(source='images/icons/cut.png')"/>
+			<mx:Button label="paste" id="Paste" width="36" height="29" click="paste()" icon="@Embed(source='images/icons/past.png')"/>
+			<mx:Label x="207" y="157" id="myl" text="hi" visible="false"/>
+		</mx:HBox>		
+		<mx:HBox x="10" y="55" height="37" width="98%" styleName="innertop" backgroundColor="#FFFFFF" paddingTop="5" paddingLeft="5" paddingBottom="5">
+			<mx:ColorPicker id="colorPicker" colorField="value" editable="false"  change="OnColorChange(event);"/>
+	        <mx:NumericStepper id="ip2" minimum="-50" maximum="50" value="{curSize}" stepSize="1" click="setNewStyles();" />
+	        <mx:ComboBox id="combobox" dataProvider="{cards}" width="150" change="onCmbFontChange(event)"/>
+	        <mx:Image width="20" height="20" source="images/justifyleft.gif" id="left" click="setTextAlign(event);"/>
+	        <mx:Image width="20" height="20" source="images/justifycenter.gif" id="center" click="setTextAlign(event);"/>
+	        <mx:Image width="20" height="20" source="images/justifyright.gif" id="right" click="setTextAlign(event);"/>
+	         
+	        <mx:Button x="137" y="70" label="B" width="33" fontWeight="bold" toggle="true" id="boldtext" mouseUp="checkbold()"/>
+			<mx:Button x="171" y="70" label="I" width="35" fontStyle="italic" toggle="true" id="italictext" mouseUp="checkitalic()"/>
+			<mx:Button x="205" y="70" label="U" width="33" textDecoration="underline" toggle="true" id="underlinetext" mouseUp="checkunderline()"/>
+	        <mx:Label text="Zoom :"/>
+	        <mx:HSlider id="slider"
+	         width="145"
+	         minimum="1"
+	         maximum="100"
+	         values="[50]" 
+	         tickInterval="10"
+	         snapInterval="1" 
+	         liveDragging="true" 
+	         change="changeZoom(event)"
+	         dataTipFormatFunction="myDataTipFunc"/>
+	      </mx:HBox>
+</mx:Canvas>

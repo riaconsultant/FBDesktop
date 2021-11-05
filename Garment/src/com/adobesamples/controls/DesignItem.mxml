@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="100%" 
+	height="100%"
+	horizontalAlign="center"
+	verticalAlign="middle"
+	xmlns:controls="com.adobesamples.controls.*" 
+  	horizontalScrollPolicy="off"
+ 	verticalScrollPolicy="off"
+	>
+
+	<mx:Script>
+		<![CDATA[
+
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import mx.core.UIComponent;
+			import mx.containers.Canvas;
+			import flash.display.DisplayObject;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+
+			private var __items:Array = new Array();
+			private var __baseColor:Number;
+			private var __trimColor:Number;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable("onBaseColorSet")]
+			/**
+			* This base color for the shirts.
+			*
+			* <p>When this base color is set, this function loops over all the children within
+			* this component and sets the baseColor of those children to the parameter passed in.</p>
+			*
+			* @param i_color The base color.
+			*/
+			public function set baseColor(i_color:Number):void{
+				__baseColor = i_color;
+				if(!isNaN(i_color)){
+					for(var i:Number=0;i<__items.length;i++){
+						__items[i]["baseColor"] = i_color;
+					}
+				}
+				this.dispatchEvent(new Event("onBaseColorSet"));
+			}
+			
+			public function get baseColor():Number{
+				return __items[0]["baseColor"];
+			}
+
+			[Bindable("onTrimColorSet")]
+			/**
+			* This trim color for the shirts.
+			*
+			* <p>When this trim color is set, this function loops over all the children within
+			* this component and sets the trimColor of those children to the parameter passed in.</p>
+			*
+			* @param i_color The trim color.
+			*/
+			public function set trimColor(i_color:Number):void{
+				__trimColor = i_color;
+				if(!isNaN(i_color)){
+					for(var i:Number=0;i<__items.length;i++){
+						__items[i]["trimColor"] = i_color;
+					}
+				}
+				this.dispatchEvent(new Event("onTrimColorSet"));
+			} 
+			
+			public function get trimColor():Number{
+				return __items[0]["trimColor"];
+			}
+			
+			/**
+			* The width property.
+			*
+			* <p>The width property of this component needed to be overwritten because the
+			* children added did not automatically update their widths properly.</p>
+			*
+			* @param i_width The total width of the component.
+			*/
+			override public function set width(i_width:Number):void{
+				for(var i:Number=0;i<__items.length;i++){
+					// The width of each item is equal to the total width divided by the number of items.
+					__items[i].width = (i_width / __items.length);
+				}
+			}
+			
+			/**
+			* The height property.
+			*
+			* <p>The height property of this component needed to be overwritten because the
+			* children added did not automatically update their heights properly.</p>
+			*
+			* @param i_height The total height of the component.
+			*/
+			override public function set height(i_height:Number):void{
+				for(var i:Number=0;i<__items.length;i++){
+					__items[i].height = (i_height);
+				}
+
+			}
+			
+			/////////////////////////////////////////////////////
+			// 	PUBLIC METHODS
+			
+			/**
+			* Adds a component as a child.
+			*
+			* @param i_displayObject The DisplayObject to add.
+			*/
+			public function addNewItem(i_displayObject:DisplayObject):void{
+				
+				__items.push(i_displayObject);
+				this.addChild(i_displayObject);
+				
+			}
+  
+
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

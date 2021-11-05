@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		//public 
+		private function clickHandler(event:MouseEvent):void
+		{
+			var ids:String= event.currentTarget.id;
+			myl.text=ids;
+			
+		}
+		public function init():void
+		{
+			mx.controls.Alert.show("hi"+myl.text);
+		}
+	]]>
+</mx:Script>
+	
+	
+	<mx:Label x="207" y="157" id="myl" text="hi" visible="false"/>
+	
+	<mx:Button x="255" y="233" id="copys" label="d" click="clickHandler(event)"/>
+	<mx:Button x="207" y="233" id="cut" label="d2" click="clickHandler(event)"/>
+	<mx:Button x="150" y="233" id="paste" label="d1" click="clickHandler(event)"/>
+	<mx:Button x="303" y="233" id="d3s" label="d3" click="init()"/>
+	
+	
+	
+	
+</mx:Application>

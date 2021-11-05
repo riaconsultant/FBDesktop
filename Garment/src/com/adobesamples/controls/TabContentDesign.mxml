@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Tile xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="640" 
+	height="100" 
+	borderThickness="0"
+	horizontalAlign="center"
+ 	verticalAlign="middle"
+ 	xmlns:controls="com.adobesamples.controls.*" 
+ 	xmlns:vo="com.adobesamples.vo.*">
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/////////////////////////////////////////////////////
+			// 	IMPORTS
+			
+			import com.adobesamples.vo.ConfigurationItem;
+			import com.adobesamples.events.DesignChosenEvent;
+			import mx.collections.*;
+			import mx.flash.UIMovieClip;
+			
+			/////////////////////////////////////////////////////
+			// 	PRIVATE VARIABLE DECLARATION
+			
+			[Bindable]
+			private var __dataProvider:ConfigurationItem;
+			
+			private var __designsArray:Array = new Array();
+			private var __repeaterItems:Array = new Array();
+			private var __selectedItem:Object;
+			
+			/////////////////////////////////////////////////////
+			// 	SETTER AND GETTER VARIABLE DECLARATION
+			
+			[Bindable("onDesignsSet")]
+			/**
+			* This propery is an array of all the designs.
+			*
+			* @param i_designs An array filled with populated VODesignItem's.
+			* 
+			* @see com.adobesamples.vo.VODesignItem The VODesignItem class.
+			*/
+			public function set designs(i_designs:Array):void{
+				__designsArray = i_designs;
+				this.dispatchEvent(new Event("onDesignsSet"));
+				
+			}
+			public function get designs():Array{
+				return __designsArray;	
+			
+			}
+			
+			/**
+			* This propery is a ConfigurationItem with the selected design.
+			*
+			* @param ConfigurationItem A ConfigurationItem populated with the current configuration.
+			* 
+			* @see com.adobesamples.vo.ConfigurationItem The ConfigurationItem class.
+			*/
+			public function set dataProvider(i_dataProvider:ConfigurationItem):void{
+				__dataProvider = i_dataProvider;
+				this.handleItemsInRepeaterInitialized();
+			}
+			
+			public function get dataProvider():ConfigurationItem{
+				return __dataProvider;
+			}
+			
+			/////////////////////////////////////////////////////
+			// 	HANDLER METHODS
+			
+			/**
+			* This method will unselect the previously selected option and select ButtonDesignItem 
+			* that was clicked.
+			*/
+			private function handleClick(event:MouseEvent):void{
+
+				if(__selectedItem != null){
+					__selectedItem.backgroundImage.visible = false;
+				}
+				__selectedItem = event.currentTarget;
+				__selectedItem.backgroundImage.visible = true;
+				
+				var newDesignChosenEvent:DesignChosenEvent = new DesignChosenEvent(DesignChosenEvent.DESIGN_CHOSEN,__selectedItem.dataProvider);
+				this.dispatchEvent(newDesignChosenEvent);
+
+			}
+			
+			/**
+			* This method stores the repeater items in an array.
+			*
+			* <p>When the repeater has drawn all its children it will fire off the 
+			* handleItemsInRepeaterInitialized method.</p>
+			*/
+			private function handleDesignItemRadioBtnCreationComplete(event:Event):void{
+				
+				__repeaterItems.push(event.target);
+				if(__repeaterItems.length == designs.length){
+					this.handleItemsInRepeaterInitialized();
+				}
+				
+			}
+			
+			/**
+			* This will select the proper ButtonDesignItem based upon the dataProvider.
+			*/
+			private function handleItemsInRepeaterInitialized():void{
+				for(var i:uint=0;i<__repeaterItems.length;i++){
+					if(__dataProvider.design == __repeaterItems[i].dataProvider.front){
+						if(__selectedItem != null){
+							__selectedItem.backgroundImage.visible = false;
+						}
+						__selectedItem = __repeaterItems[i];
+						__selectedItem.backgroundImage.visible = true;
+						var newDesignChosenEvent:DesignChosenEvent = new DesignChosenEvent(DesignChosenEvent.DESIGN_CHOSEN,__selectedItem.dataProvider);
+						this.dispatchEvent(newDesignChosenEvent);
+					}
+				}	
+			}
+
+			private function handleMouseOver(event:MouseEvent):void{
+				if(__selectedItem != event.currentTarget){
+					event.currentTarget.backgroundImage.visible=true;
+				}
+				
+			}
+			private function handleMouseOut(event:MouseEvent):void{
+				if(__selectedItem != event.currentTarget){
+					event.currentTarget.backgroundImage.visible=false;
+				}
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:Repeater id="designRepeater" dataProvider="{designs}">
+		<controls:ButtonDesignItem rollOver="handleMouseOver(event)" rollOut="handleMouseOut(event)" creationComplete="handleDesignItemRadioBtnCreationComplete(event)" styleName="designItem" click="handleClick(event)" dataProvider="{designRepeater.currentItem}"/>
+	</mx:Repeater>
+	
+</mx:Tile>

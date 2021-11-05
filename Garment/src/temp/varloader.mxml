@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal" verticalAlign="middle" backgroundColor="white" creationComplete="init()">
+
+    <mx:Script>
+        <![CDATA[
+        	import mx.controls.Alert;
+        	import mx.utils.ObjectUtil;
+            import mx.collections.ArrayCollection;
+			
+			[Bindable] private var myUrlpaht:String = ExternalInterface.call('eval', 'window.location.host');
+			[Bindable] private var myUrl:String="http://"+myUrlpaht+"/signimal/";
+
+
+            [Bindable]
+            private var VARIABLES_URL:String = "params.txt";
+
+            [Bindable]
+            private var arrColl:ArrayCollection;
+
+            [Bindable]
+            private var paramColl:ArrayCollection;
+
+            private var urlReq:URLRequest;
+            private var urlLdr:URLLoader;
+
+            private function init():void {
+                /* Initialize the two ArrayCollections objects with empty arrays. */
+                arrColl = new ArrayCollection();
+                paramColl = new ArrayCollection();
+
+                /* Initialize the URLRequest object with the URL to the file of name/value pairs. */
+                urlReq = new URLRequest(VARIABLES_URL);
+
+                /* Initialize the URLLoader object, assign the various event listeners, and load the specified URLRequest object. */
+                urlLdr = new URLLoader();
+                urlLdr.addEventListener(Event.COMPLETE, doEvent);
+                urlLdr.addEventListener(Event.OPEN, doEvent);
+                urlLdr.addEventListener(HTTPStatusEvent.HTTP_STATUS, doEvent);
+                urlLdr.addEventListener(IOErrorEvent.IO_ERROR, doEvent);
+                urlLdr.addEventListener(ProgressEvent.PROGRESS, doEvent);
+                urlLdr.addEventListener(SecurityErrorEvent.SECURITY_ERROR, doEvent);
+                urlLdr.load(urlReq);
+            }
+
+            private function doEvent(evt:Event):void {
+                arrColl.addItem({type:evt.type, idx:arrColl.length+1, eventString:evt.toString()});
+
+                switch (evt.type) {
+                    case Event.COMPLETE:
+                        /* If the load was successful, create a URLVariables object from the URLLoader.data property and populate the paramColl ArrayCollection object. */
+                        var ldr:URLLoader = evt.currentTarget as URLLoader;
+                        var vars:URLVariables = new URLVariables(ldr.data);
+                        var key:String;
+
+                        for (key in vars) {
+                            //paramColl.addItem({key:key, value:vars[key]});
+                            paramColl.addItem({key:key, value:vars[key]});
+                        }
+						Alert.show(ObjectUtil.toString(paramColl));
+                        //params.visible = true;
+                        break;
+                }
+            }
+        ]]>
+    </mx:Script>
+
+   <!-- <mx:VBox>
+        <mx:Label text="Events:" />
+        <mx:DataGrid id="events" dataProvider="{arrColl}" rowCount="5">
+            <mx:columns>
+                <mx:DataGridColumn dataField="idx" headerText="#" width="20" />
+                <mx:DataGridColumn dataField="type" headerText="Type" showDataTips="true" dataTipField="eventString" />
+            </mx:columns>
+        </mx:DataGrid>
+    </mx:VBox>-->
+
+    <mx:VBox>
+        <mx:Label text="Parameters:" />
+        <mx:DataGrid id="params" dataProvider="{paramColl}" rowCount="5" visible="false">
+            <mx:columns>
+                <mx:DataGridColumn dataField="key" headerText="Key" />
+                <mx:DataGridColumn dataField="value" headerText="Value" />
+            </mx:columns>
+        </mx:DataGrid>
+    </mx:VBox>
+
+</mx:Application>

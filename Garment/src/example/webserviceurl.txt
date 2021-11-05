@@ -1,0 +1,1 @@
+http://corlan.org/2008/11/13/flex-and-php-remoting-with-zend-amf/

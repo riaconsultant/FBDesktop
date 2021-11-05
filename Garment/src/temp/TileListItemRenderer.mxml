@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2008/03/29/dynamically-loading-xml-files-using-the-httpservice-tag/ -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:Image source="{data.@src}"
+			horizontalCenter="0"
+			verticalCenter="0" />
+
+</mx:Canvas>

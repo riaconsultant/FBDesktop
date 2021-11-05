@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="575" height="25" creationComplete="init()" backgroundColor="#C6C6C6">
+	<mx:Style source="style/comman.css"/>
+	<mx:Script>
+		<![CDATA[
+			import flash.net.URLRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.SliderEvent;
+			import mx.utils.Base64Decoder;
+			import mx.utils.ObjectUtil;
+			[Bindable]
+			public var conMenu:ContextMenu;
+			[Bindable]
+			public var songlist:Array;
+			public var s:Sound = new Sound();
+			public var pausePos:int = 0;
+			public var channel:SoundChannel;
+			private var _soundLoaderContext:SoundLoaderContext;
+			[Bindable]
+			private var _volume:Number = 1;				
+			private var _preMuteVolume:Number = 0;
+			private var _currentTime:Number = 0;
+			private var _transform:SoundTransform;
+			private var _timer:Timer;
+			private var _duration:Number = 0;
+			private var _bytesLoaded:Number = 0;
+			private var _bytesTotal:Number = 0;		
+			[Bindable]
+			public var songObj:Object;
+			private var positionTimer:Timer;
+			[Bindable]
+			public var playCount:int=0;
+			public var playServiceList:Boolean=true;
+			public var isStop:Boolean=true;
+			
+			private var stream:URLStream;
+
+			public function init():void{
+				//Security.allowDomain("*");
+				//Security.loadPolicyFile("*");
+				System.useCodePage=false;
+				_transform = new SoundTransform();
+				_soundLoaderContext = new SoundLoaderContext(2000, false);
+				_timer = new Timer(400);
+				_timer.addEventListener(TimerEvent.TIMER, timerEventHandler);
+				
+				var cumArr:Array=new Array();
+				var conMenuItem:ContextMenuItem=new ContextMenuItem("Developed By : Octal Info Solution India",true);
+				conMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,openSite);
+				cumArr[0]=conMenuItem;
+				conMenu=new ContextMenu();
+				conMenu.hideBuiltInItems();
+				conMenu.builtInItems.print=false;
+				conMenu.customItems=cumArr;
+				Application.application.contextMenu=conMenu;
+				this.contextMenu=conMenu;
+				mainCanvas.contextMenu=conMenu;
+				
+				if (ExternalInterface.available){
+					ExternalInterface.addCallback("playSong", playSong);
+					ExternalInterface.addCallback("playerList", playerList);
+					ExternalInterface.addCallback("songList", songList);
+					ExternalInterface.addCallback("removeCurrentSong", removeCurrentSong);
+				}
+				startLength.text="0:00";
+			}
+			
+			public function removeCurrentSong():void{
+				if(channel){
+					channel.stop();
+					_currentTime = 0;
+					startLength.text="0:00";
+					totalLength.text="0:00";
+					positionSlider.value=0;
+					channel.stop();
+					s=null;
+					s=new Sound();
+					channel=new SoundChannel();
+					playServiceList=false;
+					songTitle.text='';
+				}
+			}
+			
+			public function openSite(event:ContextMenuEvent):void{
+				var site:URLRequest=new URLRequest("http://www.octalsoftware.com");
+				navigateToURL(site,"_blank");
+			}
+			
+			
+			public function playSong(title:String,songUrl:String,songId:String):void{
+				//songUrl = "http://192.168.1.123/video/golmaal3-05(www.songs.pk).mp3";
+				//traceData.text="url---"+songUrl+"id---"+songId;
+				if(s.url!= null){
+					channel.stop();
+					s=null;
+					s=new Sound();
+					channel=new SoundChannel();
+				}
+				try{
+					
+					var urlreq:URLRequest=new URLRequest(songUrl);
+					urlreq.contentType="audio/mpeg";
+					s.load(urlreq,_soundLoaderContext);
+					//Alert.show(ObjectUtil.toString(urlreq));
+					//s.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+				}catch(error:IOError){
+					//ExternalInterface.call("alert","Invalid File ");
+				}
+				_currentTime = 0;
+				play(songId);
+				songTitle.text=title;
+				
+			}
+			
+			private function play(songId:String):void{
+				_timer.stop();
+				if(pausePlayBtn.selected){
+					pausePlayBtn.selected=false;
+				}
+				channel=s.play(_currentTime, 0, _transform);
+				s.addEventListener(ProgressEvent.PROGRESS,progressHandler);
+				s.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+
+				_timer.start();
+				
+				channel.removeEventListener(Event.SOUND_COMPLETE, onPlaybackComplete);
+				channel.addEventListener(Event.SOUND_COMPLETE, onPlaybackComplete);
+				move_up.end();
+				text_move();
+				if (ExternalInterface.available)
+				{
+					ExternalInterface.call("displaySong",songId);
+				} 
+			}
+			
+			private function ioErrorHandler(evt:IOErrorEvent):void{
+				if (ExternalInterface.available){
+					//ExternalInterface.call("alert","Invalid File ");
+					//nextSong();
+				}
+			}
+			
+			private function progressHandler(e:ProgressEvent):void {
+				
+				_bytesLoaded = e.bytesLoaded;
+				_bytesTotal = e.bytesTotal;
+				if(_bytesLoaded > 10){
+					totalLength.text = formatTime(Math.round(s.length * s.bytesTotal/s.bytesLoaded/100) / 10);
+					startLength.text = formatTime(channel.position/1000);
+				}
+				songProgressbar.minimum=0;
+				songProgressbar.maximum=_bytesTotal;
+				songProgressbar.setProgress(_bytesLoaded,_bytesTotal);
+			}
+			
+			private function timerEventHandler(e:TimerEvent):void {
+				_currentTime = channel.position/1000;			
+				
+				// calculate duration
+				var duration:* = Math.round(s.length * s.bytesTotal/s.bytesLoaded/100) / 10;
+				
+				// check to see if the estimated duration changed
+				if (_duration != duration && !isNaN(duration)) {
+					_duration = duration;
+				}
+				
+				// time Update
+				startLength.text = formatTime(_currentTime);
+				totalLength.text = formatTime(duration);
+				positionSlider.maximum = duration;
+				positionSlider.value = _currentTime;
+				// sometimes the ended even doesn't fire, here's a fake one
+				if (_currentTime >= _duration-0.5) {
+					handleEnded();
+				}
+			}
+			
+			private function handleEnded():void {
+				_timer.stop();
+				_currentTime = 0;
+				if(songlist){
+					if(songlist.length > 1){
+						nextSong();
+					}
+				}
+			}
+			
+			public function onPlaybackComplete(event:Event):void{
+				// on sound complete
+				//ExternalInterface.call("playerList",playCount+1);
+				_currentTime = 0;
+				/* if(songlist){
+					if(songlist.length > 1){
+						nextSong();
+					}
+				} */
+				/* if(playCount == (songlist.length-1)){
+					playCount=0;
+				} */
+			}
+			
+			public function playerList(arg:Array,index:int):void{
+				songlist=arg;
+				playCount=index;
+				loadSong();
+				//traceData.text=ObjectUtil.toString(songlist);
+			}
+			
+			public function songList(arg:Array):void{
+				songlist=arg;
+			}
+			
+			private function generateRandomNumber( start:Number, end:Number ):Number{
+				var randomNum:Number;
+				if( end == 1 ){
+					// Number is between 0 and 1, don't round.
+					randomNum = Math.random();
+				}
+				else{
+					// Number is between 0 and 100 or 1000, round the number
+					randomNum = Math.round( Math.random() * end );
+				}
+				// Show random number in TextInput
+				return randomNum;
+			}
+			
+			public	var arrNum:Number;
+			public	var playerCounter:int=0;
+			public function nextSong():void{
+				_currentTime = 0;
+				if(suffleButton.selected){ // Suffle true
+					arrNum=generateRandomNumber(0,songlist.length-1);
+					playCount = arrNum;
+					if(loopButton.selected){
+						loadSong();
+					}else{
+						if(playerCounter < songlist.length){
+							loadSong();
+							playerCounter++;
+						}
+					}
+				}else{ // Suffle false
+					if(loopButton.selected){
+						playCount=playCount+1;
+						if(playCount > songlist.length-1 && playCount != 0){
+							playCount = 0;
+						}
+						loadSong();
+					}else{
+						if(playCount < songlist.length-1){
+							playCount=playCount+1;
+							loadSong();
+						}
+					}
+				}
+			}
+			public function previousSong():void{
+				_currentTime = 0;
+				if(suffleButton.selected){// Suffle true
+					arrNum=generateRandomNumber(0,songlist.length-1);
+					playCount = arrNum;
+					if(loopButton.selected){
+						loadSong();
+					}else{
+						if(playerCounter < songlist.length){
+							loadSong();
+							playerCounter++;
+						}
+					}
+				}else{   // Suffle false
+					if(loopButton.selected){ // Loop true
+						playCount=playCount-1;
+						if(playCount < 0){
+							playCount=songlist.length-1;
+						}
+						loadSong();
+					}else{
+						if(playCount >= 1 && playCount <= songlist.length-1){
+							playCount=playCount-1;
+							loadSong();
+						}
+					} 
+				}
+			}
+			
+			private function loadSong():void{
+				songObj=songlist[playCount];
+				if(songObj!=null){
+					playSong(songObj['title'],songObj['lang'],songObj['id']);
+				}
+				//traceData.text=ObjectUtil.toString(songObj);
+			}
+			
+			 private function sliderThumbEvent(event:Event):void
+			{      
+				if(channel){
+					_timer.stop();
+					_currentTime = event.currentTarget.value;
+					channel.stop();
+					startLength.text = formatTime(_currentTime);
+					positionSlider.value = _currentTime;
+					channel = s.play(_currentTime * 1000, 0, _transform);
+					_timer.start();
+				}
+			}
+			
+			private function sliderClickEvent(sliderVal:Number):void
+			{      
+				if(channel){
+					_timer.stop();
+					_currentTime = sliderVal;
+					channel.stop();
+					startLength.text = formatTime(_currentTime);
+					positionSlider.value = _currentTime;
+					channel = s.play(_currentTime * 1000, 0, _transform);
+					_timer.start();
+				}
+			}
+			
+			
+			
+			private function formatTime(value:int):String {
+				var result:String = (value % 60).toString();
+				if (result.length == 1)
+					result = Math.floor(value / 60).toString() + ":0" + result;
+				else
+					result = Math.floor(value / 60).toString() + ":" + result;
+				return result;
+			}
+			
+			private function playPauseHandler():void{
+				if(channel){
+					if(playCount == (songlist.length-1)){
+						if(isStop==false){
+							isStop=true;
+						}else{
+							playCount=0;
+							ExternalInterface.call("playerList",playCount);
+							playServiceList=true;
+						}
+					}
+					if(playServiceList==false){
+						if(ExternalInterface.available){
+							ExternalInterface.call("playerList",playCount);
+							playServiceList=true;
+						}
+					}else{
+						if(pausePlayBtn.selected){
+							pausePos = channel.position;
+							//channel.stop();
+							_timer.stop();
+							_currentTime = channel.position;
+							channel.stop();
+							
+							pausePlayBtn.toolTip="Pause";
+						} else {
+							//channel = s.play(pausePos);
+							channel = s.play(_currentTime, 0, _transform);
+							_timer.start();
+							pausePlayBtn.toolTip="Play";
+							//isStop=true;
+						}
+					}
+				}else{
+					//ExternalInterface.call("playerList",0);
+					if(ExternalInterface.available){
+						playerCounter=0;
+						ExternalInterface.call("playerList",playerCounter);
+					}
+					if(songlist==null){
+						ExternalInterface.call("alert","Please select song.");
+						pausePlayBtn.selected=false;
+					}
+				}
+			}
+			
+			private function stopHandler():void{
+				//Alert.show(ObjectUtil.toString(playCount));
+				if(channel){
+					channel.stop();
+					_currentTime = 0;
+					startLength.text="0:00";
+					totalLength.text="0:00";
+					positionSlider.value=0;
+					channel.stop();
+					s=null;
+					s=new Sound();
+					channel=new SoundChannel();
+					playServiceList=false;
+					songTitle.text='';
+					isStop=false;
+				}
+			}
+			
+			private function muteHandler():void{
+				if(channel){
+					//var transform:SoundTransform = channel.soundTransform;
+					if (mute.selected) {
+						_preMuteVolume = _transform.volume;
+						_transform.volume = 0;
+						channel.soundTransform = _transform;
+						_volume = 0;
+						volSlider.value=0;
+						mute.selected=true;
+					}else{
+						_transform.volume = _preMuteVolume;
+						channel.soundTransform = _transform;
+						_volume = _preMuteVolume;
+						volSlider.value=_preMuteVolume;
+						mute.selected=false;
+					}
+				}else{
+					
+				}
+			}
+			
+			private function volHandler(evt:SliderEvent):void{
+				if(channel){
+					_transform.volume = evt.value;
+					channel.soundTransform = _transform;
+					_volume = evt.value;
+					mute.selected=false;
+				}else{
+					
+				}
+			}
+			
+			private function move_pause():void{
+				move_up.pause();  //pause
+			}
+			
+			private function move_resume():void{
+				move_up.resume(); //start from the pause position
+			}
+			
+			 private function text_move():void{
+				 move_up.xFrom = titleCanvas.width ;  
+                 if(titleCanvas.width < songTitle.width ){
+				 	move_up.xTo = 0 - (2*move_up.xFrom) ;
+				 }else{
+				 	move_up.xTo = 0 - move_up.xFrom;
+				 }
+                 //move_up.xTo = 0 - songTitle.width - (_songTitle.length*4);
+				// move_up.xTo=-10-475;
+                 move_up.repeatCount = 0; //loop
+                 move_up.repeatDelay = 0; //loop time
+                 move_up.duration = 8000; //the time of scroll once
+                 move_up.play();
+	             //Alert.show(move_up.xFrom+"----"+move_up.xTo+"---"+songTitle.width);    
+             }
+			
+			private function suffleToggle():void{
+				if(suffleButton.selected){
+					
+				}else{
+					playerCounter=0;
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:Move id="move_up" target="{songTitle}"/>
+	<mx:Canvas id="mainCanvas" left="0" right="0" bottom="0" top="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:Image x="2" y="0" source="@Embed(source='assets/img/SongPallate.png')"/>
+		<mx:Image x="6" y="6" source="@Embed(source='assets/img/MusicIcon.png')"/>
+		<mx:Canvas id="titleCanvas" y="0" width="215" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="16">
+			<mx:Label y="0" styleName="title" id="songTitle" mouseOver="move_pause()" mouseOut="move_resume()" width="100%" x="0"  color="#FFCC33" fontWeight="bold"/>
+		</mx:Canvas>
+		<mx:ProgressBar x="320" y="6" width="140" label=" " height="5" id="songProgressbar" mode="manual" themeColor="#FFCC33"/>
+		<mx:HSlider id="positionSlider" x="314" y="2" width="151" height="12" minimum="0" snapInterval="1" maximum="10" liveDragging="true" showDataTip="false" click="sliderClickEvent(positionSlider.value)" 
+					thumbDrag="sliderThumbEvent(event);" allowTrackClick="true" styleName="positionSliderCSS"/>
+		<mx:Button styleName="nxtButton" right="3" width="25" height="25" buttonMode="true" toolTip="Next" click="nextSong();" y="0"/>
+		<mx:Button styleName="preButton" right="30" width="25" height="25" buttonMode="true" toolTip="Previous" click="previousSong();" y="0"/>
+		<mx:Button id="pausePlayBtn" styleName="playButton" x="466" width="25" height="25" buttonMode="true" toggle="true" click="playPauseHandler()" y="0" toolTip="Play"/>
+		<mx:Label x="315" y="11" text="0:00" id="startLength" height="14"/>
+		<mx:Label y="11" text="00:00" id="totalLength" width="40" height="14" right="109"/>
+		<mx:Button x="234" y="1" styleName="loop" width="14" height="12" buttonMode="true" id="loopButton" toggle="true" toolTip="Loop"/>
+		<mx:Button x="234" y="13" styleName="suffle" width="14" height="12" buttonMode="true" id="suffleButton" toggle="true" toolTip="Suffle" click="suffleToggle();"/>
+		<mx:Button id="mute" x="251" y="5" width="12" height="15" toggle="true" click="muteHandler()" styleName="volButton" toolTip="Volume"/>
+		<!--<mx:Image   source="@Embed(source='assets/img/VolumeIcon.png')"/>-->
+		<mx:HSlider id="volSlider" x="265" y="2" width="50" maximum="1" snapInterval=".1" minimum="0" liveDragging="true" height="12" 
+							value="{_volume}" useHandCursor="true" buttonMode="true" showDataTip="false" change="volHandler(event)" styleName="valSliderCSS"/>
+		<mx:Button x="493" y="0" styleName="stopButton" id="stopBtn" click="stopHandler()" buttonMode="true" toolTip="Stop"/>
+		<!--<mx:TextArea x="10" y="46" text="Text" width="530" height="194" id="traceData"/>-->
+	</mx:Canvas>
+</mx:Application>

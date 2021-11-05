@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" creationComplete="init()" backgroundAlpha="0.7" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			//public var myText:String;
+			private function init():void{
+				//Alert.show(data.img.source);
+				if(data.img.uid == "image"){
+					myImage.enabled=true;
+				}else if(data.img.uid == "text"){
+					objText.enabled=true;
+					objText.width=50;
+					
+				}else{}
+			}
+		]]>
+	</mx:Script>
+	<!--<mx:Canvas width="100%" height="100%">-->
+		<mx:Label id="objText" text="{data.img.text}" enabled="false" horizontalCenter="0" verticalCenter="0"/>
+		<mx:Image id="myImage" width="75" height="75" source="{data.img.source}" useHandCursor="true" buttonMode="true" enabled="false" horizontalCenter="0" verticalCenter="0"/>
+		<mx:Label id="myText" text="{data.obj}" visible="false" width="1" height="1"/>
+	<!--</mx:Canvas>	-->
+</mx:HBox>

@@ -1,0 +1,54 @@
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+    <mx:Script>
+    <![CDATA[
+    
+    import mx.collections.ArrayCollection;
+	import mx.controls.ComboBox;
+
+
+
+ [Bindable] public var state:Array = [{label:"state 1"}, {label:"state 2"}, {label:"state 3"}];
+
+// Arrays containing the cities for a particular state
+ [Bindable]public var cities1:Array = [{label:"state 1 city 1"}, {label:"state 1 city 2"}, {label:"state 1 city 3"}];
+ [Bindable]public var cities2:Array = [{label:"state 2 city 1"}, {label:"state 2 city 2"}, {label:"state 2 city 3"}];
+ [Bindable]public var cities3:Array = [{label:"state 3 city 1"}, {label:"state 3 city 2"}, {label:"state 3 city 3"}];
+
+// Set the onState method to execute when the cb1 combo box is changed
+//cb1.addEventListener ("change", onState);
+
+// The method executed when cb1 is changed
+private function onState(event:Object):void
+{
+	var cb:ComboBox = event.target;
+	var state:String = cb.selectedItem.label;
+	
+	// Sets the city combo box depending on the state picked
+	switch (state)
+	{
+		case "state 1" :
+			cb2.dataProvider = cities1;
+			break;
+			
+		case "state 2" :
+			cb2.dataProvider = cities2;
+			break;
+			
+		case "state 3" :
+			cb2.dataProvider = cities3;
+			break;
+	}
+}
+    
+    ]]>
+    </mx:Script>
+    
+  
+
+    <!-- Panels Title gets set to selected Name, TexBoxes are filled with appropriate data -->
+   
+   <mx:ComboBox id="cb1" dataProvider="{state}" change="onState(event)"/>
+   <mx:ComboBox id="cb2" y="50"/>		
+
+   
+</mx:Application>

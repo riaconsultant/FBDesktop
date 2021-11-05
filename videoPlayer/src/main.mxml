@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+  xmlns:mx="http://www.adobe.com/2006/mxml" 
+  xmlns:ns1="com.enefekt.tubeloc.*"
+  layout="absolute" 
+  applicationComplete="appComplete()" >
+	
+	<mx:TileList id="movieList" click="onTileListClicked(event)" dataProvider="{videoCollection}" itemRenderer="Thumbnail"  bottom="10" top="10" left="10" width="202"></mx:TileList>
+	<ns1:Movie top="10" right="10" left="220" bottom="40" id="movie" chromeless="true" />
+	<mx:Canvas id="movieCanvas" doubleClick="video_fullscreen()" backgroundAlpha="1.0" left="220" right="10" top="10" bottom="40"/>
+	<mx:Button label="Stop" bottom="10" right="10" id="btnStop"  click="{this.movie.stopVideo();}"/>
+	<mx:Button label="Pause" bottom="10" right="70" id="btnPause" click="{this.movie.pauseVideo();}"/>
+	<mx:Button label="Play" right="139" bottom="10" id="btnPlay" click="{this.movie.playVideo();}"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import ca.newcommerce.youtube.data.VideoData;
+			import ca.newcommerce.youtube.feeds.VideoFeed;
+			import ca.newcommerce.youtube.events.StandardVideoFeedEvent;
+			import ca.newcommerce.youtube.webservice.YouTubeFeedClient;
+			import mx.collections.ArrayCollection;
+			
+			private static const API_KEY:String = "AI39si4PUqO3gE1rJAyzhcU0MqihM71DM_i1_B-zetQ61nGpjJUIBfKDNNB1v0PzmciS-VgdeL8jBii_JCuDPmyzbxCvyflLeQ";
+			[Bindable]
+			private var videoCollection:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var conMenu:ContextMenu;
+			Security.loadPolicyFile("*");
+			
+			private function appComplete():void
+			{
+				YouTubeFeedClient.getInstance().addEventListener(StandardVideoFeedEvent.STANDARD_VIDEO_DATA_RECEIVED, doVideosReceived);
+
+	            YouTubeFeedClient.getInstance().getStandardFeed(
+	            	YouTubeFeedClient.STD_TOP_RATED,
+		            YouTubeFeedClient.TIME_MONTH, 
+		            1,
+		            10);
+				var cumArr:Array=new Array();
+				var conMenuItem:ContextMenuItem=new ContextMenuItem("Developed By : Octal Info Solution India",true);
+				conMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,openSite);
+				var conMenuItem1:ContextMenuItem=new ContextMenuItem("Go Full Screen",true);
+				conMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,fullScreenSite);
+				cumArr[0]=conMenuItem;
+				cumArr[1]=conMenuItem1;
+				conMenu=new ContextMenu();
+				conMenu.hideBuiltInItems();
+				
+				conMenu.builtInItems.print=false;
+				conMenu.customItems=cumArr;
+				this.contextMenu=conMenu;
+				movieCanvas.contextMenu=conMenu;
+			}
+			
+			public function openSite(event:ContextMenuEvent):void{
+				//Alert.show(event.currentTarget.valueOf());
+				var site:URLRequest=new URLRequest("http://www.octalsoftware.com");
+				navigateToURL(site,"_blank");
+			}
+			public function fullScreenSite(event:ContextMenuEvent):void{
+				this.video_fullscreen();
+			}
+			
+			
+			private function video_fullscreen():void {
+				try {
+					switch (this.movieCanvas.stage.displayState) {
+						case StageDisplayState.FULL_SCREEN:
+							/* If already in full screen mode, switch to normal mode. */
+							movieCanvas.stage.displayState = StageDisplayState.NORMAL;
+							movieList.visible=true;
+							break;
+						default:
+							/* If not in full screen mode, switch to full screen mode. */
+							movieCanvas.stage.displayState = StageDisplayState.FULL_SCREEN;
+							/* movieCanvas.x=0;
+							movieCanvas.y=0;
+							movieCanvas.percentWidth=100;
+							movieCanvas.percentHeight=100; */
+							movieList.visible=false;
+							break;
+					}
+				} catch (err:SecurityError) {
+					// ignore
+				}
+				//setMovieSize(width, height);
+			}
+			private function doVideosReceived(evt:StandardVideoFeedEvent):void
+	        {	         
+	            var feed:VideoFeed = evt.feed;
+	            var video:VideoData = null;
+	            var newVideoCollection:ArrayCollection = new ArrayCollection();
+	
+	            while(video = feed.next())
+	            {
+	            	newVideoCollection.addItem(video);
+	            }
+	            	
+	            this.videoCollection = newVideoCollection;
+	        }
+	        
+	        private function onTileListClicked( event:Event ):void
+			{
+				if (event.currentTarget.selectedItem != null)
+				{
+					var movieID:String = event.currentTarget.selectedItem.actualId;
+					this.movie.loadVideoById(movieID);
+				}
+			}
+		]]>
+	</mx:Script>
+
+</mx:Application>

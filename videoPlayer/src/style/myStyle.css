@@ -1,0 +1,133 @@
+/* CSS file */
+Application{
+	
+}
+
+Button{
+	cornerRadius: 3;
+	themeColor: #454646;
+	leading: 0;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+	horizontalGap: 0;
+	
+}
+
+.timeLabel{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontWeight: normal;
+	fontSize: 11;
+
+}
+
+.customLabel{
+	color: #0090CC;
+	fontFamily: Arial;
+	fontWeight: normal;
+	fontSize: 11;
+
+}
+
+.HD{
+	color: #1F1F1F;
+	fontFamily: Arial;
+	fontWeight: bold;
+	fontSize: 20;
+	fontStyle: italic;
+
+}
+
+.seek
+{
+	dataTipPlacement: top;
+	themeColor: #0090CC;
+	track-height:10;
+	/*track-highlight-skin:Embed(source="../assets/img/VideoTrack.gif");*/
+	trackColors: white;
+	trackSkin: Embed(source="../assets/img/progressbar.gif");
+	showTrackHighlight: true;
+	thumbSkin: Embed(source="../assets/img/VideoArrow2.gif");
+	tickLength: 0;
+}
+
+.volumeStyle
+{
+	dataTipPlacement: top;
+	themeColor: #0090CC;
+	trackColors: #0090CC;
+	tickColor: #FEFEFE;
+	track-height:10;
+	/*track-highlight-skin:Embed(source="../assets/img/SoundTrack.gif");*/
+	thumbSkin: Embed(source="../assets/img/SoundArrow2.gif");
+	trackSkin: Embed(source="../assets/img/VideoSlider.gif");
+	showTrackHighlight: true;	
+}
+
+.playButton{
+	upIcon: Embed(source="../assets/img/Play.png");
+	overIcon: Embed(source="../assets/img/Play.png");
+	downIcon: Embed(source="../assets/img/Play.png");
+	
+}
+
+.pauseButton{
+	upIcon: Embed(source="../assets/img/Pause.png");
+	overIcon: Embed(source="../assets/img/Pause.png");
+	downIcon: Embed(source="../assets/img/Pause.png");
+	
+}
+
+.controlCanvasCSS
+{
+	/*background-gradient-colors: #4E4E4E,#8F8F8F;
+	background-gradient-colors:1,0.95;*/
+	background-color:#4E4E4E;
+	borderStyle:"solid" ;
+	borderThickness:"1"; 
+	borderColor:"#030303";
+}
+
+.fullScreenButAtMin{
+	upIcon: Embed(source="../assets/img/Full.png");
+	overIcon: Embed(source="../assets/img/Full.png");
+	downIcon: Embed(source="../assets/img/Full.png");
+}
+
+.fullScreenButAtMax{
+	upIcon: Embed(source="../assets/img/Original.png");
+	overIcon: Embed(source="../assets/img/Original.png");
+	downIcon: Embed(source="../assets/img/Original.png");
+}
+
+.onValStyle{
+	upIcon: Embed(source="../assets/img/Sound.png");
+	overIcon: Embed(source="../assets/img/Sound.png");
+	downIcon: Embed(source="../assets/img/Sound.png");
+}
+
+.offValStyle{
+	upIcon: Embed(source="../assets/img/Mute.png");
+	overIcon: Embed(source="../assets/img/Mute.png");
+	downIcon: Embed(source="../assets/img/Mute.png");
+}
+.rePlayButton{
+	upIcon: Embed(source="../assets/img/Replay.png");
+	overIcon: Embed(source="../assets/img/Replay.png");
+	downIcon: Embed(source="../assets/img/Replay.png");
+	paddingLeft: 0;
+	cornerRadius: 12;
+	
+}
+
+ProgressBar
+{
+	borderColor: #FFFFF0;
+	barColor: #FFFFF0;
+	verticalGap: 0;
+	trackHeight: 5;
+	trackSkin: Embed(source="../assets/img/track_img.png");
+	color: #030303;
+}

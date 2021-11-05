@@ -1,0 +1,153 @@
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:flashfilters="flash.filters.*"
+    layout="absolute"
+      xmlns:degrafa="com.degrafa.*"
+    xmlns:paint="com.degrafa.paint.*"
+    xmlns:geometry="com.degrafa.geometry.*"
+    xmlns="http://www.degrafa.com/2007"
+     creationComplete="init()">
+
+        <mx:Script>
+              <![CDATA[
+              	import mx.core.UIComponent;
+              	import com.degrafa.paint.SolidFill;
+              	import com.degrafa.geometry.RoundedRectangle;
+import com.degrafa.geometry.Polygon;
+import com.degrafa.paint.SolidStroke;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import com.roguedevelopment.objecthandles.*
+import com.degrafa.paint.SolidFill;
+public var redFill:SolidFill = new SolidFill("red");
+
+
+
+
+private function createRectangle():void
+{
+	var ap:AccessibilityProperties = new AccessibilityProperties();
+	ap.name = "Rectangle";
+	var rect:Sprite = new Sprite();
+	rect.graphics.lineStyle(2, 0x990000, .75);
+	rect.graphics.drawRect(50,50,150,100);
+	rect.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown) ;
+	rect.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
+	rect.accessibilityProperties = ap;
+	var myTextBox:TextField = new TextField();
+	var myText:String = "Hello world and welcome to the show. It's really nice to meet you. Take your coat off and stay a while. OK, show is over. Hope you had fun. ";
+	var wVal:Number = 130;
+	var hVal:Number = 80;
+	
+	myTextBox.type = TextFieldType.INPUT;
+	myTextBox.background = true;
+	myTextBox.border = true;
+	myTextBox.width = wVal;
+	myTextBox.height = hVal;
+	myTextBox.borderColor = 0xFFFFFF;
+	myTextBox.x = 60;
+	myTextBox.y = 60;
+	myTextBox.wordWrap = true;
+	myTextBox.multiline = true;
+
+	if (Capabilities.hasAccessibility) {
+
+	Accessibility.updateProperties();
+
+	}
+
+	var format:TextFormat = new TextFormat();
+	format.font = "Verdana";
+	format.color = 0xFF0000;
+	format.size = 10;
+	myTextBox.defaultTextFormat = format;
+	myTextBox.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownScroll);
+	myTextBox.addEventListener(TextEvent.TEXT_INPUT, textInputCapture);
+
+	function mouseDownScroll(event:MouseEvent):void
+	{myTextBox.scrollV++;}
+
+	rect.addChild(myTextBox);
+	myTextBox.text = myText;
+
+	function textInputCapture(event:TextEvent):void{var str:String =myTextBox.text;}
+	var uiComp:UIComponent = new UIComponent();
+	uiComp.addChild(rect);
+	targetPanel.addChild(uiComp);
+
+	function mouseDown(event:MouseEvent):void {rect.startDrag();}
+	function mouseReleased(event:MouseEvent):void {rect.stopDrag();}
+
+} 
+
+
+
+
+               	 private function init():void {
+                        
+                      createRectangle();
+                        
+                        
+                         var oh1:ObjectHandles = new ObjectHandles();
+                         var oh2:ObjectHandles = new ObjectHandles();
+                         oh2.width=150;
+                         oh2.height=150;
+                         
+                         var sur2:Surface = new Surface();
+                         var geometry2:GeometryGroup = new GeometryGroup();
+                         
+                        
+                         var myPoly:Polygon = new Polygon();
+                         myPoly.data = "388.57143,489.50505 222.33731,365.62025 44.325966,471.8897 110.77824,275.50914 -45.298538,139.04936 162.00536,141.5643 243.55594,-49.041929 305.22452,148.89295 511.70233,167.5516 342.51171,287.36714 388.57143,489.50505";
+                         // var points:Array = myPoly.points.concat();
+                        // var newPoints:Array = [];
+                        // myPoly.points = [150, 150];
+                         myPoly.stroke = new SolidStroke("black", 0.2, 20);
+                         myPoly.draw(geometry2.graphics,null);
+                         
+                         sur2.addChild(geometry2);
+						 oh2.addChild(sur2);
+						 targetPanel.addChild(oh2);
+                        
+                        
+                         var geometry1:GeometryGroup = new GeometryGroup();
+                         geometry1.percentHeight=100;
+                         geometry1.percentWidth=100;
+                         var round_rec:RoundedRectangle = new RoundedRectangle();
+						 round_rec.fill= redFill;
+						 round_rec.percentHeight=100;
+						 round_rec.percentWidth=100;
+						 round_rec.draw(geometry1.graphics,null);
+						 
+						 //geometry1.geometry = [round_rec];
+						 
+						 var sur:Surface = new Surface();
+						 sur.addChild(geometry1);
+						 oh1.addChild(sur);
+						 targetPanel.addChild(oh1);
+                         
+                       
+                         
+                        
+						
+                }
+
+                ]]>
+        </mx:Script>
+<mx:Canvas id="targetPanel">
+	
+</mx:Canvas>        
+        
+<degrafa:Surface id="SVG" verticalCenter="0" horizontalCenter="0" scaleX="{zoomer.value}" scaleY="{zoomer.value}" width="800" height="600" >
+   <degrafa:GeometryGroup id="geomTarget"><!--open a DisplayObject wrapper for
+Geometry items-->
+   <degrafa:GeometryComposition id="composition" >
+      
+     
+           </degrafa:GeometryComposition>
+          </degrafa:GeometryGroup><!--close the DisplayObject wrapper for Geometry
+items-->
+
+</degrafa:Surface>
+<mx:VSlider id="zoomer" x="20" liveDragging="true" value="1" minimum=".5" maximum="8" />
+
+</mx:Application> 
