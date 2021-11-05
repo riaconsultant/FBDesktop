@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   creationComplete="init();" preloader="com.manutech.component.preload.CustomPreloader"
+					   showStatusBar="false" minWidth="960" minHeight="640" width="960" height="640"  
+					   xmlns:comp="com.manutech.component.*" backgroundAlpha="0.0" xmlns:module="com.manutech.module.*">
+	<fx:Script source="com/manutech/constant.as"/>
+	<fx:Script source="com/manutech/config.as"/>
+	<fx:Script source="com/manutech/comman.as"/>
+	<fx:Script source="com/manutech/services/remoteClass.as"/>
+	<fx:Style source="assets/style/comman.css"/>
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RemoteObject id="myObj" endpoint="{remote_endpoint}" showBusyCursor="true" destination="myService" source="myService">
+			<s:method name="contact" result="contactListner(event);" fault="faultListner(event);" />
+		</s:RemoteObject>
+		<s:RemoteObject id="mydesk" endpoint="{remote_endpoint}" showBusyCursor="true" destination="desktop" source="desktop">
+			<s:method name="sayHello" result="sayHelloListner(event);" fault="faultListner(event);" />
+			<s:method name="saveUser" result="saveUserListner(event);" fault="faultListner(event);" />
+			<s:method name="savePage" result="savePageListner(event);" fault="faultListner(event);" />
+			<s:method name="getApps" result="getAppsListner(event);" fault="faultListner(event);" />
+		</s:RemoteObject>
+		<mx:Move id="myMov"/>
+		<s:Fade id="myFade" />
+		<s:Fade id="fadeIn" alphaFrom="0.75" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo=".75" duration="500" />
+		<mx:DefaultTileListEffect id="tileListEffect" fadeInDuration="500" fadeOutDuration="500" moveDuration="500"/>
+	</fx:Declarations>
+	<mx:Canvas id="main" dropShadowVisible="true" cornerRadius="5" styleName="fbCanvas" left="0" right="0" top="5" bottom="2" borderVisible="false">
+		<mx:Canvas id="header" left="0" right="0" top="0" height="40">
+			<mx:Canvas id="winControlCanvas" borderAlpha="1.0" right="5" top="5"  mouseDown="stage.nativeWindow.startMove();">
+				<s:Button label="X" right="0" top="0" click="winClose();" width="28" height="16" toolTip="Close Application"/>
+				<s:Button label="-" width="28" right="59" top="0" click="winMinimize();" height="16" toolTip="Minimize Application"/>
+				<s:Button id="restoreId" label="+" width="28" right="30" top="0" click="winMaxRes();" height="16" toolTip="Maximize Application"/>
+			</mx:Canvas>
+			<mx:Canvas id="winLogo" left="5" top="5" dropShadowVisible="false" borderVisible="false" mouseDown="stage.nativeWindow.startMove();" useHandCursor="true" buttonMode="true">
+				<mx:Image id="logo" source="@Embed('assets/32x32.png')" left="-7" top="-1"/>
+				<s:Label id="app_name" styleName="profileLabel" left="20" top="7" toolTip="{app_name.text}"/>
+				<s:Label id="app_version" styleName="profileLabel" left="90" top="14" fontSize="9" toolTip="{app_version.text}"/>
+			</mx:Canvas>
+			<s:Label horizontalCenter="0" verticalCenter="0" styleName="profileLabel" fontSize="26" text="Facebook on desktop" id="title_id" mouseDown="stage.nativeWindow.startMove();" 
+					 useHandCursor="true" buttonMode="true" toolTip="{title_id.text}"/>
+		</mx:Canvas>
+		<s:Button id="loginId" label="Connect To FBDesktop" right="2" top="25" click="login();"/>
+		<s:Button id="logoutId" label="Logout" click="logout();" top="25" right="2" visible="false"/>
+		<mx:Image source="@Embed('assets/img/fb1.png')" horizontalCenter="0" verticalCenter="0" alpha="0.60"/>
+		<mx:Canvas id="profileCanvas" bottom="82" left="0" right="0" visible="false" top="50" showEffect="{fadeIn}">
+			<s:TabBar x="0" y="0" dataProvider="{tabNav}" change="navigatorClick(event);" width="100%"/>
+			<mx:ViewStack id="tabNav" left="0" right="0" bottom="0" top="25" dropShadowVisible="true" borderVisible="false" backgroundAlpha="0.2">
+				<!--<mx:Canvas  label="Info" left="0" top="0" right="0" bottom="0" buttonMode="true" useHandCursor="true" dropShadowVisible="true" width="100%" height="100%">
+				<mx:HDividedBox horizontalGap="3" height="100%" y="0" width="100%" x="0">
+				<s:TextArea id="infoId" right="470" top="42.15" width="100%" height="100%"
+				borderVisible="true" color="#FFFFFF"
+				contentBackgroundAlpha="0.2"/>
+				<s:TextArea id="likeId" right="135" top="24.4" width="100%" height="100%"
+				color="#FFFFFF" contentBackgroundAlpha="0.2"/>
+				</mx:HDividedBox>	
+				</mx:Canvas>-->
+				<mx:Canvas label="Wall" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Canvas x="6" y="11" width="385" height="394" label="Facebook Wall Post" backgroundAlpha="1.0" contentBackgroundAlpha="1.0">
+						<s:Button label="Post" click="fbposttowall()" right="5" bottom="5"/>
+						<mx:Form x="10" y="10">
+							<mx:FormItem label="Message">
+								<s:TextInput id="m1"/>
+							</mx:FormItem>
+							<mx:FormItem label="Name">
+								<s:TextInput id="n1"/>
+							</mx:FormItem>
+							<mx:FormItem label="description">
+								<s:TextArea id="d1"/>
+							</mx:FormItem>
+							<mx:FormItem label="picture">
+								<s:TextInput id="p1"/>
+							</mx:FormItem>
+							<mx:FormItem label="link">
+								<s:TextInput id="l1"/>
+							</mx:FormItem>
+							<mx:FormItem label="Caption">
+								<s:TextInput id="c1"/>
+							</mx:FormItem>
+						</mx:Form>
+					</mx:Canvas>
+				</mx:Canvas>
+				<mx:Canvas label="Pages" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Canvas id="leftPageId" left="0" top="0" width="80%" height="100%">
+						<s:TextArea width="418" height="174" id="pagesId" x="25" y="261"/>
+					</mx:Canvas>
+					<mx:VBox id="rightPageId" width="20%" height="100%" y="0" right="0">
+						<mx:HBox width="100%">
+							<s:Label left="5" text="facebook Page" paddingLeft="5"/>
+							<s:Button right="5" label="Create Page"  click="createFBPage()"/>
+						</mx:HBox>
+						<mx:TileList id="pageList" showEffect="{tileListEffect}"
+									 allowMultipleSelection="false" borderVisible="false"
+									 direction="horizontal" itemClick="showPage(event);"
+									 itemRenderer="com.manutech.component.pages" width="96%" height="45%">
+						</mx:TileList>
+						<mx:HBox>
+							<s:Label left="0" text="Application" paddingLeft="5"/>
+							<s:Button right="5" label="Create App" click="createFBapp()"/>
+						</mx:HBox>	
+						<mx:TileList id="appList" showEffect="{tileListEffect}"
+									 allowMultipleSelection="false" borderVisible="false"
+									 direction="horizontal" itemClick="showPage(event);"
+									 itemRenderer="com.manutech.component.pages" height="45%" width="96%">
+						</mx:TileList>
+						
+					</mx:VBox>	
+				</mx:Canvas>
+				<mx:Canvas label="Groups" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+				<mx:Canvas label="Media" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+				<mx:Canvas label="Birth Day Alarm" left="0" top="0" right="0" bottom="0" width="100%" height="100%"
+						   showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<module:birthday width="100%" height="100%" id="birthday_module"/>
+				</mx:Canvas>
+				
+				<!--<mx:Canvas label="To-Do List" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>-->
+				<mx:Canvas label="Tab Designer" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+				<mx:Canvas label="Image Designer" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+				<mx:Canvas label="Events" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+				<mx:Canvas label="Affiliate System" left="0" top="0" right="0" bottom="0" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+				</mx:Canvas>
+			</mx:ViewStack>
+		</mx:Canvas>
+		
+		<mx:Canvas height="56" id="usrProfileInfo"  styleName="profileCanvas" top="-4" right="95" width="220" 
+				   visible="false" mouseDown="stage.nativeWindow.startMove();" useHandCursor="true" buttonMode="true"
+				   showEffect="{fadeIn}" hideEffect="{fadeOut}" rollOutEffect="{fadeOut}" rollOverEffect="{fadeIn}" dropShadowVisible="true"
+				   borderAlpha="0.5" borderVisible="true" backgroundAlpha="0.80" backgroundColor="#524F4F" cornerRadius="5"
+				   horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<mx:Image width="50" height="50" left="5" top="5" id="usrImg"/>
+			<s:Label y="10" right="2" id="usrName" styleName="profileLabel"  left="65"/>
+			<s:Label y="30" id="usrLoc" styleName="profileLabel" fontSize="12" left="70" right="2"/>
+		</mx:Canvas>
+		<comp:brand bottom="2" right="0" left="0" height="80">
+		</comp:brand>
+		<!--<comp:splash id="loginCanvas" left="0" right="0" top="50" showEffect="{fadeIn}" hideEffect="{fadeOut}" rollOutEffect="{fadeOut}" rollOverEffect="{fadeIn}" bottom="82">
+		</comp:splash>-->
+		<!--<s:Label text="Developed By : Manoj Chaurasiya" right="5" bottom="5"/>-->
+	</mx:Canvas>
+</s:WindowedApplication>

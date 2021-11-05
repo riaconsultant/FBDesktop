@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:component="com.manutech.component.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Fade id="fadeIn" alphaFrom="0.75" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo=".75" duration="500" />
+	</fx:Declarations>
+	<mx:Canvas  bottom="0" left="0" right="0" borderVisible="true" visible="true" top="0" dropShadowVisible="true">
+		
+		<s:BorderContainer left="250" right="20" top="20" bottom="20" dropShadowVisible="true" cornerRadius="11" borderWeight="0" borderVisible="false" borderAlpha="1.0" backgroundAlpha="0.8" backgroundColor="#343333">
+			<mx:ViewStack id="viewstack1" showEffect="{fadeIn}" left="10" right="5" top="5" bottom="5">
+				<s:NavigatorContent label="Wall Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}" >
+					<mx:Label text="Wall Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Page Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Page Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Group Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Group Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Media Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Media Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Birth Day Alarm" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Birth Day Alarm Content"/>
+					<mx:LinkButton label="FB Birth Day Alarm" right="5" bottom="5"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="To-Do Task List" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="To-Do Task List Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Tab Designer" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Tab Designer Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Application Library" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Application Library"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Image Designer" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Image Designer Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Event Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Event Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Affiliate System/White Label" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Affiliate System/White Label"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="FB Credit/Chat App" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="FB Credit/Chat App Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="FB Marketing/Ad Api" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="FB Marketing/Ad Api"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Form Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Form Management Content"/>
+				</s:NavigatorContent>
+				<s:NavigatorContent label="Product Management" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+					<mx:Label text="Product Management Content"/>
+				</s:NavigatorContent>
+			</mx:ViewStack>
+		</s:BorderContainer>
+		<mx:LinkBar dataProvider="{viewstack1}" direction="vertical" width="175" left="5" top="5" bottom="5" backgroundAlpha="1.0" 
+					contentBackgroundColor="#325C99" contentBackgroundAlpha="1.0" focusColor="#343536" cornerRadius="0" 
+					rollOutEffect="{fadeOut}" rollOverEffect="{fadeIn}" showEffect="{fadeIn}">
+		</mx:LinkBar>
+	</mx:Canvas>
+</s:Group>
