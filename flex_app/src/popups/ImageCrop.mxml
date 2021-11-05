@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 	
+    width="714" height="652" x="0" y="0"  title="Crop Image" verticalScrollPolicy="off" horizontalScrollPolicy="off" layout="absolute" horizontalAlign="left"
+	verticalAlign="top" showCloseButton="true" borderAlpha="1" close="titleWin_close(event)" initialize="initNew()">
+	
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Text;
+		import mx.messaging.SubscriptionInfo;
+		import com.adobe.images.JPGEncoder;
+		import mx.managers.PopUpManager;
+		import mx.rpc.soap.LoadEvent;
+		import mx.controls.Alert;
+		import mx.controls.Image;
+		  
+		private var loader:Loader;
+		private var request:URLRequest;  
+		 
+		private var loadBD:BitmapData;
+		private var cropBD:BitmapData;  
+		
+		private var startPoint:Point;
+		private var posPoint:Point; 
+		private var square: int;
+		private var mtrx: Matrix;
+		
+		public var returnPath:Text;
+		
+		public var _myUrl:String;
+		
+		public var image_path:String = null;
+		public function get imagePath():String
+		{
+			return image_path; 
+		}
+		public function set imagePath( value:String):void
+		{
+			image_path = value;
+			invalidateDisplayList();
+		}
+		
+		public var _imageName:String = null;
+		public function get imageName():String
+		{
+			return _imageName; 
+		}
+		public function set imageName( value:String):void
+		{
+			_imageName = value;
+			invalidateDisplayList();
+		}
+		
+		public var num:int = 0;
+		public function get randomNum():int
+		{
+			return num; 
+		}
+		public function set randomNum( value:int):void
+		{
+			num = value;
+			invalidateDisplayList();
+		}
+		  
+		private function initNew():void 
+		{ 
+			loader=new Loader();
+			request=new URLRequest(image_path);
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,handleError); 
+			loader.load(request); 
+		}
+		
+		private function handleError(event:IOErrorEvent):void
+		{
+			Alert.show(event.text);
+		}
+		
+		private function onComplete(event:Event):void {
+			loadBD = Bitmap(event.currentTarget.content).bitmapData;
+
+			imageHolder.graphics.beginBitmapFill(loadBD);
+			imageHolder.graphics.drawRect(0, 0, 734, 521);
+			imageHolder.graphics.endFill(); 
+			
+			//make initial image
+			drawImage();
+			
+		}
+		
+ 		private function drawImage():void
+ 		{
+ 			//crop square
+			startPoint = new Point(xSelector.value,ySelector.value);
+			square = sizeSelector.value;
+			cropImage1(startPoint,square);
+			
+			//resize image and show it
+			resizeImage();
+ 		}
+ 
+ 		private function cropImage1(startPoint:Point, squareSize:int):void 
+ 		{
+ 			// Make a new bitmap data using square size
+	    	cropBD = new BitmapData(squareSize, squareSize, true, 0x00000000);
+	    	// Position where will be dispayed in the new object, in our case (0,0)
+	    	posPoint = new Point(0,0);
+	    	// copy pixels from loaded bitmap data to our new object
+	    	cropBD.copyPixels(loadBD, new Rectangle(startPoint.x, startPoint.y, squareSize, squareSize), posPoint); 
+	    	
+	    	//draw crop area selected
+	    	imageCrop.graphics.clear(); 
+			imageCrop.graphics.lineStyle(1, 0xFFFFFF,0.5);
+			imageCrop.graphics.drawRect(0, 0, cropBD.width, cropBD.height);
+			imageCrop.move(imageHolder.x + startPoint.x, imageHolder.y + startPoint.y);
+	  	}
+ 		
+ 		private function resizeImage():void 
+ 		{
+ 			// make scale matrix
+ 			mtrx = new Matrix();
+ 			mtrx.scale( imageView.width/cropBD.width , imageView.height/cropBD.height);
+ 						
+ 			// Fill in image
+ 			imageView.graphics.clear();
+	    	imageView.graphics.beginBitmapFill(cropBD,mtrx,false); 
+	    	imageView.graphics.drawRect(0, 0, imageView.width, imageView.height);
+			imageView.graphics.endFill(); 
+ 		}
+ 		
+ 		import mx.core.IFlexDisplayObject;
+		private function titleWin_close(evt:Event):void {
+			var window:TitleWindow = evt.currentTarget as TitleWindow;
+            PopUpManager.removePopUp(window);
+
+            }
+ 		private function imageSave():void
+ 		{
+ 			var bitmapData:BitmapData;
+			bitmapData = new BitmapData(imageView.width, imageView.height);
+			bitmapData.draw(imageView);
+			var jpg:JPGEncoder = new JPGEncoder();
+			var byteArray:ByteArray = jpg.encode(bitmapData);
+			
+			var reqUrl:String = _myUrl + "editor_php/filesave.php?dirName="+num+"&fileName="+_imageName;
+			var urlRequest:URLRequest = new URLRequest();
+			urlRequest.url = reqUrl;	
+			urlRequest.data = byteArray;
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.contentType = 'image/jpg';
+			var urlLoader:URLLoader = new URLLoader();
+			urlLoader.load(urlRequest);
+			
+			this.returnPath.text = _myUrl+"editor_php/uploads/mug/"+num+"/"+_imageName+".jpg";
+			PopUpManager.removePopUp(this);
+ 		}
+ 
+		
+	]]>
+</mx:Script>
+
+
+	<mx:Canvas id="imageView" width="110" height="107"  x="298.5" y="0"/>
+	<mx:Canvas id="imageHolder" x="5" y="114" width="685" height="490" horizontalScrollPolicy="off" verticalScrollPolicy="off" />
+	<mx:Canvas id="imageCrop"   x="0" y="42" width="0" height="0" /> 
+	
+	<mx:Label x="10" y="40" width="60" text="X position"/>
+	<mx:HSlider id="xSelector" x="80" y="35" width="120" minimum="0" maximum="700" snapInterval="10" liveDragging="true" enabled="true" value="170" change="drawImage()" />
+	
+	<mx:Label x="10" y="64" width="60" text="Y position"/>
+	<mx:HSlider id="ySelector" x="80" y="59" width="120" minimum="0" maximum="521" snapInterval="10" liveDragging="true" enabled="true" value="20" change="drawImage()" />
+	
+	<mx:Label x="10" y="88" width="60" text="Area size"/>
+	<mx:HSlider id="sizeSelector" x="80" y="83" width="120" minimum="10" maximum="521" snapInterval="10" enabled="true" value="100" liveDragging="true" change="drawImage()" />
+	<mx:Button x="481" y="38" id="saveData" label="Save" click="imageSave()" />
+	<mx:Button x="481" y="78" label="Cancel" click="PopUpManager.removePopUp(this);"/>
+	
+</mx:TitleWindow>

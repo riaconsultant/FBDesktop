@@ -1,0 +1,2427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fabulousFlex="fabulousFlex.*"
+				xmlns:fx="com.fusiox.ui.*" applicationComplete="registerGlobalKeyHandler();" minWidth="650" minHeight="450" width="810" height="450"
+				creationComplete="init();" layout="absolute" preinitialize="preInit();" historyManagementEnabled="false">
+	<mx:Script source="com/usercontrols/globalConfig.as"/>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var loading:Loading = new Loading();
+			private var _x1:int = 0;
+			private var _x2:int = 0;
+			private var _x3:int = 0; 
+			
+			public var libImage:Object=null;
+			public var editorType:String="mug";
+			private var userId:String;
+			private var resType:String;
+			
+			private function preInit():void{
+				StyleManager.loadStyleDeclarations(font_url);
+				StyleManager.loadStyleDeclarations(style_url); 
+			}
+			// first function to run after load
+			private function init():void
+			{
+				var param_product:String=Application.application.parameters.product_id;
+				//var param_product:String="4";
+				myObj.getProductData(param_product);
+				myObj.getCatgoryLibrary();
+			}
+			
+			public function subControlAction(e:MouseEvent):void{
+				var currentSubId:String=e.currentTarget.id;
+				this.setSubControlAction(currentSubId);
+			}
+			
+			private function setSubControlAction(currentSubId:String):void
+			{
+				if( currentSubId == "libId"){
+					/* libCanvas.visible=true;
+					uploadCanvas.visible=false;
+					editImageCanvas.visible=false;
+					libId.enabled=false;
+					uploadId.enabled=true;
+					editImageId.enabled=true; */
+				}else{
+					var imageTypes:FileFilter = new FileFilter("Images (*.jpg, *.jpeg, *.gif, *.png)", "*.jpg; *.jpeg; *.gif; *.png");
+					var allTypes:Array = new Array(imageTypes);
+					refAddFiles = new FileReference();
+					refAddFiles.addEventListener(Event.SELECT, onSelectFile);
+					refAddFiles.browse(allTypes);
+				}
+			}
+			
+			private var refAddFiles:FileReference;
+			private var UploadId:int = 300;
+			private function onSelectFile(event:Event):void 
+			{
+				UploadId = UploadId+1;
+				
+				var sendVars:URLVariables = new URLVariables();
+				sendVars.imgname = randomNum+"_"+UploadId;
+				var request:URLRequest = new URLRequest();
+				request.url = site_url+"filesave.php";
+				request.data = sendVars;
+				request.method = URLRequestMethod.POST;
+				refAddFiles.addEventListener(Event.COMPLETE, onUploadComplete);
+				refAddFiles.upload(request, "file", false);
+				this.showLoading();
+			}
+			
+			// Called on upload complete
+			
+			private function onUploadComplete(e:Event):void {
+				this.hideLoading();
+				
+				var img:String = site_url+"temp_data/"+randomNum+"_"+UploadId+e.target.type.toString();
+				userUploadedImage.push({img:img});
+				userUploadImages.dataProvider = userUploadedImage;
+			}
+			
+			private function addUploadImage(e:Event):void
+			{
+				var img:String = e.currentTarget.source;
+				var x1:Number = _x+(_w/2)-50;
+				var y1:Number = _y+(_h/2)-50;
+				var x2:Number = _x+_w-50;
+				var x3:Number = _x-50;
+				
+				this.drawImageOnMug(genericMug,img,x1,y1,"upload"+String(UploadId));
+				this.drawImageOnMug(genericMugLeft,img,x2,y1,"upload"+String(UploadId));
+				this.drawImageOnMug(genericMugRight,img,x3,y1,"upload"+String(UploadId));
+			} 
+			
+			public function controlAction(evt:MouseEvent):void{
+				var currentId:String=evt.currentTarget.id;
+				this.setControlAction(currentId);
+			}
+			
+			private function setControlAction(currentId:String):void
+			{
+				if(currentId=="imageId"){
+					controlTab.selectedIndex=0;
+					imageTab.selectedIndex=2;
+				}
+				if(currentId=="textId"){
+					controlTab.selectedIndex=1;
+					textTab.selectedIndex=1;
+				}
+				
+			}
+			/**
+			 * remote calls functions
+			 *  
+			 * */
+			
+			public function faultError(e:FaultEvent):void{
+				Alert.show(e.fault.faultString,site_title);
+			}
+			
+			public function productListener(e:ResultEvent):void{
+				product_label.text=e.result[0][0]['name'];
+				product_label.toolTip=e.result[0][0]['description'];
+				previewImg.source=site_url+"img/product_images/"+e.result[1][0]['image'];
+				//var product_type:int=e.result[0]['products']['product_type_id'];
+				var product_image:Object=e.result[1][0];
+				leftImage = site_url+"img/product_images/"+e.result[1][0]['image'];
+				centerImage = site_url+"img/product_images/"+e.result[1][1]['image'];
+				rightImage = site_url+"img/product_images/"+e.result[1][2]['image'];
+				_x = parseInt(product_image['x1']);
+				_y = parseInt(product_image['y1']);
+				_w= parseInt(product_image['width']);
+				_h = parseInt(product_image['height']);
+				//heightSlider.maximum=_h;
+				//widthSlider.maximum=_w;
+				
+				// values for movements
+				_x1 = _x;
+				_x2 = _x+(_w/2);
+				_x3 = _x-(_w/2); 
+				
+				this.drawMug();
+			}
+			
+			public function getCategory(e:ResultEvent):void{
+				categoryId.dataProvider=getCatergoryArr(e.result);
+				myObj.getLibraryImage();
+			}
+			
+			public function libraryListner(e:ResultEvent):void{
+				libTileId.dataProvider=getLibraryImgArr(e.result);
+			}
+			
+			private var _login:Login = new Login();
+			private var _sendMail:SendMail = new SendMail();
+			private var email:String="";
+			public function loginListner(e:ResultEvent):void{
+				if(e.result.length!=0){
+					email = e.result['email'];
+					userId = e.result['id'];
+					resType = e.result['resType'];
+					// taking snaps
+				}
+				if(email == "")	{
+					PopUpManager.addPopUp(_login, this, true);
+					PopUpManager.centerPopUp(_login);
+					_login["login"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+						var _username:String = _login["username"].text;
+						var _password:String = _login["password"].text;
+						getLogin(e,_username,_password);
+					});
+				} else {
+					if(resType == "send"){
+						_sendMail.userMail = email;
+						PopUpManager.addPopUp(_sendMail, this, true);
+						PopUpManager.centerPopUp(_sendMail);
+						this.setCurrentMugFace();
+					}else if(resType == "open"){
+						myObj.openDesign(userId,editorType);
+					}else if(resType == "save"){
+						saveDesign();
+					}else{
+						Alert.show("Invalid Request",site_title);
+					}
+				}
+				
+			}
+			
+			private function getLogin(e:MouseEvent,username:String,password:String):void
+			{
+				myObj.getloginUser(username,password);
+			}
+			
+			public function checkSelect(event:ListEvent):void{
+				Alert.show(categoryId.selectedItem.id,"");
+				
+			}
+			/**
+			 * save design
+			 * */
+			public function saveDesign():void{
+				var designObj:ArrayCollection=new ArrayCollection();
+				var children:Array = genericMug.getChildren();
+				
+				for (var i:int = 0; i < children.length; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null;
+					var custObj:CustomObj=new CustomObj();
+					if(childObj != null)
+					{
+						img = childObj.getChildAt(0) as Image;
+						txt = childObj.getChildAt(0) as Text;
+					}
+					
+					if(txt != null)
+					{
+						custObj.id=childObj.id;
+						custObj.name = childObj.name;
+						custObj.type = 'Text';
+						//custObj.align
+						custObj.color = txt.getStyle('color');
+						custObj.family= txt.getStyle('fontFamily');
+						custObj.height = childObj.height;
+						custObj.width = childObj.width;
+						custObj.rotation = childObj.rotation;
+						custObj.size = txt.getStyle('fontSize');
+						custObj.trans = txt.alpha;
+						custObj.value = txt.text;
+						custObj.x = childObj.x;
+						custObj.y = childObj.y;
+						if(txt.filters.length != 0)
+							custObj.shadow=txt.filters[0].color;
+						designObj.addItem(custObj);
+					}
+					if(img != null){
+						custObj.id= childObj.id;
+						custObj.name = childObj.name;
+						custObj.type = 'Image';
+						//custObj.align
+						//custObj.color = txt.getStyle('color');
+						//custObj.family= txt.getStyle('fontFamily');
+						custObj.height = childObj.height;
+						custObj.width = childObj.width;
+						custObj.rotation = childObj.rotation;
+						//custObj.size = txt.getStyle('fontSize');
+						custObj.trans = img.alpha;
+						custObj.value = String(img.source);
+						custObj.x = childObj.x;
+						custObj.y = childObj.y;
+						if(img.filters.length != 0)
+							custObj.shadow=img.filters[0].color;
+						designObj.addItem(custObj);
+					}
+					
+					
+				}
+				
+				//saveMugDesign();
+				//Alert.show("Your Design has been saved.",message_title);
+				
+				myObj.saveDesign(userId,designObj,editorType);
+			}
+			
+			public function registerGlobalKeyHandler() :void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown);
+			}
+			
+			public function handleKeyDown(event:KeyboardEvent) :void
+			{
+				if(event.keyCode == 46)
+				{
+					this.forDeleteRequest('Item');
+				}
+			}
+			
+			private function togglePrint():void{
+				if(printCanvas.visible==false){
+					printCanvas.visible=true;
+					this.setMugPreview();
+				}else{
+					printCanvas.visible=false;
+				}
+			}
+			
+			private function setMugPreview():void
+			{
+				if(mugPreview.getChildren().length)
+				{
+					mugPreview.removeAllChildren();
+				}
+				mugPreview.width = _w*2;
+				mugPreview.height= _h;
+				
+				var mugObj:Array = genericMug.getChildren();
+				var n:int = mugObj.length;
+				
+				for(var i:int = 0; i<n; i++)
+				{
+					var childObj:ObjectHandles = mugObj[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null;
+					if(childObj != null)
+					{
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						var objT:ObjectHandles = new ObjectHandles;
+						objT.x = childObj.x;
+						objT.y = (childObj.y-_y);
+						objT.height = childObj.height;
+						objT.width = childObj.width;
+						objT.rotation = childObj.rotation;
+						
+						var text:Text = new Text();
+						text.text = txt.text;
+						text.percentWidth=100;
+						text.percentHeight=100;
+						text.alpha = txt.alpha;
+						text.setStyle("fontSize",txt.getStyle('fontSize'));  
+						text.setStyle("color",txt.getStyle('color'));
+						text.setStyle("textAlign","center");
+						text.setStyle("fontFamily",txt.getStyle('fontFamily'));
+						text.filters = txt.filters;
+						
+						objT.addChild(text);
+						mugPreview.addChild(objT);
+					}
+					
+					if(img != null)
+					{
+						var objI:ObjectHandles = new ObjectHandles;
+						objI.x = childObj.x;
+						objI.y = (childObj.y-_y);
+						objI.height = childObj.height;
+						objI.width = childObj.width;
+						objI.rotation = childObj.rotation;
+						
+						var image:Image = new Image();
+						image.source = img.source;
+						image.width	= img.width;
+						image.height= img.height; 
+						image.percentHeight=100;
+						image.percentWidth=100;
+						image.alpha = img.alpha;
+						image.filters = img.filters;
+						
+						objI.addChild(image);
+						mugPreview.addChild(objI);
+					}
+				}
+			} 
+			
+			private function showLoading():void 
+			{
+				PopUpManager.addPopUp(loading, this, true);
+				PopUpManager.centerPopUp(loading);
+			}
+			
+			private function hideLoading():void 
+			{
+				PopUpManager.removePopUp(loading);
+			}
+			
+			private function drawMug():void
+			{
+				Center.source 	 = centerImage;
+				Left.source 	 = leftImage;
+				Right.source 	 = rightImage;
+			}
+			
+			// To Change the Mug Image after click on small image		
+			private function mySide(id:String, side:String):void
+			{
+				if(side=="center"){
+					previewImg.source = centerImage;
+				}
+				if(side=="left"){
+					previewImg.source = leftImage;
+				}
+				if(side=="right"){
+					previewImg.source = rightImage;
+				} 
+			}
+			
+			// Start Draw the surface on mug to display text and image and return area of display --> //
+			private function drawRectAreaOnMug(mug:Canvas):Sprite
+			{
+				var ui:UIComponent = new UIComponent();
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.beginFill(0x000000);
+				if(mug == genericMug)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w,_h);
+				}
+				if(mug == genericMugLeft)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(9,0,_w-9,_h);
+				}
+				if(mug == genericMugRight)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w-9,_h);
+				}
+				rect.graphics.endFill();
+				ui.addChild(rect);
+				mug.addChild(ui);
+				
+				return rect;
+			}
+			
+			private var mask1:Sprite = new Sprite();
+			
+			// Start Draw text on the mug -->//
+			private var ohId:Number = 100; // Id for text
+			private function addtext():void
+			{
+				ohId = ohId+1;
+				
+				var x1:Number = _x+(_w/2)-50;
+				var y1:Number = _y+(_h/2)-11;
+				var x2:Number = _x+_w-50;
+				var x3:Number = _x-50;
+				
+				var txtString:String = inputText1.text;
+				if(txtString != "")
+				{
+					
+					// draw text on mug on specific location with mask area
+					this.drawTextOnMug(genericMug,x1,y1,"txt"+String(ohId),txtString);
+					this.drawTextOnMug(genericMugLeft,x2,y1,"txt"+String(ohId),txtString);
+					this.drawTextOnMug(genericMugRight,x3,y1,"txt"+String(ohId),txtString);
+					inputText1.text="";
+				}
+			}
+			
+			private function drawTextOnMug(mug:Canvas,x1:int,y1:int,oId:String,textString:String):void
+			{
+				mask1 = this.drawRectAreaOnMug(mug);
+				
+				var obj:ObjectHandles = new ObjectHandles();
+				obj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				obj.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewPosition);
+				obj.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+				obj.id = oId;
+				obj.name = oId;
+				obj.x=x1; 
+				obj.y=y1;
+				obj.height=22; 
+				obj.width=100;
+				
+				var txt:Text = new Text();
+				obj.minHeight = txt.textHeight;
+				obj.minWidth = txt.textWidth;
+				
+				txt.text = textString;
+				txt.percentWidth=100;
+				txt.percentHeight=100;
+				txt.setStyle("fontSize","25");  
+				txt.setStyle("color","#000000");
+				txt.setStyle("fontFamily","BAUHS93");
+				txt.setStyle("textAlign","center");
+				txt.setStyle("length","0");
+				txt.setStyle("borderStyle","none");
+				txt.mask = mask1;
+				//txt.filters = txtFilters;
+				obj.addChild(txt);
+				mug.addChild(obj);
+			}
+			
+			// when object is selected -->
+			private function OnObjectHandlesSelected(event:ObjectHandleEvent):void
+			{
+				var objHandle:ObjectHandles = event.currentTarget as ObjectHandles;
+				if(objHandle != null)
+				{
+					//this.setCurrentMugFace();
+					selectedObject = objHandle;
+					
+					selectedObject.xInt = _x;
+					selectedObject.yInt = _y;
+					selectedObject.xparent = _w;
+					selectedObject.yparent = _h;
+					
+					if(selectedObject.getChildAt(0) as Text)
+					{
+						var txt:Text = selectedObject.getChildAt(0) as Text;
+						if(txt != null)
+						{
+							selectedObject.allowHResize= true;
+							selectedObject.allowVResize= true;
+							
+							this.setControlAction("textId");
+							//this.setSubControlAction("editTextId");
+							if(insertText){
+								insertText.text = txt.text;
+							}
+							if(textRotationSlider){
+								textRotationSlider.value = selectedObject.rotation;
+							}
+							if(txtTransSlider){
+								txtTransSlider.value = txt.alpha;
+							}
+							if(fontColor){
+								fontColor.selectedColor = txt.getStyle("color");
+							}
+							if(fontSizeSlider){
+								fontSizeSlider.value = txt.getStyle("fontSize"); 
+							}
+							for(var i:int=0; i<cards.length; i++){
+								if(cards[i].label == txt.getStyle("fontFamily"))
+								{
+									if(combobox){
+										combobox.selectedIndex = i;
+									}
+									break;
+								}
+							}
+						}
+					}
+					if(selectedObject.getChildAt(0) as Image)
+					{
+						var img:Image= selectedObject.getChildAt(0) as Image;
+						if(img != null)
+						{
+							this.setControlAction("imageId");
+							//this.setSubControlAction("editImageId");
+							if(imageRotationSlider){
+								imageRotationSlider.value = selectedObject.rotation;
+							}
+							if(widthSlider){
+								widthSlider.value = selectedObject.width;
+							}
+							if(heightSlider){
+								heightSlider.value = selectedObject.height;
+							}
+							if(transSlider){
+								transSlider.value = img.alpha;
+							}
+							if(lockImgDimensions){
+								if(lockImgDimensions.selected){
+									selectedObject.allowHResize= false;
+									selectedObject.allowVResize= false;
+								}
+							}
+						}
+					}
+					selectedObject.allowRotate = true;
+					selectedObject.allowVMove = true;
+					selectedObject.allowHMove = true;
+					selectedObject.mouseChildren=false;
+					selectedObject.allowBottom=false; 
+				}
+			}
+			
+			// get new postion of text when text moving on mug -->
+			private function getNewPosition(e:ObjectHandleEvent):void
+			{
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				selectedObject.xpos = selectedObject.width;
+				selectedObject.ypos = selectedObject.height;
+				
+				var x1:int = 0;
+				if(mySubViewStack.selectedChild == genericMug)
+				{
+					x1 = getDifference(genericMug,x);
+				}
+				if(mySubViewStack.selectedChild == genericMugLeft)
+				{
+					x1 = getDifference(genericMugLeft,x);	
+				}
+				if(mySubViewStack.selectedChild == genericMugRight)
+				{
+					x1 = getDifference(genericMugRight,x);	
+				}
+				this.setNewPosition(genericMug,x1,y);	
+				this.setNewPosition(genericMugLeft,x1,y);
+				this.setNewPosition(genericMugRight,x1,y);
+			}
+			// <-- get new postion of text when text moving on mug
+			
+			// get difference of text and image after move -->
+			private function getDifference(mug:Canvas,x1:int):int
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var diff:int = 0;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image = null;
+					if(childObj != null){
+						txt= childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericMug)
+								diff = x1-_x1;
+							if(mug == genericMugLeft)
+								diff = x1-_x2;
+							if(mug == genericMugRight)
+								diff = x1-_x3;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericMug)
+								diff = x1-_x1;
+							if(mug == genericMugLeft)
+								diff = x1-_x2;
+							if(mug == genericMugRight)
+								diff = x1-_x3;
+						}
+					}
+				}
+				return diff;
+			}
+			// <-- get difference of text and image after move 
+			
+			// set new postion to text and image on mug -->
+			private function setNewPosition(mug:Canvas,x1:int,y1:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image= null;
+					if(childObj != null)
+					{
+						txt= childObj.getChildAt(0) as Text;
+						img= childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericMug){
+								childObj.x = _x1 + x1;
+							}if(mug == genericMugLeft){
+								childObj.x = _x2 + x1;
+							}if(mug == genericMugRight){
+								childObj.x = _x3 + x1;
+							}
+							childObj.y = y1;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericMug){
+								childObj.x = _x1 + x1;
+							}if(mug == genericMugLeft){
+								childObj.x = _x2 + x1;
+							}if(mug == genericMugRight){
+								childObj.x = _x3 + x1;
+							}
+							childObj.y = y1;
+						}
+					}
+				}
+				
+			}
+			// <-- set new postion to text and image on mug 
+			
+			// get new rotation postion of text on mug 
+			private function getNewRotationText(rotation:Number):void
+			{
+				//var rotation:Number = textRotationSlider.value;
+				this.setNewRotationText(genericMug,rotation);
+				this.setNewRotationText(genericMugLeft,rotation);
+				this.setNewRotationText(genericMugRight,rotation);
+				rotationTextVal.text=rotation.toString();
+				rotationTextVal1.text=rotation.toString();
+			}
+			
+			private function setNewRotationText(mug:Canvas,rotation:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text= null;
+					var img:Image = null;
+					
+					if(childObj != null)
+					{
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(selectedObject != null)
+						{
+							if(childObj.id == selectedObject.id)
+							{
+								childObj.rotation = rotation;
+							}
+						}
+					}
+					
+					if(img != null)
+					{
+						if(selectedObject != null)
+						{							
+							if(childObj.id == selectedObject.id)
+							{
+								childObj.rotation = rotation;
+							}
+						}
+					}
+				}
+			}
+			
+			// get new height width for text object handle -->
+			private function getNewHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				this.setNewHeightWidth(genericMug,h,w);
+				this.setNewHeightWidth(genericMugLeft,h,w);
+				this.setNewHeightWidth(genericMugRight,h,w);
+			}
+			// <-- get new height width for text object handle
+			
+			// set new height width of text and image -->
+			private function setNewHeightWidth(mug:Canvas,h:int,w:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image= null;
+					if(childObj != null)
+					{
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.height = h;
+							childObj.width = w;
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.height = h;
+							childObj.width = w;
+						}
+					}
+				}
+			}
+			// <-- set new height width of text and image
+			
+			// Draw image on mug -->
+			private var ImageId:int = 500;  // for image object handle Id
+			private function getImages(event:Event):void
+			{
+				
+				var imageSource:String = libTileId.selectedItem.image;
+				ImageId = ImageId+1;
+				// Harish
+				var x1:Number = _x+(_w/2)-50;
+				var y1:Number = _y+(_h/2)-50;
+				var x2:Number = _x+_w-50;
+				var x3:Number = _x-50;
+				
+				// get Image on all mug faces
+				
+				this.drawImageOnMug(genericMug,imageSource,x1,y1,"img"+String(ImageId));
+				this.drawImageOnMug(genericMugLeft,imageSource,x2,y1,"img"+String(ImageId));
+				this.drawImageOnMug(genericMugRight,imageSource,x3,y1,"img"+String(ImageId));
+			}
+			
+			private function drawImageOnMug(mug:Canvas,img:String,x1:int,y1:int,imgId:String):void
+			{
+				mask1 = this.drawRectAreaOnMug(mug);
+				
+				var oh:ObjectHandles = new ObjectHandles();
+				oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewImageHeightWidth);
+				oh.addEventListener(ObjectHandleEvent.OBJECT_ROTATING_EVENT,getNewImageRotation);
+				oh.id = imgId;
+				oh.name = imgId;
+				oh.width=100;
+				oh.height=100;
+				oh.x=x1;
+				oh.y=y1;
+				
+				
+				oh.allowRotate = true;
+				
+				var image:Image = new Image();
+				image.width	= 182;
+				image.height= 150; 
+				image.source = img;
+				image.percentHeight=100;
+				image.percentWidth=100;
+				//image.filters = txtFilters;
+				//image.maintainAspectRatio = false;
+				image.mask = mask1;
+				//ref.target = oh;
+				oh.addChild(image);
+				
+				mug.addChild(oh);
+			}
+			// <-- Draw image on mug 
+			
+			// get new position for image after moving image -->
+			private function getNewImagePosition(e:ObjectHandleEvent):void
+			{
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				selectedObject.xpos = selectedObject.width;
+				selectedObject.ypos = selectedObject.height;
+				
+				var x1:int = 0;
+				if(mySubViewStack.selectedChild == genericMug)
+				{
+					x1 = this.getDifference(genericMug,x);
+				}
+				if(mySubViewStack.selectedChild == genericMugLeft)
+				{
+					x1 = this.getDifference(genericMugLeft,x);
+				}
+				if(mySubViewStack.selectedChild == genericMugRight)
+				{
+					x1 = this.getDifference(genericMugRight,x);
+				}
+				
+				this.setNewPosition(genericMug,x1,y);
+				this.setNewPosition(genericMugLeft,x1,y);
+				this.setNewPosition(genericMugRight,x1,y);
+			}
+			// <-- get new position for image after moving image
+			
+			// get new height width for image -->
+			private function getNewImageHeightWidth(e:ObjectHandleEvent):void
+			{
+				var h:int = (e.currentTarget as ObjectHandles).height;
+				var w:int = (e.currentTarget as ObjectHandles).width;
+				
+				heightSlider.value = h;
+				widthSlider.value = w;
+				
+				this.setNewHeightWidth(genericMug,h,w);
+				this.setNewHeightWidth(genericMugLeft,h,w);
+				this.setNewHeightWidth(genericMugRight,h,w);
+			}
+			// <-- get new height width for image 
+			
+			// get new rotation position of image -->
+			private function getNewImageRotation(e:ObjectHandleEvent):void
+			{
+				var rotation:int = (e.currentTarget as ObjectHandles).rotation;
+				var x:int = (e.currentTarget as ObjectHandles).x;
+				var y:int = (e.currentTarget as ObjectHandles).y;
+				
+				var arr:Array;
+				if(mySubViewStack.selectedChild == genericMug)
+				{
+					arr = this.getRotationDifference(genericMug,x,y);
+					this.setNewImageRotation(genericMugLeft,rotation,arr[0].x,arr[0].y);
+					this.setNewImageRotation(genericMugRight,rotation,arr[0].x,arr[0].y);
+				}
+				if(mySubViewStack.selectedChild == genericMugLeft)
+				{
+					arr = this.getRotationDifference(genericMugLeft,x,y);
+					this.setNewImageRotation(genericMug,rotation,arr[0].x,arr[0].y);
+					this.setNewImageRotation(genericMugRight,rotation,arr[0].x,arr[0].y);
+				}
+				if(mySubViewStack.selectedChild == genericMugRight)
+				{
+					arr = this.getRotationDifference(genericMugRight,x,y);
+					this.setNewImageRotation(genericMug,rotation,arr[0].x,arr[0].y);
+					this.setNewImageRotation(genericMugLeft,rotation,arr[0].x,arr[0].y);
+				}
+			}
+			
+			private function getRotationDifference(mug:Canvas,x:int,y:int):Array
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var diff:Array = new Array;
+				var x1:int;
+				var y1:int;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					if(childObj != null){
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(mug == genericMug){
+								x1 = (x-_x1);
+								y1 = (y-_y);
+							}
+							if(mug == genericMugLeft){
+								x1 = (x-_x2);
+								y1 = (y-_y);
+							}
+							if(mug == genericMugRight){
+								x1 = (x-_x3);
+								y1 = (y-_y);
+							}
+						}
+					}
+				}
+				diff.push({x:x1,y:y1});
+				return diff;
+			}
+			
+			private function setNewImageRotation(mug:Canvas,rotation:int,x1:int,y1:int):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image= null;
+					
+					if(childObj != null)
+					{
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							childObj.rotation = rotation;
+							if(mug == genericMug){
+								childObj.x = _x1 + x1;
+							}if(mug == genericMugLeft){
+								childObj.x = _x2 + x1;
+							}if(mug == genericMugRight){
+								childObj.x = _x3 + x1;
+							}
+							childObj.y = _y + y1;
+						}
+					}
+				}
+			}
+			// <-- get new rotation position of image
+			
+			// alignment -->    
+			public function setTextAlign(align:String):void 
+			{
+				if(selectedObject != null)
+				{
+					var x1:int = 0;
+					
+					if(align == "left"){
+						if(mySubViewStack.selectedChild == genericMug)
+						{
+							
+							x1 = getDifference(genericMug,_x);
+						}
+						if(mySubViewStack.selectedChild == genericMugLeft)
+						{
+							
+							x1 = getDifference(genericMugLeft,_x);
+						}
+						if(mySubViewStack.selectedChild == genericMugRight)
+						{
+							
+							x1 = getDifference(genericMugRight,_x);
+						}
+						this.setNewPosition(genericMug,x1,selectedObject.y);	
+						this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+						this.setNewPosition(genericMugRight,x1,selectedObject.y);
+					}
+					if(align == "center"){
+						if(mySubViewStack.selectedChild == genericMug)
+						{
+							x1 = getDifference(genericMug,_x+(_w/2)-(selectedObject.width/2));
+						}
+						if(mySubViewStack.selectedChild == genericMugLeft)
+						{
+							x1 = getDifference(genericMugLeft,_x+(_w/2)-(selectedObject.width/2));
+						}
+						if(mySubViewStack.selectedChild == genericMugRight)
+						{
+							x1 = getDifference(genericMugRight,_x+(_w/2)-(selectedObject.width/2));
+						}
+						this.setNewPosition(genericMug,x1,selectedObject.y);	
+						this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+						this.setNewPosition(genericMugRight,x1,selectedObject.y);
+					}
+					if(align == "right"){
+						if(mySubViewStack.selectedChild == genericMug)
+						{
+							x1 = getDifference(genericMug,_x+_w-selectedObject.width);
+						}
+						if(mySubViewStack.selectedChild == genericMugLeft)
+						{
+							x1 = getDifference(genericMug,_x+_w-selectedObject.width);
+						}
+						if(mySubViewStack.selectedChild == genericMugRight)
+						{
+							x1 = getDifference(genericMug,_x+_w-selectedObject.width);
+						}
+						
+						this.setNewPosition(genericMug,x1,selectedObject.y);	
+						this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+						this.setNewPosition(genericMugRight,x1,selectedObject.y);
+					}
+				}
+				
+				
+			}
+			
+			// Edit text on mug -->
+			private function EditText():void
+			{
+				this.editTextOnMug(genericMug);
+				this.editTextOnMug(genericMugLeft);
+				this.editTextOnMug(genericMugRight);
+			}
+			
+			private function editTextOnMug(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					if(childObj != null)
+						txt= childObj.getChildAt(0) as Text;
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.text = insertText.text;
+						}
+					}
+				}
+			}
+			
+			//--** Delete the selected object from mug--**//
+			
+			private function forDeleteRequest(str:String):void
+			{
+				if(SelectionManager.instance.currentlySelected != null)
+				{
+					Alert.show("Click the 'Yes' button to delete this "+str+".","Delete this item?",Alert.YES|Alert.NO,this,deleteHandler);
+				}
+			}
+			
+			private function deleteHandler(e:CloseEvent):void
+			{
+				if(e.detail == 1){
+					this.Delete();
+				}
+			}
+			
+			public function Delete():void
+			{
+				if(selectedObject != null)
+				{
+					this.deleteFromMug(genericMug);
+					this.deleteFromMug(genericMugLeft);
+					this.deleteFromMug(genericMugRight);
+				}
+			}
+			
+			private function deleteFromMug(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							insertText.text = "";
+							SelectionManager.instance.selectNone();
+							parentContainer = childObj.parent;            // Get the parent container
+							parentContainer.removeChild( childObj );   // Remove the selected OH
+							//this.setSubControlAction('addTextId');
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							SelectionManager.instance.selectNone();
+							parentContainer = childObj.parent;            // Get the parent container
+							parentContainer.removeChild( childObj );   // Remove the selected OH
+							//this.setSubControlAction('libId');
+						}
+					}
+				}
+			}
+			// reset all canvas
+			private function forResetRequest():void
+			{
+				Alert.show("Click the 'Yes' button to reset design.","Delete this item?",Alert.YES|Alert.NO,this,resetHandler);
+			}
+			
+			private function resetHandler(e:CloseEvent):void
+			{
+				if(e.detail == 1){
+					this.resetAllCanvas();
+					//this.setSubControlAction('welcome');
+				}
+			}
+			
+			private function resetAllCanvas():void
+			{
+				this.resetCanvas(genericMug);
+				this.resetCanvas(genericMugLeft);
+				this.resetCanvas(genericMugRight);
+				
+				// this.setCurrentMugFace();
+			}
+			
+			private function resetCanvas(mug:Canvas):void
+			{
+				insertText.text = "";
+				mug.removeAllChildren();
+				//this.setSubControlAction('welcome');
+			}
+			// change font of text on mug -->
+			private function onFontChange():void
+			{
+				var fontS:String = combobox.selectedLabel;
+				if(selectedObject != null)
+				{
+					this.setTextFontOnMug(genericMug,fontS);
+					this.setTextFontOnMug(genericMugLeft,fontS);
+					this.setTextFontOnMug(genericMugRight,fontS);
+				}
+			}
+			
+			private function setTextFontOnMug(mug:Canvas,fontS:String):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.setStyle("fontFamily",fontS);
+						}
+					}
+				}
+			}
+			
+			// change fontSize of text on mug -->
+			private function onChangeFontSize(fontSize:Number):void
+			{
+				//var fontSize:Number = fontSizeSlider.value;
+				if(selectedObject != null)
+				{
+					this.setTextFontSizeOnMug(genericMug,fontSize);
+					this.setTextFontSizeOnMug(genericMugLeft,fontSize);
+					this.setTextFontSizeOnMug(genericMugRight,fontSize);
+				}
+				//fontSizeSlider.value=fontSize;
+				fontSizeTextVal.text=fontSize.toString();
+			}
+			
+			private function setTextFontSizeOnMug(mug:Canvas,fontSize:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.setStyle("fontSize",fontSize);
+						}
+					}
+				}
+			}
+			
+			
+			// on color change of text on mug -->
+			private function onColorChange(color:Number):void
+			{
+				if(selectedObject != null)
+				{
+					this.setTextColorOnMug(genericMug,color,'font');
+					this.setTextColorOnMug(genericMugLeft,color,'font');
+					this.setTextColorOnMug(genericMugRight,color,'font');
+				}
+			}
+			private function onShadowColor(shadowColor:Number):void
+			{
+				if(selectedObject != null)
+				{
+					this.setTextColorOnMug(genericMug,shadowColor,'shade');
+					this.setTextColorOnMug(genericMugLeft,shadowColor,'shade');
+					this.setTextColorOnMug(genericMugRight,shadowColor,'shade');
+				}
+			}
+			private function onShadowImg(shadowColor:Number):void
+			{
+				if(selectedObject != null)
+				{
+					this.setTextColorOnMug(genericMug,shadowColor,'shade');
+					this.setTextColorOnMug(genericMugLeft,shadowColor,'shade');
+					this.setTextColorOnMug(genericMugRight,shadowColor,'shade');
+					
+				}
+			}
+			
+			
+			
+			private function setTextColorOnMug(mug:Canvas,color:Number,choice:String):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var parentContainer:DisplayObjectContainer;
+				
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var txt:Text = null;
+					var img:Image=null;
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if(choice == 'font'){
+								txt.setStyle("color",color);
+							}else if (choice == 'shade'){
+								txt.filters = this.setShadow(color);
+							}else{
+								
+							}
+						}
+					}
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							if (choice == 'shade'){
+								img.filters = this.setShadow(color);
+							}else{
+								
+							}
+						}
+					}
+				}
+			}
+			/**
+			 *  sift layer up
+			 * 
+			 * */
+			private function layerUp():void
+			{
+				if(selectedObject != null)
+				{
+					this.setLayerUp(genericMug);
+					this.setLayerUp(genericMugLeft);
+					this.setLayerUp(genericMugRight);
+				}
+			}
+			
+			private var layers:Array;
+			private function countOHLayers(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				layers = new Array();
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var pos:Number = mug.getChildIndex(childObj);
+						layers.push({id:childObj.id,pos:pos});
+					}
+				}
+			}
+			
+			private function setLayerUp(mug:Canvas):void
+			{
+				this.countOHLayers(mug);
+				
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var flag:int = 0;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var obj:ObjectHandles = mug.getChildByName(selectedObject.id) as ObjectHandles;
+						var pos:Number = mug.getChildIndex(obj);
+						for(var j:int = 0; j<layers.length; j++)
+						{
+							if(layers[j].pos > pos)
+							{
+								flag = 1;
+								this.setLayerPosition(mug,layers[j].pos,obj);
+							}
+							if(flag == 1 )
+							{
+								break;
+							}
+						} 
+					}
+					if(flag == 1 )
+					{
+						break;
+					}
+				}
+			}
+			
+			private function setLayerPosition(mug:Canvas,newPos:Number,obj:ObjectHandles):void
+			{
+				mug.setChildIndex(obj,newPos);
+			}
+			
+			private function layerDown():void
+			{
+				if(selectedObject != null)
+				{
+					this.setLayerDown(genericMug);
+					this.setLayerDown(genericMugLeft);
+					this.setLayerDown(genericMugRight);
+				}
+			}
+			
+			private function setLayerDown(mug:Canvas):void
+			{
+				this.countOHLayers(mug);
+				
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				var flag:int = 0;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					if(childObj != null)
+					{
+						var obj:ObjectHandles = mug.getChildByName(selectedObject.id) as ObjectHandles;
+						var pos:Number = mug.getChildIndex(obj);
+						for(var j:int = layers.length-1; j >= 0; j--)
+						{
+							if(layers[j].pos < pos)
+							{
+								flag = 1;
+								this.setLayerPosition(mug,layers[j].pos,obj);
+							}
+							if(flag == 1 )
+							{
+								break;
+							}
+						} 
+					}
+					if(flag == 1 )
+					{
+						break;
+					}
+				}
+			}
+			// mug face thumbnail on mySlide
+			private function takeSnapMugFaces():ByteArray
+			{
+				if(selectedObject != null)
+					selectedObject.deselect(); 
+				
+				var bitmapdata:BitmapData = new BitmapData(MugEditor.width,MugEditor.height);
+				bitmapdata.draw(MugEditor);
+				var posPoint:Point = new Point(0,0);
+				
+				var bitM:BitmapData = new BitmapData(previewImg.width,previewImg.height,true,0xFFFFFFFF);
+				bitM.copyPixels(bitmapdata, new Rectangle(previewImg.x, previewImg.y, previewImg.width, previewImg.height-40),posPoint);
+				
+				//var bitmap:Bitmap = new Bitmap(bitM,"auto",true);
+				
+				var png:PNGEncoder = new PNGEncoder();
+				var byteArray:ByteArray = png.encode(bitM);
+				byteArray.compress();
+				
+				return byteArray;
+			}
+			
+			private function getMugSnap():void
+			{
+				var bitmapdata:BitmapData = new BitmapData(mugPreview.width,mugPreview.height);
+				bitmapdata.draw(mugPreview);
+				
+				var png:PNGEncoder = new PNGEncoder();
+				var byteArray:ByteArray = png.encode(bitmapdata);
+				byteArray.compress();
+				
+				myObj.saveDesignImage(userId,"mug",byteArray);
+			}
+			
+			private function setMugForSanp(mug:Canvas):void
+			{
+				if(selectedObject != null)
+					selectedObject.deselect(); 
+				
+				var timer1:Timer = new Timer(200,1);
+				timer1.start();
+				if(mug == genericMug)
+				{
+					previewImg.source = centerImage;
+					mySubViewStack.selectedChild = genericMug;
+					timer1.addEventListener(TimerEvent.TIMER_COMPLETE,takeCenterSnap);
+				}
+			}
+			
+			private function takeLeftSnap(evt:TimerEvent):void
+			{
+				//Left.source = this.takeSnapMugFaces();
+				
+				myObj.saveDesignImage(userId,"mug_left",this.takeSnapMugFaces());
+				
+				previewImg.source = centerImage;
+				mySubViewStack.selectedChild = genericMug;
+				
+				this.hideLoading();
+			}
+			
+			private function takeCenterSnap(evt:TimerEvent):void
+			{
+				//Center.source = this.takeSnapMugFaces();
+				
+				myObj.saveDesignImage(userId,"mug_center",this.takeSnapMugFaces());
+				
+				previewImg.source = rightImage;
+				mySubViewStack.selectedChild = genericMugRight;
+				var timer3:Timer = new Timer(200,1);
+				timer3.start();
+				timer3.addEventListener(TimerEvent.TIMER_COMPLETE,takeRightSnap);
+			}
+			
+			private function takeRightSnap(evt:TimerEvent):void
+			{
+				//Right.source = this.takeSnapMugFaces();
+				
+				myObj.saveDesignImage(userId,"mug_right",this.takeSnapMugFaces());
+				
+				mySubViewStack.selectedChild = genericMugLeft;
+				previewImg.source = leftImage;
+				var timer2:Timer = new Timer(200,1);
+				timer2.start();
+				timer2.addEventListener(TimerEvent.TIMER_COMPLETE,takeLeftSnap);
+			}
+			
+			private function setCurrentMugFace():void
+			{
+				this.showLoading();
+				this.getMugSnap();
+				this.setMugForSanp(genericMug);
+				this.setMugForSanp(genericMugLeft);
+				this.setMugForSanp(genericMugRight);
+			}
+			// mug face thumbnail on mySlide
+			
+			
+			// Large view of mug -->
+			private function viewLarge():void
+			{
+				var _largeView:LargeView;
+				_largeView = LargeView(PopUpManager.createPopUp(this,LargeView,true));
+				_largeView.mypath(this.takeSnapOfMug());
+			}
+			
+			private function takeSnapOfMug():Bitmap
+			{
+				if(selectedObject != null)
+					selectedObject.deselect();
+				
+				var bitmapdata:BitmapData = new BitmapData(MugEditor.width,MugEditor.height);
+				bitmapdata.draw(MugEditor);
+				var posPoint:Point = new Point(0,0);
+				
+				var bitM:BitmapData = new BitmapData(400,400,true,0x00000000);
+				bitM.copyPixels(bitmapdata, new Rectangle(12, 30, 400, 400),posPoint);
+				
+				var bitmap:Bitmap = new Bitmap(bitM,"auto",true);
+				
+				return bitmap;
+			} 
+			// <-- Large view of mug
+			
+			// background Color Change -->
+			private function drawAreaForBackColor(mug:Canvas,color:uint):void
+			{
+				var ui:UIComponent = new UIComponent();
+				ui.name = "MugBackGroundColor";
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.beginFill(color,1);
+				if(mug == genericMug)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w,_h);
+				}
+				if(mug == genericMugLeft)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(9,0,_w-9,_h);
+				}
+				if(mug == genericMugRight)
+				{
+					ui.x = _x;
+					ui.y = _y;
+					rect.graphics.drawRect(0,0,_w-9,_h);
+				}
+				rect.graphics.endFill();
+				ui.addChild(rect);
+				mug.addChildAt(ui,0);
+			}
+			
+			/* private function setBacgroundColor(mug:Canvas,color:uint):void
+			{
+				var colorT:ColorTransform = new ColorTransform();
+				colorT.color = backColorMug.selectedColor;
+				
+				var ui:UIComponent = mug.getChildByName("MugBackGroundColor") as UIComponent;
+				
+				var sp:Sprite = null
+				
+				if(ui != null)
+					sp = ui.getChildAt(0) as Sprite;
+				
+				if(sp != null)
+				{
+					sp.transform.colorTransform = colorT;
+				}
+				else
+				{
+					this.drawAreaForBackColor(mug,color);
+				}
+			} */
+			
+			/* private function onBackColorChange():void
+			{
+				this.setBacgroundColor(genericMug,backColorMug.selectedColor);
+				this.setBacgroundColor(genericMugLeft,backColorMug.selectedColor);
+				this.setBacgroundColor(genericMugRight,backColorMug.selectedColor);
+			} */
+			
+			/* private function onClickBackColorCB():void
+			{
+				if(!(backColorCB.selected))
+				{
+					this.removeColor(genericMug,"BackgroundColor");
+					this.removeColor(genericMugLeft,"BackgroundColor");
+					this.removeColor(genericMugRight,"BackgroundColor");
+				}
+			}
+			
+			private function onBorderColorCB():void
+			{
+				if(!(borderColorCB.selected))
+				{
+					this.removeColor(genericMug,"BorderColor");
+					this.removeColor(genericMugLeft,"BorderColor");
+					this.removeColor(genericMugRight,"BorderColor");
+				}
+			} */
+			
+			private function removeColor(mug:Canvas,str:String):void
+			{
+				var ui:UIComponent = new UIComponent();
+				if(str == "BorderColor")
+				{
+					ui = mug.getChildByName("MugBorderColor") as UIComponent;
+				}
+				if(str == "BackgroundColor")
+				{
+					ui = mug.getChildByName("MugBackGroundColor") as UIComponent;
+				}
+				
+				if(ui != null)
+				{
+					mug.removeChild(ui);
+				}
+			}
+			
+			// Background Image change -->
+			private function setBackgroundImage(mug:Canvas):void
+			{
+				var backImageForColor:Image = new Image;
+				var x:int = 0;
+				var y:int = 0;
+				
+				var backImage:Sprite = this.drawRectAreaOnMug(mug);
+				backImageForColor.name = "backImage";
+				backImageForColor.source = "mugs/mug_color.png";
+				if(mug == genericMug){
+					x=_x-(_w/2);
+					y=_y;
+				}
+				if(mug == genericMugLeft){
+					x=_x;
+					y=_y;
+				}
+				if(mug == genericMugRight){
+					x=_x-(_w);
+					y=_y;
+				}
+				backImageForColor.maintainAspectRatio = false;
+				backImageForColor.x = x;
+				backImageForColor.y = y;
+				backImageForColor.width = 2*_w;
+				backImageForColor.height = _h;
+				backImageForColor.mask = backImage;
+				mug.addChild(backImageForColor);
+			}
+			
+			private function setBackImage(mug:Canvas,src:String):void
+			{
+				var img:Image = mug.getChildByName("backImage") as Image;
+				if(img != null)
+				{
+					img.source = src;
+				}
+			}
+			// <-- Background Image change 
+			
+			// mug border color change -->
+			/* private function onBorderColorChange():void
+			{
+				this.setMugBorderColor(genericMug,borderColor.selectedColor);
+				this.setMugBorderColor(genericMugLeft,borderColor.selectedColor);
+				this.setMugBorderColor(genericMugRight,borderColor.selectedColor);
+			} */
+			
+			private function setMugBorderColor(mug:Canvas,color:uint):void
+			{
+				var ui:UIComponent = new UIComponent();
+				ui.name = "MugBorderColor";
+				ui.x = _x;
+				ui.y = _y-3;
+				var rect:Sprite = new Sprite();
+				rect.graphics.clear();
+				rect.graphics.lineStyle(3,color);
+				if(mug == genericMug)
+				{
+					ui.x = _x;
+					ui.y = _y-3;
+					rect.graphics.moveTo(0,1);
+					rect.graphics.lineTo(_w+2,1);
+					rect.graphics.moveTo(2,_h+4);
+					rect.graphics.lineTo(_w-3,_h+4);
+				}
+				if(mug == genericMugLeft)
+				{
+					rect.graphics.moveTo(_w+2,1);
+					rect.graphics.lineTo(7,1);
+					rect.graphics.lineTo(7,_h+4);
+					rect.graphics.lineTo(_w-3,_h+4);
+				}
+				if(mug == genericMugRight)
+				{
+					rect.graphics.moveTo(0,1);
+					rect.graphics.lineTo(_w-8,1);
+					rect.graphics.lineTo(_w-8,_h+4);
+					rect.graphics.lineTo(2,_h+4);
+				}
+				
+				ui.addChild(rect);
+				mug.addChild(ui);	
+			}
+			
+			// movements of selected object
+			private function getCenterPoints():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.x = _x+(_w/2) - (selectedObject.width/2);
+					selectedObject.y = _y+(_h/2) - (selectedObject.height/2);
+					var x1:int = 0;
+					if(mySubViewStack.selectedChild == genericMug)
+					{
+						x1 = getDifference(genericMug,selectedObject.x);
+					}
+					if(mySubViewStack.selectedChild == genericMugLeft)
+					{
+						x1 = getDifference(genericMugLeft,selectedObject.x);	
+					}
+					if(mySubViewStack.selectedChild == genericMugRight)
+					{
+						x1 = getDifference(genericMugRight,selectedObject.x);	
+					}
+					
+					this.setNewPosition(genericMug,x1,selectedObject.y);	
+					this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+					this.setNewPosition(genericMugRight,x1,selectedObject.y);
+				}
+			}
+			
+			private function shiftUp():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.y = selectedObject.y - 5;
+					var x1:int = 0;
+					if(mySubViewStack.selectedChild == genericMug)
+					{
+						x1 = getDifference(genericMug,selectedObject.x);
+					}
+					if(mySubViewStack.selectedChild == genericMugLeft)
+					{
+						x1 = getDifference(genericMugLeft,selectedObject.x);	
+					}
+					if(mySubViewStack.selectedChild == genericMugRight)
+					{
+						x1 = getDifference(genericMugRight,selectedObject.x);	
+					}
+					
+					this.setNewPosition(genericMug,x1,selectedObject.y);	
+					this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+					this.setNewPosition(genericMugRight,x1,selectedObject.y);
+				}
+			}
+			
+			private function shiftLeft():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.x = selectedObject.x + 5;
+					var x1:int = 0;
+					if(mySubViewStack.selectedChild == genericMug)
+					{
+						x1 = getDifference(genericMug,selectedObject.x);
+					}
+					if(mySubViewStack.selectedChild == genericMugLeft)
+					{
+						x1 = getDifference(genericMugLeft,selectedObject.x);	
+					}
+					if(mySubViewStack.selectedChild == genericMugRight)
+					{
+						x1 = getDifference(genericMugRight,selectedObject.x);	
+					}
+					
+					this.setNewPosition(genericMug,x1,selectedObject.y);	
+					this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+					this.setNewPosition(genericMugRight,x1,selectedObject.y);
+				}
+			}
+			
+			private function shiftRight():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.x = selectedObject.x - 5;
+					var x1:int = 0;
+					if(mySubViewStack.selectedChild == genericMug)
+					{
+						x1 = getDifference(genericMug,selectedObject.x);
+					}
+					if(mySubViewStack.selectedChild == genericMugLeft)
+					{
+						x1 = getDifference(genericMugLeft,selectedObject.x);	
+					}
+					if(mySubViewStack.selectedChild == genericMugRight)
+					{
+						x1 = getDifference(genericMugRight,selectedObject.x);	
+					}
+					
+					this.setNewPosition(genericMug,x1,selectedObject.y);	
+					this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+					this.setNewPosition(genericMugRight,x1,selectedObject.y);
+				}
+			}
+			
+			private function shiftDown():void
+			{
+				if(selectedObject != null)
+				{
+					selectedObject.y = selectedObject.y + 5;
+					var x1:int = 0;
+					if(mySubViewStack.selectedChild == genericMug)
+					{
+						x1 = getDifference(genericMug,selectedObject.x);
+					}
+					if(mySubViewStack.selectedChild == genericMugLeft)
+					{
+						x1 = getDifference(genericMugLeft,selectedObject.x);	
+					}
+					if(mySubViewStack.selectedChild == genericMugRight)
+					{
+						x1 = getDifference(genericMugRight,selectedObject.x);	
+					}
+					
+					this.setNewPosition(genericMug,x1,selectedObject.y);	
+					this.setNewPosition(genericMugLeft,x1,selectedObject.y);
+					this.setNewPosition(genericMugRight,x1,selectedObject.y);
+				}
+			}
+			// create duplicate()
+			private var dupId:Number = 100;
+			private function createDuplicate():void
+			{
+				if(selectedObject != null)
+				{
+					dupId = dupId+1;
+					this.setDuplicateOnMug(genericMug);
+					this.setDuplicateOnMug(genericMugLeft);
+					this.setDuplicateOnMug(genericMugRight);
+				}
+			}
+			
+			
+			private function setDuplicateOnMug(mug:Canvas):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							var x2:Number = selectedObject.x;
+							var y2:Number = selectedObject.y + (selectedObject.height/2);
+							
+							var dupTxt:String = txt.text;
+							this.drawTextOnMug(mug,x2,y2,"duplicate"+dupId,dupTxt);
+						}
+					}
+					
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							var x1:Number = selectedObject.x;
+							var y1:Number = selectedObject.y + (selectedObject.height/2);
+							
+							var src:String = String(img.source);
+							this.drawImageOnMug(mug,src,x1,y1,"duplicate"+dupId);
+						}
+					}
+				}
+			}
+			
+			// set image width with slider
+			private function setImageWidth(value:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(lockImgDimensions.selected)
+					{
+						heightSlider.value = value;
+						
+						this.setNewHeightWidth(genericMug,value,value);
+						this.setNewHeightWidth(genericMugLeft,value,value);
+						this.setNewHeightWidth(genericMugRight,value,value);
+					}
+					else
+					{
+						this.setNewHeightWidth(genericMug,selectedObject.height,value);
+						this.setNewHeightWidth(genericMugLeft,selectedObject.height,value);
+						this.setNewHeightWidth(genericMugRight,selectedObject.height,value);
+					}
+					
+				}
+			}
+			
+			private function setImageHeight(value:Number):void
+			{
+				if(selectedObject != null)
+				{
+					if(lockImgDimensions.selected)
+					{
+						widthSlider.value = value;
+						
+						this.setNewHeightWidth(genericMug,value,value);
+						this.setNewHeightWidth(genericMugLeft,value,value);
+						this.setNewHeightWidth(genericMugRight,value,value);
+					}
+					else
+					{
+						this.setNewHeightWidth(genericMug,value,selectedObject.width);
+						this.setNewHeightWidth(genericMugLeft,value,selectedObject.width);
+						this.setNewHeightWidth(genericMugRight,value,selectedObject.width);
+					}
+				}
+			}
+			
+			/**
+			 *  set Transparency
+			 * */
+			private function onTransSliderChange(value:Number):void
+			{
+				this.setTransOnMug(genericMug,value);
+				this.setTransOnMug(genericMugLeft,value);
+				this.setTransOnMug(genericMugRight,value);
+			}
+			
+			private function setTransOnMug(mug:Canvas,value:Number):void
+			{
+				var children:Array = mug.getChildren();
+				var n:int = children.length;
+				for (var i:int = 0; i < n; i++)
+				{
+					var childObj:ObjectHandles = children[i] as ObjectHandles;
+					var img:Image = null;
+					var txt:Text = null
+					
+					if(childObj != null){
+						txt = childObj.getChildAt(0) as Text;
+						img = childObj.getChildAt(0) as Image;
+					}
+					
+					if(txt != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							txt.alpha = value;
+						}
+					}
+					
+					if(img != null)
+					{
+						if(childObj.id == selectedObject.id)
+						{
+							img.alpha = value;
+						}
+					}
+				}
+			}
+			
+			// end of save design data
+			/**
+			 * login user function.
+			 * */
+			public function getloginUser(e:ResultEvent):void{
+				if(e.result[0] == "yes")
+				{
+					PopUpManager.removePopUp(_login);
+					email = e.result['email'];
+					userId = e.result['id'];
+					if(resType=="send"){
+						_sendMail.userMail = email;
+						PopUpManager.addPopUp(_sendMail, this, true);
+						PopUpManager.centerPopUp(_sendMail);
+						
+						_sendMail["send"].addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
+							var _email:String = _sendMail["emailId"].text;
+							sendMailrequest(e,_email); 
+						});
+						this.setCurrentMugFace(); // taking snaps
+					}else if(resType == "open"){
+						myObj.openDesign(userId,editorType);
+					}else if(resType == "save"){
+						saveDesign();
+					}else{
+						Alert.show("Invalid Request",site_title);
+					}
+				}
+				else
+				{
+					Alert.show(e.result[0].toString(),"Message");
+				}
+				
+			}
+			
+			public function sendMailrequest(e:MouseEvent,_email:String):void{
+				myObj.sendMail(_email,userId,editorType);
+			}
+			
+			public function getMailresponse(e:ResultEvent):void{
+				if(e.result.toString()== "yes")
+				{
+					Alert.show("Mail Sent","Message",Alert.OK,this,closeHandler);	
+				}
+				else
+				{
+					Alert.show("Some Error","Message",Alert.OK,this,closeHandler);	
+				}
+			}
+			
+			private function closeHandler(e:CloseEvent):void
+			{
+				PopUpManager.removePopUp(_sendMail);
+			}
+			
+			private var openDesignArray:Array;
+			private function openObject(evt:ResultEvent):void{
+				var objArr:Array=evt.result[0].obj as Array;
+				if(objArr.length != 0){
+					openDesignArray = new Array();
+					openDesignArray = objArr;
+					Alert.show("Reset Your Current Design",site_title,Alert.YES|Alert.NO,this,confirmHandler);
+				}else{
+					Alert.show("Your Design not Open Successfully May Be Occur an Problem.",site_title);
+				}
+				
+			}
+			private	function confirmHandler(event:CloseEvent):void 
+			{
+				if (event.detail == Alert.YES){
+					this.resetAllCanvas();
+					this.setOpenDesign(openDesignArray);
+				}
+			}
+			
+			private function setOpenDesign(data:Array):void
+			{
+				this.setOpenDesignOnMug(genericMug,data);
+				this.setOpenDesignOnMug(genericMugLeft,data);
+				this.setOpenDesignOnMug(genericMugRight,data);
+				//this.setSubControlAction('welcome');
+			}
+			
+			private function setOpenDesignOnMug(mug:Canvas,data:Array):void
+			{
+				//Alert.show(ObjectUtil.toString(data));
+				var n:int = data.length;
+				for(var i:int=0; i<n; i++)
+				{
+					if(data[i].type == "Text")
+					{
+						mask1 = this.drawRectAreaOnMug(mug);
+						
+						var obj:ObjectHandles = new ObjectHandles();
+						obj.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						obj.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewPosition);
+						obj.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewHeightWidth);
+						obj.id = data[i].id;
+						obj.name = data[i].name;
+						
+						if(mug == genericMug)
+						{
+							obj.x= data[i].x;
+							obj.y= data[i].y;
+						}
+						if(mug == genericMugLeft)
+						{
+							obj.x= data[i].x+(_w/2);
+							obj.y= data[i].y;
+						}
+						if(mug == genericMugRight)
+						{
+							obj.x= data[i].x-(_w/2);
+							obj.y= data[i].y;
+						}
+						
+						obj.height= data[i].height;
+						obj.width= data[i].width;
+						obj.rotation= data[i].rotation;
+						var txt:Text = new Text();
+						obj.minHeight = txt.textHeight;
+						obj.minWidth = txt.textWidth;
+						
+						txt.text = String(data[i].value);
+						txt.percentWidth=100;
+						txt.percentHeight=100;
+						txt.alpha = data[i].trans;
+						txt.setStyle("fontSize",data[i].size);  
+						txt.setStyle("color","#"+this.getColorData(data[i].color));
+						txt.setStyle("textAlign","center");
+						txt.setStyle("fontFamily",data[i].family);
+						if(data[i].shadow)
+							txt.filters = this.setShadow(data[i].shadow);
+						txt.mask = mask1;
+						obj.addChild(txt);
+						mug.addChild(obj);
+					}
+					if(data[i].type == "Image")
+					{
+						mask1 = this.drawRectAreaOnMug(mug);
+						
+						var oh:ObjectHandles = new ObjectHandles();
+						oh.addEventListener(ObjectHandleEvent.OBJECT_SELECTED,OnObjectHandlesSelected);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_MOVING_EVENT,getNewImagePosition);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_RESIZING_EVENT,getNewImageHeightWidth);
+						oh.addEventListener(ObjectHandleEvent.OBJECT_ROTATING_EVENT,getNewImageRotation);
+						oh.id = data[i].id;
+						oh.name = data[i].name;
+						oh.width=data[i].width;
+						oh.height=data[i].height;
+						oh.rotation=data[i].rotation;
+						if(mug == genericMug)
+						{
+							oh.x=data[i].x;
+							oh.y=data[i].y;
+						}
+						if(mug == genericMugLeft)
+						{
+							oh.x=data[i].x+(_w/2);
+							oh.y=data[i].y;
+						}
+						if(mug == genericMugRight)
+						{
+							oh.x=data[i].x-(_w/2);
+							oh.y=data[i].y;
+						}
+						
+						oh.allowRotate = true;
+						
+						var image:Image = new Image();
+						image.width	= data[i].width;
+						image.height= data[i].height; 
+						image.source = data[i].value;
+						image.percentHeight=100;
+						image.percentWidth=100;
+						image.alpha = data[i].trans;
+						image.mask = mask1;
+						if(data[i].shadow)
+							image.filters = this.setShadow(data[i].shadow);
+						oh.addChild(image);
+						mug.addChild(oh);
+					}
+				}
+			}
+			
+			private function saveObject(evt:ResultEvent):void{
+				if(evt.result == "success"){
+					Alert.show("Your Design Saved Successfully.",site_title);
+				}else{
+					Alert.show("Your Design not Saved Successfully May Be Occur an Problem.",site_title);
+				}
+			}
+			
+			private function saveDesignImageListner(evt:ResultEvent):void{
+				
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:RemoteObject id="myObj" endpoint="{gateway_url}" showBusyCursor="true" destination="Designme" source="Designme" fault="faultError(event)">
+		<mx:method name="getProductData" result="productListener(event)"  />
+		<mx:method name="getCatgoryLibrary" result="getCategory(event)" />
+		<mx:method name="getLibraryImage" result="libraryListner(event)" />
+		<mx:method name="checkLoginUser" result="loginListner(event)" />
+		<mx:method name="getloginUser" result="getloginUser(event)" />
+		<mx:method name="sendMail" result="getMailresponse(event)" />		
+		<mx:method name="saveDesign" result="saveObject(event)" />		
+		<mx:method name="openDesign" result="openObject(event)" />
+		<mx:method name="saveDesignImage" result="saveDesignImageListner(event)" />
+	</mx:RemoteObject>
+	
+	<mx:Canvas left="5" right="5" top="5" bottom="5" alpha="1.0" borderStyle="solid"
+			   borderThickness="1" cornerRadius="5">
+		<mx:HBox id="topcontrol" x="0" y="0" width="100%" height="10%" backgroundColor="#444242"
+				 borderStyle="solid" borderThickness="1" cornerRadius="8"
+				 horizontalAlign="center" horizontalGap="10" horizontalScrollPolicy="off"
+				 verticalAlign="middle" verticalScrollPolicy="off">
+			<mx:Label text="product name" width="70%" height="100%" id="product_label" styleName="titleLabel"/>
+			<mx:Button id="open" buttonMode="true"
+					   click="myObj.checkLoginUser('open');resType='open';"
+					   styleName="openButton" useHandCursor="true"/>
+			<mx:Button id="save" buttonMode="true"
+					   click="myObj.checkLoginUser('save');resType='save';"
+					   styleName="saveButton" useHandCursor="true"/>
+			<mx:Button id="send" x="640" y="10" buttonMode="true"
+					   click="myObj.checkLoginUser('send');resType='send';"
+					   styleName="sendButton" useHandCursor="true"/>
+			<!--<mx:Button id="print_button" click="togglePreview()" styleName="printView"/>-->
+			<mx:Button id="print_button" click="togglePrint()" styleName="printView"/>
+			<mx:Button id="reset" buttonMode="true" click="forResetRequest();"
+					   styleName="resetButton" useHandCursor="true"/>
+			<mx:Spacer width="10"/>
+		</mx:HBox>
+		
+		<mx:Canvas id="MidControl" right="0" bottom="0" width="100%" height="89%"
+				   backgroundColor="#FFFFFF" borderStyle="solid" borderThickness="2"
+				   cornerRadius="8" horizontalScrollPolicy="off" shadowDirection="right"
+				   shadowDistance="13" verticalScrollPolicy="off">
+			
+			<mx:Canvas width="450" id="MugEditor" horizontalScrollPolicy="off" verticalScrollPolicy="off" borderColor="#F3F3F3" borderStyle="none" right="5" top="5" height="480">
+				<fabulousFlex:PreloadingImage id="previewImg" source="" height="450" width="450" horizontalCenter="0" top="0"/>
+				<mx:ViewStack id="mySubViewStack" width="450" height="450" borderColor="#111BDA" borderStyle="solid" borderThickness="0" top="0" horizontalCenter="0">
+					<mx:Canvas id="genericMug" width="100%" height="100%"  verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1"  >
+						<!--<fabulousFlex:PreloadingImage id="previewImgCenter" source="{centerImage}" height="400" width="400" x="10" y="10"/>-->
+					</mx:Canvas>
+					<!--<fx:Reflection id="reflection1" target="{genericMug}" width="100%" height="20%" />-->
+					<mx:Canvas id="genericMugLeft" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1" >
+						<!--<fabulousFlex:PreloadingImage id="previewImgLeft" source="{leftImage}" height="400" width="400" x="10" y="10"/>-->
+					</mx:Canvas>
+					<mx:Canvas id="genericMugRight" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="none" borderThickness="1" >
+						<!--<fabulousFlex:PreloadingImage id="previewImgRight" source="{rightImage}" height="400" width="400" x="10" y="10"/>-->
+					</mx:Canvas>
+				</mx:ViewStack>
+				<mx:Canvas bottom="0" height="20%" width="80%" horizontalCenter="0">
+					<fabulousFlex:PreloadingImage id="Right"
+												  height="80"
+												  width="80"
+												  preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+												  horizontalAlign="center" 
+												  verticalAlign="middle"
+												  click="mySubViewStack.selectedChild=genericMugRight; mySide(String(Right.source),'right');"
+												  right="5" bottom="2"/>
+					<fabulousFlex:PreloadingImage id="Center"
+												  height="80"
+												  width="80"
+												  preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+												  horizontalAlign="center" 
+												  verticalAlign="middle"
+												  click="mySide(String(Center.source),'center'); mySubViewStack.selectedChild=genericMug;"
+												  horizontalCenter="0" bottom="2"/>
+					<fabulousFlex:PreloadingImage id="Left"
+												  height="80"
+												  width="80"
+												  preloaderTitleWindow="{SquaresSpinnerPreloadingWindow}"
+												  horizontalAlign="center" 
+												  verticalAlign="middle"
+												  click="mySubViewStack.selectedChild=genericMugLeft; mySide(String(Left.source),'left');"
+												  left="5" bottom="2"/>
+				</mx:Canvas>
+				<mx:Panel id="printCanvas" bottom="0" height="100%" width="100%" horizontalCenter="0" backgroundColor="#60C0CE" backgroundAlpha="0.15" visible="false" click="togglePrint();" title="Print Preview">
+					<mx:Canvas width="100%" height="100%">
+						<mx:Canvas id="mugPreview" backgroundColor="#FFFFFF" horizontalScrollPolicy="off" verticalScrollPolicy="off" horizontalCenter="0" verticalCenter="0"/>
+					</mx:Canvas>				
+				</mx:Panel>
+				<!--<mx:Image toolTip="Zoom" source="images/icons/zoom.gif"  x="410" y="1" click="viewLarge();"/>-->
+			</mx:Canvas>
+			<mx:TabNavigator id="controlTab" left="5" top="5" bottom="5" width="36%" styleName="tabControl">
+				<!--<mx:Canvas left="0" width="100%" height="60" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					<mx:Button id="imageId" name="imageId" styleName="imageControls"  width="100" height="60" useHandCursor="true" buttonMode="true" click="controlAction(event)" x="0" y="0"/>
+					<mx:Button id="textId" styleName="textControls"  width="100" height="60" x="94" y="0" useHandCursor="true" buttonMode="true" click="controlAction(event)"/>
+					<mx:Button id="fillId" styleName="fillControls"  width="100" height="60" x="187" y="0" useHandCursor="true" buttonMode="true" click="controlAction(event)"/>
+				</mx:Canvas>-->
+				<mx:Canvas left="0" width="100%" height="401" bottom="0" id="imageIdCanvas" visible="false" borderStyle="none"  label="Image Control">
+					<mx:TabNavigator id="imageTab" width="100%" height="100%" horizontalCenter="0" top="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+						<!--<mx:Canvas width="100%" height="7%" top="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+							<mx:Button id="libId" styleName="libControls" useHandCursor="true" buttonMode="true" click="subControlAction(event)" left="0" top="5" enabled="false" />
+							<mx:Button id="uploadId" styleName="uploadControls" useHandCursor="true" buttonMode="true" click="subControlAction(event)" horizontalCenter="0" top="5"/>
+							<mx:Button id="editImageId" styleName="editImageControls" useHandCursor="true" buttonMode="true" click="subControlAction(event)" right="0" top="5"/>
+						</mx:Canvas>-->
+						<mx:Canvas label="Library" width="100%" height="93%" bottom="0" id="libCanvas" visible="true">
+							<mx:ComboBox right="10" width="154" top="5" id="categoryId" labelField="name" change="myObj.getLibraryImage(categoryId.selectedItem.id)"></mx:ComboBox>
+							<mx:Label text="Select Category :" width="113" top="7" left="5"/>
+							<mx:TileList id="libTileId" width="95%" height="90%" bottom="4" itemRenderer="com.usercontrols.libImages" itemClick="getImages(event);" horizontalCenter="0" borderStyle="none" themeColor="#60C0CE">
+								
+							</mx:TileList>
+						</mx:Canvas>
+						<mx:Canvas label="Upload" width="100%" height="359" bottom="0" id="uploadCanvas" visible="false">
+							<mx:Tile width="90%" height="300" id="userImages" horizontalCenter="0">
+								<mx:Repeater id="userUploadImages">
+									<mx:HBox width="100" height="100">
+										<mx:Image width="100" height="100" source="{userUploadImages.currentItem.img}" horizontalAlign="center" verticalAlign="middle" click="addUploadImage(event);" />
+									</mx:HBox>
+								</mx:Repeater>
+							</mx:Tile>
+							<!--<mx:ProgressBar id="progBar" mode="manual" label="" labelPlacement="center" width="100%"/>-->
+							
+							<mx:Button id="chooseFileId" styleName="chooseFile" useHandCursor="true" buttonMode="true" bottom="24" x="22" click="subControlAction(event)"/>
+						</mx:Canvas>
+						<mx:Canvas label="Edit" width="100%" height="359" bottom="0" id="editImageCanvas" visible="false">
+							<mx:HRule y="28" horizontalCenter="0" width="80%"/>
+							<mx:HRule y="125" horizontalCenter="0" width="80%"/>
+							<mx:HRule y="312" horizontalCenter="0" width="80%"/>
+							<mx:Button y="322" left="15" styleName="duplicate" click="createDuplicate();" />
+							<mx:Button y="322" right="15" styleName="removeImage" click="forDeleteRequest('Image');"/>
+							<mx:Label x="16" y="45" text="Width :"  width="50"/>
+							<mx:Label x="17" y="74" text="Height :"/>
+							<mx:Label x="18" y="139" text="Align : "/>
+							<mx:Label x="169" y="139" text="Layer :"/>
+							<mx:Label x="18" y="172" text="Rotate :"/>
+							<mx:Label x="18" y="200" text="Rotate by value :"/>
+							<mx:HSlider id="imageRotationSlider" x="97" y="170" width="116" minimum="-180" maximum="180" value="0" snapInterval="1" liveDragging="true" change="getNewRotationText(imageRotationSlider.value);" />
+							<mx:Button x="76" y="170" styleName="rotate1" id="imageRotate1" width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(imageRotationSlider.value+1);imageRotationSlider.value=(imageRotationSlider.value+1);"/>
+							<mx:Button x="64" y="139" styleName="leftAlign" id="imageRotate0" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('left');"/>
+							<mx:Button x="89" y="139" styleName="centerAlign" id="imageRotate3" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('center');"/>
+							<mx:Button x="114" y="139" styleName="rightAlign" id="imageRotate4" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('right');" />
+							<mx:Button x="239" y="138" styleName="downLayer" width="20" height="20" useHandCursor="true" buttonMode="true" click="layerDown();"/>
+							<mx:Button x="219" y="138" styleName="upLayer" id="imageRotate6" width="20" height="20" useHandCursor="true" buttonMode="true" click="layerUp();"/>
+							<mx:Button y="170" right="45" styleName="rotate2" id="imageRotate2" width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(imageRotationSlider.value-1);imageRotationSlider.value=(imageRotationSlider.value-1);" change="getNewRotationText(imageRotationSlider.value);"/>
+							<mx:Button x="74" y="43"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageWidth(widthSlider.value-1);widthSlider.value = (widthSlider.value-1);"/>
+							<mx:Button x="75" y="73"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageHeight(heightSlider.value-1);heightSlider.value=(heightSlider.value-1);"/>
+							<mx:Button x="219" y="73"  styleName="maxStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="setImageHeight(heightSlider.value+1);heightSlider.value=(heightSlider.value+1);"/>
+							<mx:Button x="220" y="43"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="setImageWidth(widthSlider.value+1);widthSlider.value = (widthSlider.value+1);"/>
+							<mx:HSlider id="widthSlider" x="102" y="41" width="108" minimum="20" maximum="150" snapInterval="1" liveDragging="true" change="setImageWidth(widthSlider.value);"/>
+							<mx:Label x="14" y="229" text="Transparency :" />
+							<mx:Button x="110" y="227"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onTransSliderChange(transSlider.value-0.1);transSlider.value=(transSlider.value-0.1);"/>
+							<mx:Button x="243" y="228"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onTransSliderChange(transSlider.value+0.1);transSlider.value=(transSlider.value+0.1);"/>
+							<mx:HSlider id="transSlider" x="133" y="227" width="108" minimum="0.1" maximum="1" snapInterval=".1" liveDragging="true" change="onTransSliderChange(transSlider.value);" />
+							<mx:HSlider id="heightSlider" x="101" y="71" width="108" minimum="20" maximum="150" snapInterval="1" liveDragging="true" change="setImageHeight(heightSlider.value)"/>
+							<mx:Button x="103" y="273" width="15" height="15" styleName="rightArrow" click="shiftLeft()"/>
+							<mx:Button x="75" y="273" width="15" height="15" styleName="leftArrow" click="shiftRight()"/>
+							<mx:Button x="89" y="291" width="15" height="15" styleName="downArrow" click="shiftDown()"/>
+							<mx:Button x="89" y="257" width="15" height="15" styleName="upArrow" click="shiftUp()"/>
+							<!--<mx:ColorPicker x="201" y="234"/>-->
+							<mx:Label x="20" y="273" text="Nudge:"/>
+							<!--<mx:Label x="151" y="235" text="Color:"/>-->
+							<mx:Label x="40" y="4" text="Edit Current Selected Artwork" styleName="boldLabel"/>
+							<mx:CheckBox x="147" y="100" label="Lock Dimensions" cornerRadius="0" id="lockImgDimensions" styleName="boldLabel" fontSize="12"/>
+							<mx:TextInput x="124" y="200" maxChars="3" width="35" id="rotationTextVal" keyUp="getNewRotationText(new Number (rotationTextVal.text));imageRotationSlider.value=(new Number(rotationTextVal.text));" click="getNewRotationText(imageRotationSlider.value-1);imageRotationSlider.value=(imageRotationSlider.value-1);" borderStyle="solid"/>
+							<mx:Label x="137" y="272" text="Shadow Color :"/>
+							<mx:ColorPicker x="234" y="272" id="shadowImg" change="onShadowImg(Number(shadowImg.selectedColor));"/>
+						</mx:Canvas>
+					</mx:TabNavigator>
+				</mx:Canvas>
+				<mx:Canvas left="0" width="100%" height="401" bottom="0" id="textIdCanvas" label="Text Control">
+					<mx:TabNavigator id="textTab" width="100%" height="100%" horizontalCenter="0" top="0">
+						<mx:Canvas label="Add Text" width="100%" height="100%" id="addTextCanvas" visible="true">
+							<mx:Label x="20" y="43" text="Add text into product " styleName="boldLabel"/>
+							<mx:Label x="10" y="105" text="Enter Your Text"/>
+							<mx:TextInput id="inputText1" x="20" y="140"  width="80%" borderStyle="solid"/>
+							<mx:Button x="180" y="180" styleName="addNewText" click="addtext();"/>
+							<mx:HRule y="84" horizontalCenter="0" width="80%"/>
+						</mx:Canvas>
+						<mx:Canvas label="Edit Text" width="100%" height="100%" id="editTextCanvas" visible="false">
+							
+							<mx:HRule y="24" horizontalCenter="-12" width="80%"/>
+							<mx:HRule y="126" horizontalCenter="-8" width="80%"/>
+							<mx:HRule y="322" horizontalCenter="-9" width="80%"/>
+							<mx:Button y="333" left="7" styleName="duplicate" click="createDuplicate();" />
+							<mx:Button y="333" right="23" styleName="removeImage" click="forDeleteRequest('Text');"/>
+							<mx:Label x="8" y="140" text="Align :"/>
+							<mx:Label x="177" y="139" text="Layer :"/>
+							<mx:Label x="10" y="170" text="Rotate :"/>
+							<mx:Label x="10" y="206" text="Rotate by value :"/>
+							<mx:HSlider id="textRotationSlider" x="84" y="169" width="108" minimum="-180" maximum="180" value="0" snapInterval="1" liveDragging="true" change="getNewRotationText(textRotationSlider.value);" />
+							<mx:Button x="64" y="169" styleName="rotate1"  width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(textRotationSlider.value+1);textRotationSlider.value = (textRotationSlider.value+1);"/>
+							<mx:Button x="54" y="140" styleName="leftAlign"  width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('left');" />
+							<mx:Button x="79" y="140" styleName="centerAlign"  width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('center');" />
+							<mx:Button x="104" y="140" styleName="rightAlign" width="20" height="20" useHandCursor="true" buttonMode="true" click="setTextAlign('right');" />
+							<mx:Button x="250" y="148" styleName="downLayer"  width="20" height="20" useHandCursor="true" buttonMode="true" click="layerDown();" />
+							<mx:Button x="222" y="139" styleName="upLayer"  width="20" height="20" useHandCursor="true" buttonMode="true" click="layerUp()" />
+							<mx:Button y="169" right="69" styleName="rotate2"  width="20" height="20" useHandCursor="true" buttonMode="true" click="getNewRotationText(textRotationSlider.value-1);textRotationSlider.value = (textRotationSlider.value-1);" />
+							<mx:Button x="58" y="67"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onChangeFontSize((fontSizeSlider.value)-1);fontSizeSlider.value = (fontSizeSlider.value-1);"/>
+							<mx:Button x="203" y="67"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onChangeFontSize((fontSizeSlider.value)+1);fontSizeSlider.value = (fontSizeSlider.value+1);" change="onChangeFontSize(fontSizeSlider.value);"/>
+							<mx:Button x="103" y="238"  styleName="minStyle" useHandCursor="true" buttonMode="true" width="20" height="20" click="onTransSliderChange(txtTransSlider.value-0.1);txtTransSlider.value=(txtTransSlider.value-0.1);"/>
+							<mx:Button x="233" y="239"  styleName="maxStyle" useHandCursor="true" buttonMode="true" height="20" width="20" click="onTransSliderChange(txtTransSlider.value+0.1);txtTransSlider.value=(txtTransSlider.value+0.1);" />
+							<mx:HSlider x="125" y="238" width="108" id="txtTransSlider" minimum="0.1" maximum="1" snapInterval="0.1" liveDragging="true" change="onTransSliderChange(txtTransSlider.value);" />
+							<mx:Label x="3" y="239" text="Transparency :"/>
+							<mx:HSlider x="88" y="66" width="108" id="fontSizeSlider" minimum="10" maximum="72" snapInterval="1" liveDragging="true" change="onChangeFontSize(fontSizeSlider.value);"/>
+							<mx:Button x="92" y="285" width="15" height="15" styleName="rightArrow" click="shiftLeft()"/>
+							<mx:Button x="64" y="285" width="15" height="15" styleName="leftArrow" click="shiftRight()"/>
+							<mx:Button x="78" y="303" width="15" height="15" styleName="downArrow" click="shiftDown()"/>
+							<mx:Button x="78" y="269" width="15" height="15" styleName="upArrow" click="shiftUp();" />
+							<mx:Label x="9" y="285" text="Nudge:"/>
+							<mx:Label x="185" y="264" text="Color :"/>
+							<mx:ColorPicker x="235" y="263" id="fontColor" colorField="value" editable="false" selectedColor="0x000000" change="onColorChange(Number(fontColor.selectedColor));" />
+							
+							<mx:Label x="13" y="37" text="Text :"/>
+							<mx:TextInput id="insertText" x="60" y="35" keyUp="EditText()"  width="189" borderStyle="solid"/>
+							<mx:Label x="13" y="69" text="Size :"/>
+							<mx:ComboBox toolTip="Font" id="combobox" width="155" dataProvider="{cards}" x="61" y="95" change="onFontChange()" cornerRadius="3"/>
+							<mx:Label x="11" y="98" text="Font :"/>
+							<mx:Label x="19" y="2" text="Edit Currently Selected Text" styleName="boldLabel" width="210"/>
+							<mx:TextInput x="120" y="205" width="27" maxChars="3" id="rotationTextVal1" keyUp="getNewRotationText(new Number (rotationTextVal1.text));imageRotationSlider.value=(new Number(rotationTextVal1.text));" borderStyle="solid"/>
+							<mx:TextInput x="229" y="66" width="27" maxChars="2" id="fontSizeTextVal" borderStyle="solid" keyUp="onChangeFontSize(Number(fontSizeTextVal.text));"/>
+							<mx:Label x="131" y="291.55" text="Shadow Color :"/>
+							<mx:ColorPicker x="235" y="291" id="shadowColor" change="onShadowColor(Number(shadowColor.selectedColor));"/>
+						</mx:Canvas>
+					</mx:TabNavigator>
+				</mx:Canvas>
+			</mx:TabNavigator>
+		</mx:Canvas>
+	</mx:Canvas>
+</mx:Application>

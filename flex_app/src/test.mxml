@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" minWidth="955" minHeight="600">
+	<mx:Script><![CDATA[
+		import flash.filters.*;
+		
+		public function toggleFilter():void {            
+			if (label1.filters.length == 0) {                        
+				/* The first four properties of the DropShadowFilter constructor are 
+				distance, angle, color, and alpha. */
+				var f:DropShadowFilter = new DropShadowFilter(5,30,0xFFFFFF,.8);
+				var myFilters:Array = new Array();
+				myFilters.push(f);
+				label1.filters = myFilters;
+			} else {
+				label1.filters = null;
+			}
+		}
+	]]></mx:Script>
+	<mx:Label id="label1" text="ActionScript-applied filter."/>
+	<mx:Button id="b1" label="Toggle Filter" click="toggleFilter()"/>
+</mx:Application>

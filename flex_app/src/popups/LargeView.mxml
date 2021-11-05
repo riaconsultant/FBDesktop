@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="546" height="556" x="20" y="0" title="Priview" horizontalAlign="left" 
+	verticalAlign="top" showCloseButton="true" close="titleWin_close(event);"
+	layout="absolute"
+	creationComplete="init()" 
+	borderColor="#FFFFFF" borderAlpha="1" 
+	color="#0B0000" backgroundColor="#FFFFFF">
+
+	<mx:Script>
+        <![CDATA[
+        	import mx.managers.PopUpManager;
+            import mx.controls.Text;
+            import mx.core.IFlexDisplayObject;
+            import mx.events.CloseEvent;
+            
+		    [Bindable] public var view:String;
+						
+			// Event handler for the OK button.
+			public function init():void {
+              view = imgpath.text;
+            }
+			
+			public function myimage():void {
+              largeImageView.source = view;
+            }
+            
+            public function mypath(_view:Bitmap):void {
+			 	largeImageView.source = _view;
+			}
+			
+			private function checkBox_change(evt:Event):void {
+              this.isPopUp = checkBox.selected;
+            }
+		    private function titleWin_close(evt:Event):void {
+              PopUpManager.removePopUp(evt.target as IFlexDisplayObject);
+            }
+        ]]>
+    </mx:Script>
+    <mx:Spacer width="20"/>
+    <mx:VBox width="506.5" height="457" horizontalAlign="center" verticalAlign="middle" x="2.5" y="2">
+    	<mx:Image source="" id="largeImageView" width="400" height="400" />
+    </mx:VBox>
+    <mx:Label id="imgpath" visible="false"/>
+    <mx:ControlBar height="55" y="565">
+        <mx:CheckBox id="checkBox"
+                label="isMoveable:"
+                labelPlacement="left"
+                selected="true"
+                change="checkBox_change(event);"  fillAlphas="[1.0, 1.0]" fillColors="[#0C0202, #0C0202]" color="#050505"/>
+        <mx:Button label="Cancel" click="PopUpManager.removePopUp(this);" fillAlphas="[1.0, 1.0]" fillColors="[#0C0202, #0C0202]" color="#FFFFFF"/>         
+    </mx:ControlBar>
+</mx:TitleWindow>

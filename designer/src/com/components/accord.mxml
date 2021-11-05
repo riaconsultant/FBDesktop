@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Accordion xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+			  creationComplete="vbox1_creationCompleteHandler(event)"
+			  change="accordion1_changeHandler(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.containers.VBox;
+			import mx.controls.List;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			
+			[Bindable]
+			public var product_data:ArrayCollection;
+			protected function vbox1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				for(var i:int=0;i<=5;i++){
+					var vbox:VBox=new VBox();
+					vbox.label="Hello"+i;
+					vbox.useHandCursor=true;
+					vbox.percentWidth=100;
+					vbox.percentHeight=100;
+					var plist:List=new List();
+					product_data=new ArrayCollection();
+					for(var j:int=0;j<=5;j++){
+						var link:Object=new Object();
+						link.label="test"+i+"---"+j;
+						product_data.addItem(link);
+					}
+					plist.percentWidth=100;
+					plist.percentHeight=100;
+					plist.dataProvider=product_data;
+					plist.labelField="label";
+					plist.addEventListener(ListEvent.ITEM_CLICK,callItemSelect);
+					vbox.addChild(plist);
+					
+					this.addChild(vbox);
+				}
+			}
+			
+			protected function callItemSelect(event:ListEvent):void{
+				trace(event.currentTarget);
+			}
+			
+			protected function accordion1_changeHandler(event:IndexChangedEvent):void
+			{
+				trace(event.newIndex);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Metadata>
+		
+	</mx:Metadata>
+</mx:Accordion>

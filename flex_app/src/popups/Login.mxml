@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" showCloseButton="true" close="titleWin_close(event);" width="324" height="170" title="Login">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			
+			private function titleWin_close(evt:Event):void {
+              PopUpManager.removePopUp(evt.target as IFlexDisplayObject);
+            }
+            
+		]]>
+	</mx:Script>
+	<mx:Style>
+		.login{
+			upIcon: Embed(source="../assets/images/login.png");
+			downIcon: Embed(source="../assets/images/login.png");
+			overIcon: Embed(source="../assets/images/login.png");
+			disabledIcon: Embed(source="../assets/images/login.png");
+			cornerRadius: 0;
+			horizontalGap: 0;
+			vertical-gap:0;
+			border-thickness:0;
+		}
+	</mx:Style>
+	<mx:Label text="Username" top="23" left="10" id="label1" width="95"/>
+	<mx:TextInput right="29" top="21" id="username" borderStyle="solid"/>
+	<mx:Label text="Password" width="95" top="56" left="10" id="label2"/>
+	<mx:TextInput displayAsPassword="true" right="29" top="54" id="password" borderStyle="solid"/>
+	<mx:Button horizontalCenter="0" id="login" cornerRadius="5"  bottom="10" fontFamily="Times New Roman" fontSize="18" fontStyle="normal" textDecoration="none" useHandCursor="true" label="Login" width="97"/>
+	<!--<mx:LinkButton x="208" y="118" label="Register" id="register" cornerRadius="6"/>-->
+</mx:TitleWindow>

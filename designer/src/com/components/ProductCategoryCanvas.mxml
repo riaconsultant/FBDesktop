@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.events.ListEvent;
+			[Bindable]public var myData:Array;
+			//myList.dataProvider=myData;
+			public function listItemId(arg:Object):void{
+				Application.application.myObj.getProductInfo(arg.id,arg.sku);
+			}
+		]]>
+	</mx:Script>
+	<mx:List id="myList" left="0" right="0" top="0" bottom="0" dataProvider="{myData}" labelField="name" itemClick="listItemId(myList.selectedItem)">
+	</mx:List>
+</mx:Canvas>

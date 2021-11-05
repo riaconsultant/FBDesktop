@@ -1,0 +1,62 @@
+/* CSS file */
+@font-face {
+	src:url("font/ARIAL.TTF");
+	fontFamily: "Arial";
+}
+
+@font-face {
+	src:url("font/ALGER.TTF");
+	fontFamily: "ALGER";
+}
+
+@font-face {
+	src:url("font/WTF.ttf");
+	fontFamily: "WTF";
+}
+
+@font-face {
+	src:url("font/POORICH.TTF");
+	fontFamily: "POORICH";
+}
+
+@font-face {
+	src:url("font/PLAYBILL.TTF");
+	fontFamily: "PLAYBILL";
+}
+
+@font-face {
+	src:url("font/MATURASC.TTF");
+	fontFamily: "MATURASC";
+}
+
+@font-face {
+	src:url("font/HARNGTON.TTF");
+	fontFamily: "HARNGTON";
+}
+
+@font-face {
+	src:url("font/COOPBL.TTF");
+	fontFamily: "COOPBL";
+}
+
+@font-face {
+	src:url("font/CONSTAN.TTF");
+	fontFamily: "CONSTAN";
+}
+
+@font-face {
+	src:url("font/BOD_PSTC.TTF");
+	fontFamily: "BOD_PSTC";
+}
+@font-face {
+	src:url("font/BKANT.TTF");
+	fontFamily: "BKANT";
+}
+@font-face {
+	src:url("font/BAUHS93.TTF");
+	fontFamily: "BAUHS93";
+}
+@font-face {
+	src:url("font/CooperBlackStd.otf");
+	fontFamily: "Cooper";
+}

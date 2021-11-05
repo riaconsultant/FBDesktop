@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" minWidth="750" minHeight="500" 
+				creationComplete="init();" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+				xmlns:contain="com.container.*" xmlns:components="com.components.*" historyManagementEnabled="false">
+	<mx:Style source="style/style.css"/>
+	<mx:Script>
+		<![CDATA[
+			import com.services.Config;
+			import com.services.RemoteService;
+			public function init():void{
+				var r:RemoteService =new RemoteService();
+				r.callService("getProductCatgory");
+				this.contextMenu=Config.rightMenu();
+				
+			}
+
+		]]>
+	</mx:Script>
+	<mx:Script source="com/configs/globalConfigFunction.as" />
+	<mx:Script source="com/configs/remoteClass.as" />
+	<!--<mx:RemoteObject id="myObj" destination="MyService" source="MyService" showBusyCursor="true">
+		<mx:method name="sayHello" result="sayHelloListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getCategory" result="getCategoryListner(event);" fault="faultListner(event);"/>
+		<mx:method name="getProductInfo" result="getProductListner(event);" fault="faultListner(event);"/>
+	</mx:RemoteObject>-->
+	<mx:Canvas left="0" top="0" bottom="0" right="0" id="mainCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:Canvas height="8%" left="0" top="0" right="0" id="topCanvas" borderStyle="solid" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Image source="@Embed('assets/32x32.png')" left="0" top="0"/>
+			<mx:Label text="Designer v1.0" fontWeight="normal" left="25" top="12"/>
+			<mx:Label text="{product.selectName}" top="5" left="100"/>
+			<mx:Button label="[]" id="fullId" click="Config.toogleFull();" right="5" top="5"/>
+			<mx:LinkButton label="Login" right="50" top="5" click="Config.link('login');"/>
+			<mx:LinkButton label="feedback" right="95" top="5" click="Config.link('feedback');"/>
+			<mx:LinkButton label="Help" right="165" top="5" click="Config.link('help');"/>
+		</mx:Canvas>
+		<mx:TabBar top="12" height="30" dataProvider="{mainTab}" horizontalCenter="0" width="400" toggleOnClick="true"/>
+
+		<mx:ViewStack top="42" left="0" right="0" bottom="0" id="mainTab" borderStyle="solid">
+			<mx:Canvas label="New" left="0" top="0" right="0" bottom="0" id="productCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas width="55%" height="90%" id="productMidCanvas" top="50" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalCenter="0">
+					<mx:Image horizontalCenter="0" verticalCenter="0" id="mainProductImage"/>
+					<mx:Label x="0" y="0" text="{product.name}" color="#2B2C2C" fontSize="16" fontWeight="bold" />
+					<mx:HorizontalList id="productImageList" right="5" left="5" bottom="5" height="15%" itemRenderer="com.components.ProductImage" itemClick="applyImage(productImageList.selectedItem)" cornerRadius="0" borderStyle="none"></mx:HorizontalList>
+				</mx:Canvas>
+				<components:accord width="20%" id="catAccord" left="0" borderStyle="solid" height="100%" y="0"/>
+				
+				<mx:Canvas width="20%" height="90%" right="5" top="50" id="rightCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					<mx:Label x="10" y="10" text="{product.description}" width="190" height="152"/>
+					<mx:HRule x="10" y="170" width="190"/>
+					<mx:HRule x="10" y="331" width="190"/>
+					<mx:Label x="10" y="191" text="Price :"/>
+					<mx:Label x="58" y="191" text="{product.price}" id="price"/>
+					<mx:Label x="10" y="217" text="Weight :"/>
+					<mx:Label x="66" y="217" text="{product.weight}"/>
+					<!--<mx:Button x="32" y="283" label="Customize" click="edit();"/>-->
+				</mx:Canvas>
+			</mx:Canvas>
+			<mx:Canvas id="editCanvas" label="edit" left="0" top="0" right="0" bottom="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas height="50%" verticalCenter="0" right="10" width="65%" id="myDesign">
+					
+				</mx:Canvas>
+				<contain:VerticalTabNavigator left="10" bottom="10" height="90%" width="25%" verticalAlign="top">
+					<mx:Canvas label="Text" width="100%" height="100%">
+						<mx:TextInput x="19" y="84"/>
+						<mx:Button x="105" y="202" label="Add Text"/>
+						
+					</mx:Canvas>
+					<mx:Canvas label="Photos" width="100%" height="100%">
+						
+					</mx:Canvas>
+				</contain:VerticalTabNavigator>
+				
+			</mx:Canvas>
+			<mx:Canvas id="previewCanvas" label="preview" left="0" top="0" right="0" bottom="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas left="10" width="70%" height="70%" verticalCenter="0" backgroundColor="#250606" borderStyle="solid" cornerRadius="10">
+				</mx:Canvas>
+				<mx:Canvas width="25%" right="5" bottom="10" height="90%" borderStyle="solid" cornerRadius="10" backgroundColor="#B22424">
+				</mx:Canvas>
+				
+			</mx:Canvas>
+			<mx:Canvas id="photoCanvas" label="photos" left="0" top="0" right="0" bottom="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas width="25%" right="5" bottom="10" height="90%" borderStyle="solid" cornerRadius="10" backgroundColor="#B22424">
+				</mx:Canvas>
+				<mx:ViewStack id="photoGallery" width="70%" height="90%" left="0" bottom="10" cornerRadius="10">
+					<mx:Canvas label="Upload" width="100%" height="100%">
+					</mx:Canvas>
+					<mx:Canvas label="My Library" width="100%" height="100%">
+					</mx:Canvas>
+					<mx:Canvas label="Designer Library" width="100%" height="100%">
+					</mx:Canvas>
+					<mx:Canvas label="Flickr" width="100%" height="100%">
+					</mx:Canvas>
+					<mx:Canvas label="Picasa" width="100%" height="100%">
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:Canvas>
+			<mx:Canvas id="designCanvas" label="design" left="0" top="0" right="0" bottom="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas width="25%" right="5" bottom="10" height="90%" borderStyle="solid" cornerRadius="10" backgroundColor="#B22424">
+				</mx:Canvas>
+				<mx:Canvas width="70%" height="90%" bottom="10" left="5" backgroundColor="#504B4B" borderStyle="solid" cornerRadius="10">
+					<mx:TileList left="10" top="10" bottom="10" right="10"></mx:TileList>
+				</mx:Canvas>
+				
+			</mx:Canvas>
+			
+			<mx:Canvas id="cardCanvas" label="cart" left="0" top="0" right="0" bottom="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas width="70%" height="90%" bottom="10" left="5" backgroundColor="#241D1D" cornerRadius="10" borderStyle="solid">
+					<mx:DataGrid left="10" bottom="10" right="10" top="10">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
+							<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
+							<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
+						</mx:columns>
+					</mx:DataGrid>
+				</mx:Canvas>
+				<mx:Canvas width="25%" right="5" bottom="10" height="90%" borderStyle="solid" cornerRadius="10" backgroundColor="#B22424">
+				</mx:Canvas>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:Canvas>
+	
+</mx:Application>

@@ -1,0 +1,398 @@
+/* CSS file */
+global
+{
+	chromeColor: #8D9CC0;
+	contentBackgroundColor: #FFFFFF;
+/*	symbolColor: #000000;
+	rollOverColor: #355D89;
+	selectionColor: #294867;
+	focusColor: #333300;
+	accentColor: #6589AD;*/
+}
+
+Application{
+	theme-color:#ffffff;
+}
+Label
+{
+	color: #474747;
+	fontAntiAliasType: advanced;
+	font-family:Cooper;
+	font-size:11px;
+}
+ToolTip
+{
+	backgroundColor: #444242;
+	color: #fff;
+	fontSize: 15;
+	cornerRadius:1;
+}
+.titleLabel{
+	fontWeight: normal;
+	fontFamily: Kartika;
+	color: #FBFCFC;
+	fontSize: 30;
+	paddingLeft: 10;
+}
+.tabControl{
+	borderStyle: solid;
+	tabStyleName: tabNavigatorTab;
+	selectedTabTextStyleName: tabNavigatorSelectedTabText;
+	firstTabStyleName: tabNavigatorTab;
+	lastTabStyleName: tabNavigatorTab;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingBottom: 5;
+	paddingTop: 10;
+	
+}
+TabNavigator
+{
+	tabStyleName: tabNavigatorTab;
+	selectedTabTextStyleName: tabNavigatorSelectedTabText;
+	firstTabStyleName: tabNavigatorTab;
+	lastTabStyleName: tabNavigatorTab;
+}
+TileList
+{
+	rollOverColor: #F87338;
+	selectionColor: #DD4400;
+	verticalScrollBarStyleName: tileListVerticalScrollBar;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingTop: 5;
+	paddingBottom: 5;
+}
+.tabNavigatorTab
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #868181, #444444;
+	color:#fff;
+	fontSize: 15;
+	fontFamily: Cooper;
+	fontAntiAliasType: advanced;
+	horizontalGap: 5;
+	paddingLeft: 7;
+	paddingRight: 7;
+	paddingTop: 10;
+	paddingBottom: 10;
+	cornerRadius: 0;
+	
+}
+
+HSlider{
+	dataTipPlacement: bottom;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #979494, #5A5757;
+	thumbDownSkin: Embed(source="../images/circle.png");
+	thumbOverSkin: Embed(source="../images/circle.png");
+	thumbSkin: Embed(source="../images/circle.png");
+	thumbUpSkin: Embed(source="../images/circle.png");
+	tickColor: #444242;
+	tickThickness: 5;
+	trackColors: #444242;
+	
+}
+
+.tabNavigatorSelectedTabText
+{
+	color: #000;
+	paddingLeft: 5;
+	paddingRight: 5;
+	fontSize: 15;
+	fontFamily: Cooper;
+	fontAntiAliasType: advanced;
+}
+
+.saveButton
+{
+	upIcon: Embed(source="assets/images/save_btn.png");
+	overIcon: Embed(source="assets/images/save_btn_hover.png");
+	downIcon: Embed(source="assets/images/save_btn.png");
+}
+
+.openButton
+{
+	upIcon: Embed(source="assets/images/open_btn.png");
+	overIcon: Embed(source="assets/images/open_btn_hover.png");
+	downIcon: Embed(source="assets/images/open_btn.png");
+}
+
+.sendButton 
+{
+	upIcon: Embed(source="assets/images/send_btn.png");
+	overIcon: Embed(source="assets/images/send_btn_hover.png");
+	downIcon: Embed(source="assets/images/send_btn.png");
+}
+
+.resetButton 
+{
+	upIcon: Embed(source="assets/images/reset_btn.png");
+	overIcon: Embed(source="assets/images/reset_btn_hover.png");
+	downIcon: Embed(source="assets/images/reset_btn.png");
+}
+
+
+
+.chooseFile
+{
+	upIcon: Embed(source="assets/images/choose_btn.gif");
+	downIcon: Embed(source="assets/images/choose_btn.gif");
+	overIcon: Embed(source="assets/images/choose_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/choose_btn_hover.gif");
+	cornerRadius: 10;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+Button
+{
+	textAlign: center;
+	leading: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+	paddingRight: 0;
+	paddingLeft: 0;
+	fillAlphas:0.0, 0.0, 0.0, 0.0;
+	
+}
+.duplicate{
+	upIcon: Embed(source="assets/images/duplicate_btn.gif");
+	downIcon: Embed(source="assets/images/duplicate_btn.gif");
+	overIcon: Embed(source="assets/images/duplicate_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/duplicate_btn_hover.gif");
+	cornerRadius: 10;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.removeImage{
+	upIcon: Embed(source="assets/images/remove_btn.gif");
+	downIcon: Embed(source="assets/images/remove_btn.gif");
+	overIcon: Embed(source="assets/images/remove_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/remove_btn_hover.gif");
+	cornerRadius: 10;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.rotate1{
+	upIcon: Embed(source="assets/images/rotate_1.gif");
+	downIcon: Embed(source="assets/images/rotate_1.gif");
+	overIcon: Embed(source="assets/images/rotate_1_hover.gif");
+	disabledIcon: Embed(source="assets/images/rotate_1_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.rotate2{
+	upIcon: Embed(source="assets/images/rotate_2.gif");
+	downIcon: Embed(source="assets/images/rotate_2.gif");
+	overIcon: Embed(source="assets/images/rotate_2_hover.gif");
+	disabledIcon: Embed(source="assets/images/rotate_2_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.minStyle{
+	upIcon: Embed(source="assets/images/minus_btn.gif");
+	downIcon: Embed(source="assets/images/minus_btn.gif");
+	overIcon: Embed(source="assets/images/minus_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/minus_btn_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.maxStyle{
+	upIcon: Embed(source="assets/images/plus_btn.gif");
+	downIcon: Embed(source="assets/images/plus_btn.gif");
+	overIcon: Embed(source="assets/images/plus_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/plus_btn_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.leftAlign{
+	upIcon: Embed(source="assets/images/left_align.gif");
+	downIcon: Embed(source="assets/images/left_align.gif");
+	overIcon: Embed(source="assets/images/left_align_hover.gif");
+	disabledIcon: Embed(source="assets/images/left_align_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.centerAlign{
+	upIcon: Embed(source="assets/images/center_align.gif");
+	downIcon: Embed(source="assets/images/center_align.gif");
+	overIcon: Embed(source="assets/images/center_align_hover.gif");
+	disabledIcon: Embed(source="assets/images/center_align_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.rightAlign{
+	upIcon: Embed(source="assets/images/right_align.gif");
+	downIcon: Embed(source="assets/images/right_align.gif");
+	overIcon: Embed(source="assets/images/right_align_hover.gif");
+	disabledIcon: Embed(source="assets/images/right_align_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.upLayer{
+	upIcon: Embed(source="assets/images/layer_up.gif");
+	downIcon: Embed(source="assets/images/layer_up.gif");
+	overIcon: Embed(source="assets/images/layer_up_hover.gif");
+	disabledIcon: Embed(source="assets/images/layer_up_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.downLayer{
+	upIcon: Embed(source="assets/images/layer_down.gif");
+	downIcon: Embed(source="assets/images/layer_down.gif");
+	overIcon: Embed(source="assets/images/layer_down_hover.gif");
+	disabledIcon: Embed(source="assets/images/layer_down_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.leftArrow{
+	upIcon: Embed(source="assets/images/left_arrow.jpg");
+	downIcon: Embed(source="assets/images/left_arrow.jpg");
+	overIcon: Embed(source="assets/images/left_arrow_hover.jpg");
+	disabledIcon: Embed(source="assets/images/left_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.rightArrow{
+	upIcon: Embed(source="assets/images/right_arrow.jpg");
+	downIcon: Embed(source="assets/images/right_arrow.jpg");
+	overIcon: Embed(source="assets/images/right_arrow_hover.jpg");
+	disabledIcon: Embed(source="assets/images/right_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.upArrow{
+	upIcon: Embed(source="assets/images/up_arrow.jpg");
+	downIcon: Embed(source="assets/images/up_arrow.jpg");
+	overIcon: Embed(source="assets/images/up_arrow_hover.gif");
+	disabledIcon: Embed(source="assets/images/up_arrow_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.downArrow{
+	upIcon: Embed(source="assets/images/dwn_arrow.jpg");
+	downIcon: Embed(source="assets/images/dwn_arrow.jpg");
+	overIcon: Embed(source="assets/images/dwn_arrow_hover.jpg");
+	disabledIcon: Embed(source="assets/images/dwn_arrow_hover.jpg");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.addNewText{
+	upIcon: Embed(source="assets/images/add_text_btn.gif");
+	downIcon: Embed(source="assets/images/add_text_btn.gif");
+	overIcon: Embed(source="assets/images/add_text_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/add_text_btn_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.tshirtFront{
+	upIcon: Embed(source="assets/images/front_btn.gif");
+	downIcon: Embed(source="assets/images/front_btn.gif");
+	overIcon: Embed(source="assets/images/front_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/front_btn_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.tshirtBack{
+	upIcon: Embed(source="assets/images/back_btn.gif");
+	downIcon: Embed(source="assets/images/back_btn.gif");
+	overIcon: Embed(source="assets/images/back_btn_hover.gif");
+	disabledIcon: Embed(source="assets/images/back_btn_hover.gif");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+.printView{
+	upIcon: Embed(source="assets/images/preview.png");
+	downIcon: Embed(source="assets/images/preview.png");
+	overIcon: Embed(source="assets/images/preview_hover.png");
+	disabledIcon: Embed(source="assets/images/preview_hover.png");
+	cornerRadius: 0;
+	horizontalGap: 0;
+	vertical-gap:0;
+	border-thickness:0;
+}
+
+Alert{
+	color : #000;
+	background-color: #ffffff;
+	header-colors : #6e7272, #6e7272;
+	header-height:19;
+	drop-shadow-enabled: true;
+	drop-shadow-color :#243322;
+	corner-radius :6;
+	border-style :solid;
+	border-thickness: 1;
+	border-color : #243322;
+	footer-colors : #243322, #ffffff;
+	title-style-name : "title";
+}
+
+.title{
+	font-family :Verdana;
+	font-size :10;
+	font-weight :bold;
+	color :#ffffff;
+}
+
+.boldLabel{
+	fontFamily: "Times New Roman";
+	fontSize: 15;
+	fontWeight: bold;
+	
+}
+@font-face
+{
+	fontFamily: ARIAL;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: url("font/ARIAL.TTF");
+}
+@font-face
+{
+	fontFamily: Kartika;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Kartika");
+}
+.tileListVerticalScrollBar
+{
+	cornerRadius: 0;
+	borderColor: #B13600;
+	thumbOffset: 0;
+}
+
