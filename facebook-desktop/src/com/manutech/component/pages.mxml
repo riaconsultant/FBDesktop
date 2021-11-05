@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" showEffect="{fadeIn}" hideEffect="{fadeOut}" rollOutEffect="{fadeOut}" rollOverEffect="{fadeIn}" 
+				contentBackgroundAlpha="1.0" focusColor="#325C99" width="80" height="80">
+	<fx:Declarations>
+		<s:Fade id="fadeIn" alphaFrom="0.75" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo=".75" duration="500" />
+	</fx:Declarations>
+	<mx:Image width="50" height="50" buttonMode="true" horizontalCenter="0" source="{data.img}"
+			  toolTip="{data.name}" useHandCursor="true" verticalCenter="0"/>
+	<mx:Label bottom="3" width="100%" text="{data.name}" toolTip="{data.name}"/>
+</s:ItemRenderer>

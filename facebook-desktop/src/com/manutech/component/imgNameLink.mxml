@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="off" 
+		 horizontalScrollPolicy="off" borderVisible="false" focusColor="#213B53" contentBackgroundAlpha="0.6" 
+		 backgroundAlpha="0.8" width="60" height="60" creationComplete="imgInit();">
+
+		<mx:Fade id="fadeIn" alphaFrom="0.7" alphaTo="1.0"/>
+
+	<mx:Script>
+		<![CDATA[
+			[Bindable]
+			public var src:String;
+			[Bindable]
+			public var tName:String;
+			
+			private function imgInit():void{
+				src=data.img;
+				tName=data.name;
+			}
+		]]>
+	</mx:Script>
+	<mx:Image horizontalCenter="0" verticalCenter="0" id="imgId" source="{src}" toolTip="{tName}" showEffect="fadeIn"/>
+</mx:Canvas>

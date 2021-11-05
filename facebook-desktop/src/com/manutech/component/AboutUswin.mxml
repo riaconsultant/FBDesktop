@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  width="280" height="350" visible="true" 
+		  transparent="true" systemChrome="none" showFlexChrome="true" showStatusBar="false" showTitleBar="false"
+		  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" backgroundAlpha="1.0"
+		  showGripper="false" borderStyle="none" verticalAlign="bottom" horizontalAlign="center"
+		  showEffect="{fadeIn}" hideEffect="{fadeOut}">
+	<fx:Script source="../constant.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RemoteObject id="mydesk1" endpoint="{remote_endpoint}" showBusyCursor="true" destination="desktop" source="desktop">
+			<s:method name="feedback" result="setFeedbackListner(event);" fault="faultListner(event);" />
+			<s:method name="feature" result="getFeatureListner(event);" fault="faultListner(event);" />
+		</s:RemoteObject>
+		<s:Fade id="fadeIn" alphaFrom="0.70" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeOut" alphaFrom="1" alphaTo=".70" duration="500" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			private function formSubmit():void{
+				var obj:Object=new Object();
+				obj.name=fname.text;
+				obj.email=email.text;
+				obj.message=suggestion.text;
+				mydesk1.feedback(obj);
+			}
+			
+			private function setFeedbackListner(evt:ResultEvent):void{
+				//message.text=evt.result.toString();
+				this.close();
+			}
+			private function getFeatureListner(evt:ResultEvent):void{
+				log.text=evt.result.new_change;
+				log_date.text=evt.result.log_date;
+				featureId.visible=true;
+			}
+			private function faultListner(evt:FaultEvent):void{
+				//message.text=evt.fault.message;this.close();
+			}
+			
+			private function gotoSite(arg:String):void{
+				var site:URLRequest=new URLRequest(arg);
+				navigateToURL(site,"_blank");
+			}
+			
+			private function featureShow():void{
+				mydesk1.feature();
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:Canvas width="100%" height="100%" dropShadowVisible="true" borderAlpha="1.0" cornerRadius="3" backgroundColor="#787373" backgroundAlpha="0.8" contentBackgroundAlpha="1.0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<s:Button label="X" right="2" top="2" width="32" click="this.close();"/>
+		<s:Label text="Developed By :" color="#FFFFFF" width="91" height="17" right="127" bottom="0"/>
+		<s:Label x="6" y="7" text="Feedback/Suggestion" color="#FEFEFE" width="127"  click="featureId.visible=false;" useHandCursor="true" buttonMode="true"/>
+		<mx:Form id="feedbackForm" x="9" y="44" width="261" height="263"  horizontalScrollPolicy="off" verticalScrollPolicy="off" fontFamily="Arial" color="#FAF8F8" fontWeight="normal">
+			<mx:FormItem label="Name :" fontFamily="Arial">
+				<mx:TextInput id="fname"/>
+			</mx:FormItem>
+			<mx:FormItem label="Email :">
+				<mx:TextInput id="email"/>
+			</mx:FormItem>
+			<mx:FormItem label="Feedback :">
+				<mx:TextArea id="suggestion" height="153"/>
+			</mx:FormItem>
+			<mx:HBox>
+				<mx:Spacer width="60" />
+				<mx:Button label="Submit" id="register" useHandCursor="true" click="formSubmit();"/>
+			</mx:HBox>
+		</mx:Form>
+		<mx:LinkButton label="Manoj Chaurasiya" width="124" fontFamily="Arial" right="5" bottom="0" click="gotoSite(dev_url);"/>
+		<s:Label x="134" y="7" text="upcoming features" width="112" color="#FCFCFC" click="featureShow()" useHandCursor="true" buttonMode="true"/>
+		<mx:Canvas right="5" left="5" top="25" bottom="20" backgroundColor="#3C3A3A" id="featureId" visible="false" backgroundAlpha="0.85">
+			<mx:Label id="log_date" width="150" height="16" top="2" left="2" color="#F8F3F3" fontFamily="Arial"/>
+			<s:TextArea id="log" bottom="22" horizontalCenter="0" height="253" width="250" color="#F8F3F3" fontFamily="Arial"/>
+		</mx:Canvas>
+		<mx:Image x="208" y="311" source="assets/icon/youtube16.png" width="16" height="16" click="gotoSite('http://www.youtube.com/mrmanojchaurasiya');"  useHandCursor="true" buttonMode="true"/>
+		<mx:Image x="174" y="312" source="assets/icon/linked.png" width="16" height="16" click="gotoSite('http://in.linkedin.com/in/manojchaurasiya');"  useHandCursor="true" buttonMode="true"/>
+		<mx:Image x="140" y="312" source="assets/icon/twitter.png" width="16" height="16" click="gotoSite('http://twitter.com/#!/manojchaurasiya');" useHandCursor="true" buttonMode="true"/>
+		<mx:Image x="105" y="312" source="assets/icon/fb.png" width="16" height="16" click="gotoSite('http://www.facebook.com/manoj.chaurasiya');"  useHandCursor="true" buttonMode="true" />
+	</mx:Canvas>
+</mx:Window>
+
+	

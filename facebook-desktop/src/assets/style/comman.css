@@ -1,0 +1,100 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+.profileLabel
+{
+	fontFamily: "KlavikaBold";
+	fontSize: 16;
+	fontWeight: normal;
+	color: #FFFFFF;
+}
+
+@font-face
+{
+	fontFamily: "KlavikaBold";
+	fontWeight: normal;
+	fontStyle: normal;
+	src:url("../font/KlavikaBoldBold.otf");
+	embedAsCFF: true;
+}
+
+mx|ToolTip{
+	background-color: #3b5998;
+	color:#ffffff;
+	font-family:Lucida Grande;
+	font-size:12px;
+	fontWeight: normal;
+	borderStyle:solid;
+	borderColor:#000000;
+}
+
+.profileCanvas
+{
+	borderStyle: solid;
+	cornerRadius: 2;
+	borderThickness: 0.5;
+	backgroundColor: #282727;
+	background-alpha:0.7;
+	drop-shadow-visible:true;
+	border-alpha:0.5;
+}
+s|Button
+{
+	cornerRadius: 0;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #5973A8, #5973A8;
+	color: #FFFFFF;
+	horizontalGap: 2;
+	textRollOverColor: #FFFFFF;
+	textSelectedColor: #BCBEC1;
+	borderColor: #5973A8;
+	fontFamily: "KlavikaBold";
+}
+.fbCanvas
+{
+	borderStyle: solid;
+	cornerRadius: 0;
+	borderColor: #535354;
+	backgroundColor: #3B5997;
+}
+global
+{
+	chrome-color: #325C99;
+	content-background-color: #747373;
+	/*fontFamily: "KlavikaBold";*/
+	color: #D0CCCC;
+	content-background-alpha: 1.0;
+	font-weight: normal;
+	text-decoration: none;
+	roll-over-color: #3C3C3D;
+	focus-color: #676869;
+	selection-color: #464C54;
+	textRollOverColor: #ffffff;
+	disabledColor: #000000;
+}
+
+s|TabBar{
+	corner-radius:0px;
+	font-family:"KlavikaBold";
+	font-size:12px;
+}
+mx|LinkBar
+{
+	backgroundAlpha: 0.81;
+	backgroundColor: #325c99;
+	borderVisible: false;
+	dropShadowVisible: true;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+mx|ToolTip {
+	backgroundAlpha: 0.9;
+	cornerRadius: 4;
+	backgroundColor: #333333;
+	color: #ffffff;
+	fontFamily: Arial;
+	fontSize: 12;
+}

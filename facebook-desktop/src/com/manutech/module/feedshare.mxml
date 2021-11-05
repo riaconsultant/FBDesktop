@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute" width="100%" height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			private function fbposttowall():void{
+				
+			}
+		]]>
+	</fx:Script>
+	<mx:Panel id="sharePanel" width="100%" height="100%" layout="absolute" title="Share">		
+		<mx:Image id="fbUserId" left="5" top="5" width="180" height="180"/>
+	</mx:Panel>
+	<mx:Form x="70" y="-14" width="100%">
+		<mx:Label text="User Name :"/>
+		<mx:TextInput id="fbUserName"/>
+		<mx:Label text="BirthDay"/>
+		<mx:TextInput id="fbBirthDayId" />
+		<mx:Label text="Caption :"/>
+		<mx:TextInput id="captionId" />
+		<mx:Label text="URL :"/>
+		<mx:TextInput id="urlId" />
+		<mx:Label text="picture :"/>
+		<mx:TextInput id="picId" />
+		<mx:Label text="link"/>
+		<mx:TextInput id="linkId" />
+		<mx:Label text="description :"/>
+		<mx:TextArea id="descId" height="85" />
+		<mx:Label text="Message :"/>
+		<mx:TextArea id="msgId" height="85" />
+		<mx:Button right="10" label="ShareMe" click="fbposttowall()"/>
+	</mx:Form>
+</mx:Module>
